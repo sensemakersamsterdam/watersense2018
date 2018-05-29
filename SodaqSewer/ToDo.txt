@@ -1,0 +1,7 @@
+-make sure sodaq is asleep in between measurements 
+-make sure systemsleep turns off sensors
+-if a sensor is not available, ignore
+-if a sensor gives values that should lead to extra monitoring, decrease systemsleep time, keeping
+in mind the total life time
+-give an indication of battery life of the system
+
