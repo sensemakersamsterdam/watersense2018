@@ -159,7 +159,8 @@ float vsample[nsamples];
 float alert =0.2;        // alert level for standard deviation
 
 //Generic Vars
-int waitfor = 300000;       // wait in loop 60000 is one minute: 300000 is 5 minutes
+//int waitfor = 300000;       // wait in loop 60000 is one minute: 300000 is 5 minutes
+int waitfor = 60000;       // wait in loop 60000 is one minute: 300000 is 5 minutes
 bool SODAQ = true;
 bool TOF = true;
 bool AquaPlumb = true;
