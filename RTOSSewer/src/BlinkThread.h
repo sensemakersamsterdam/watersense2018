@@ -1,5 +1,5 @@
-#ifndef SYSTEMTHREAD_H
-#define SYSTEMTHREAD_H
+#ifndef BLINKTHREAD_H
+#define BLINKTHREAD_H
 
 class BlinkThread {
 public:

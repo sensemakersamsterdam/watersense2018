@@ -4,5 +4,6 @@
 #include "FreeRTOSHandler.h"
 #include "BlinkThread.h"
 #include "SystemThread.h"
+#include "sensors/TOFThread.h"
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef IDLETHREAD_H
-#define IDLETHREAD_H
+#ifndef SYSTEMTHREAD_H
+#define SYSTEMTHREAD_H
 
 class SystemThread {
 public:
