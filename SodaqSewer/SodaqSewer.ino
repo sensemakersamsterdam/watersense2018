@@ -128,9 +128,10 @@ bool initLoraOtaa(LoraInitConsoleMessages messages);
 bool initLora(LoraInitConsoleMessages messages, LoraInitJoin join);
 
 // ABP
-const uint8_t devAddr[4] = { 0x00, 0x00, 0x00, 0x00 };
-const uint8_t appSKey[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-const uint8_t nwkSKey[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+#include "abpkeys.h"
+//const uint8_t devAddr[4] = { 0x00, 0x00, 0x00, 0x00 };
+//const uint8_t appSKey[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+//const uint8_t nwkSKey[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 // If you want to add your own keys without replacing the default keys, please place them in otaakeys.h in the same folder as this ino file
 #include "otaakeys.h"
@@ -158,7 +159,7 @@ float vsample[nsamples];
 float alert =0.2;        // alert level for standard deviation
 
 //Generic Vars
-int waitfor = 60000;       // wait in loop
+int waitfor = 300000;       // wait in loop 60000 is one minute: 300000 is 5 minutes
 bool SODAQ = true;
 bool TOF = true;
 bool AquaPlumb = true;
@@ -209,9 +210,9 @@ void setup() {
 
 void setupLoRa(){
   // ABP
-//  setupLoRaABP();
+  setupLoRaABP();
   // OTAA
-  setupLoRaOTAA();
+  //setupLoRaOTAA();
   LoRaBee.setSpreadingFactor(9);
 }
 
@@ -294,7 +295,7 @@ void loop() {
   // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
     float voltage = sensorValue * (5.0 / 1023.0);
     float height = (voltage / maxvoltage) * maxheight;
-    packet = String("AquaPlumb height " + String(height) );
+    packet = String("AquaPlumb height " + String(height) + " ");
     debugSerial.println(packet);
   }
   if ( TOF == true ) {
@@ -305,7 +306,7 @@ void loop() {
 
     if (measure.RangeStatus != 4) {  // phase failures have incorrect data
       debugSerial.print("Distance (mm): "); debugSerial.println(measure.RangeMilliMeter);
-      packet = String(packet + "VL53L0X Distance: " + String(measure.RangeMilliMeter));
+      packet = String(packet + "VL53L0X Distance: " + String(measure.RangeMilliMeter)+ " " );
       debugSerial.println(packet);
 
     } else {
