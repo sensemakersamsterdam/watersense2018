@@ -9,6 +9,6 @@ void SystemThread::setup() {
 
 void SystemThread::loop() {
   SerialUSB.print(millis());
-  SerialUSB.println(" idlex");
+  SerialUSB.println(" idle");
   delay(1000);
 }

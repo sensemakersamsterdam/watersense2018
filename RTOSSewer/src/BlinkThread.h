@@ -5,8 +5,6 @@ class BlinkThread {
 public:
   static void setup();
   static void loop();
-private:
-  static int blinkFlag;
 };
 
 #endif

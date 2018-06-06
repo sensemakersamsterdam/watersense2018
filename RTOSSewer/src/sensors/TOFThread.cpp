@@ -2,9 +2,9 @@
 #include "TOFThread.h"
 #include "Adafruit_VL53L0X.h"
 
-Adafruit_VL53L0X lox = Adafruit_VL53L0X();
+static Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 
-int TOFThread::poweronFlag = LOW;
+static int poweronFlag = LOW;
 
 void TOFThread::setup() {
   SerialUSB.println("Adafruit VL53L0X test");
@@ -15,9 +15,9 @@ void TOFThread::setup() {
 }
 
 void TOFThread::loop() {
- VL53L0X_RangingMeasurementData_t measure;
- SerialUSB.print("Reading a measurement... ");
- lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+  VL53L0X_RangingMeasurementData_t measure;
+  SerialUSB.print("Reading a measurement... ");
+  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
 
   if (measure.RangeStatus != 4) {  // phase failures have incorrect data
     if (measure.RangeMilliMeter < 80 && measure.RangeMilliMeter != 0 ){ // 0 means no proper data beacuse there is no reflection within range
@@ -27,6 +27,6 @@ void TOFThread::loop() {
   } else {
     SerialUSB.println(" out of range ");
   }
- 
-  TOFThread::poweronFlag ^= 1;
+
+  poweronFlag ^= 1;
 }

@@ -5,8 +5,6 @@ class TOFThread {
 public:
   static void setup();
   static void loop();
-private:
-  static int poweronFlag;
 };
 
 #endif

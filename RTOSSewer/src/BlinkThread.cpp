@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "BlinkThread.h"
 
-int BlinkThread::blinkFlag = LOW;
+static int blinkFlag = LOW;
 
 void BlinkThread::setup() {
   pinMode(LED_GREEN, OUTPUT);
@@ -9,6 +9,6 @@ void BlinkThread::setup() {
 }
 
 void BlinkThread::loop() {
-  digitalWrite(LED_GREEN, BlinkThread::blinkFlag);
-  BlinkThread::blinkFlag ^= 1;
+  digitalWrite(LED_GREEN, blinkFlag);
+  blinkFlag ^= 1;
 }
