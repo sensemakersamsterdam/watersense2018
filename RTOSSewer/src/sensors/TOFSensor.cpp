@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "TOFSensor.h"
 
 bool TOFSensor::isReady = false;
