@@ -7,6 +7,7 @@ void setup()
 {
   System::setup();
 
+  BMP280Sensor::setup();
   TOFSensor::setup();
 
   if (TOFSensor::isReady) {

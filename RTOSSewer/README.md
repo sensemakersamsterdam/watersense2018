@@ -5,17 +5,42 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 
 ## Tested on hardware:
 
-- SODAQ ONE-EU-RN2483-V3
+- SODAQ ONE-EU-RN2483-V3 https://shop.sodaq.com/sodaq-one-eu-rn2483-v3.html
+- BMP280 sensor https://www.adafruit.com/product/2651
 
 
 ## Used open source software:
+
+### Adafruit BMP280 Library 1.0.2
+
+> *Adafruit invests time and resources providing this open source code, please support Adafruit andopen-source hardware by purchasing products from Adafruit!*
+> *Written by Kevin Townsend for Adafruit Industries. BSD license, all text above must be included in any redistribution*
+
+*sources, https://github.com/adafruit/Adafruit_BMP280_Library*
+
+
+### Adafruit Unified Sensor 1.0.2
+
+> *Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0*
+> *Copyright (C) 2008 The Android Open Source Project*
+
+*sources, https://github.com/adafruit/Adafruit_Sensor*
+
+
+### Adafruit VL53L0X Library 1.0.3
+
+> *Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!*
+> *Written by Limor Fried/Ladyada for Adafruit Industries. MIT license, all text above must be included in any redistribution*
+
+*sources, https://github.com/adafruit/Adafruit_VL53L0X*
+
 
 ### FreeRTOS 10.0.1
 
 > *Both the FreeRTOS kernel and Amazon FreeRTOS are provided under the following MIT open source license.*  
 > *Copyright (C) 2017 Amazon.com, Inc. or its affiliates.*
 
-*sources and https://www.freertos.org/a00114.html*  
+*sources, https://www.freertos.org/a00114.html*  
 
 
 ### SODAQ software for Arduino SAMD 1.6.17

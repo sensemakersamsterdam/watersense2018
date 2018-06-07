@@ -10,7 +10,7 @@ public:
   static void setup();
   static void measure();
 private:
-  static Adafruit_VL53L0X lox;
+  static Adafruit_VL53L0X sensor;
   static int poweronFlag;
 };
 

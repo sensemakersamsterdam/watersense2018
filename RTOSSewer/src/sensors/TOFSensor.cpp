@@ -3,7 +3,7 @@
 
 bool TOFSensor::isReady = false;
 
-Adafruit_VL53L0X TOFSensor::lox = Adafruit_VL53L0X();
+Adafruit_VL53L0X TOFSensor::sensor = Adafruit_VL53L0X();
 
 int TOFSensor::poweronFlag = LOW;
 
@@ -11,7 +11,7 @@ void TOFSensor::setup()
 {
   Serial.println("TOFSensor - Setup");
 
-  isReady = lox.begin();
+  isReady = sensor.begin();
 
   if (!isReady) {
     Serial.println("TOFSensor - Failed to boot VL53L0X");
@@ -20,11 +20,15 @@ void TOFSensor::setup()
 
 void TOFSensor::measure()
 {
+  if (!isReady) {
+    return;
+  }
+
   Serial.print("TOFSensor - Reading a measurement... ");
 
   VL53L0X_RangingMeasurementData_t measure;
 
-  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+  sensor.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
 
   // phase failures have incorrect data
   if (measure.RangeStatus != 4) {
