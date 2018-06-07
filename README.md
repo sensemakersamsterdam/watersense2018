@@ -6,6 +6,6 @@ to sense different qualities of water and send the data to an open data aggregat
 
 It is an extension of the Waterbuoy project that has started in 2016.
 
-The SodaqSewer and the RTOSSewer folders are the programs that integrate all the possible sensors Both are a work in Progress.
+The SodaqSewer and the RTOSSewer folders are the programs that integrate all the possible sensors. Both are a work in Progress.
 
 The other folders are Arduino tests for the different sensors.
