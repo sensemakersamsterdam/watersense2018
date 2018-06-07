@@ -2,8 +2,8 @@
 #define RTOSSEWER_H
 
 #include "FreeRTOSHandler.h"
-#include "BlinkThread.h"
-#include "SystemThread.h"
-#include "sensors/TOFThread.h"
+
+#include "SystemTask.h"
+#include "sensors/TOFTask.h"
 
 #endif
