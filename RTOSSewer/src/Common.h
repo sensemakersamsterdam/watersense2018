@@ -1,5 +1,5 @@
-#ifndef TASK_H
-#define TASK_H
+#ifndef COMMON_H
+#define COMMON_H
 
 #define Serial SerialUSB
 

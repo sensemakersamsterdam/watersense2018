@@ -1,14 +1,14 @@
 #include <Arduino.h>
-#include "SystemTask.h"
+#include "System.h"
 
-void SystemTask::setup()
+void System::setup()
 {
   Serial.begin(9600);
   delay(200);
   while (!Serial && millis() < 10000);
 }
 
-void SystemTask::loop()
+void System::idle()
 {
   Serial.print(millis());
   Serial.println(" idle");

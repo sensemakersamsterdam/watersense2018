@@ -3,7 +3,7 @@
 
 #include "FreeRTOSHandler.h"
 
-#include "SystemTask.h"
-#include "sensors/TOFTask.h"
+#include "System.h"
+#include "sensors/TOFSensor.h"
 
 #endif

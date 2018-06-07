@@ -5,11 +5,11 @@ static StackType_t  xT1Stack[configMINIMAL_STACK_SIZE];
 
 void setup()
 {
-  SystemTask::setup();
+  System::setup();
 
-  TOFTask::setup();
+  TOFSensor::setup();
 
-  if (TOFTask::isReady) {
+  if (TOFSensor::isReady) {
     xTaskCreateStatic(threadT1, NULL, configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT1Stack, &xT1TaskBuffer);
   }
 
@@ -18,13 +18,13 @@ void setup()
 
 void loop()
 {
-  SystemTask::loop();
+  System::idle();
 }
 
 static void threadT1(void* pvParameters)
 {
   while (1) {
-    TOFTask::loop();
+    TOFSensor::measure();
     vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }

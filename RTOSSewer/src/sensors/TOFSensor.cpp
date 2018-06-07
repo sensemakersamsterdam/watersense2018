@@ -1,27 +1,26 @@
 #include <Arduino.h>
-#include "TOFTask.h"
-#include "Adafruit_VL53L0X.h"
+#include "TOFSensor.h"
 
-static Adafruit_VL53L0X lox = Adafruit_VL53L0X();
+bool TOFSensor::isReady = false;
 
-bool TOFTask::isReady = false;
+Adafruit_VL53L0X TOFSensor::lox = Adafruit_VL53L0X();
 
-int TOFTask::poweronFlag = LOW;
+int TOFSensor::poweronFlag = LOW;
 
-void TOFTask::setup()
+void TOFSensor::setup()
 {
-  Serial.println("TOFTask - setup");
+  Serial.println("TOFSensor - Setup");
 
-  TOFTask::isReady = lox.begin();
+  isReady = lox.begin();
 
-  if (!TOFTask::isReady) {
-    Serial.println("TOFTask - Failed to boot VL53L0X");
+  if (!isReady) {
+    Serial.println("TOFSensor - Failed to boot VL53L0X");
   }
 }
 
-void TOFTask::loop()
+void TOFSensor::measure()
 {
-  Serial.print("TOFTask - Reading a measurement... ");
+  Serial.print("TOFSensor - Reading a measurement... ");
 
   VL53L0X_RangingMeasurementData_t measure;
 
@@ -42,5 +41,5 @@ void TOFTask::loop()
     Serial.println("out of range ");
   }
 
-  TOFTask::poweronFlag ^= 1;
+  poweronFlag ^= 1;
 }
