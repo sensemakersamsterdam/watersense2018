@@ -2,18 +2,18 @@
 
 bool TOFSensor::isReady = false;
 
-Adafruit_VL53L0X TOFSensor::sensor = Adafruit_VL53L0X();
+Adafruit_VL53L0X TOFSensor::sensor;
 
 int TOFSensor::poweronFlag = LOW;
 
 void TOFSensor::setup()
 {
-  Serial.println("TOFSensor - Setup");
+  Serial.println("TOF: setup");
 
   isReady = sensor.begin();
 
   if (!isReady) {
-    Serial.println("TOFSensor - Failed to boot VL53L0X");
+    Serial.println("TOF: failed to boot VL53L0X");
   }
 }
 
@@ -23,7 +23,7 @@ void TOFSensor::measure()
     return;
   }
 
-  Serial.print("TOFSensor - Reading a measurement... ");
+  Serial.print("TOF: reading a measurement... ");
 
   VL53L0X_RangingMeasurementData_t measure;
 
@@ -33,12 +33,12 @@ void TOFSensor::measure()
   if (measure.RangeStatus != 4) {
     // 0 means no proper data beacuse there is no reflection within range
     if (measure.RangeMilliMeter < 80 && measure.RangeMilliMeter != 0 ) {
-      Serial.print("Sewer is getting full, only ");
+      Serial.print("sewer is getting full, only ");
       Serial.print(measure.RangeMilliMeter);
       Serial.println(" mm left! ");
     }
 
-    Serial.print("Distance (mm): ");
+    Serial.print("distance (mm): ");
     Serial.println(measure.RangeMilliMeter);
   } else {
     Serial.println("out of range ");

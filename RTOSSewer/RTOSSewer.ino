@@ -1,5 +1,7 @@
 #include "src/RTOSSewer.h"
 
+static StaticTask_t xT0TaskBuffer;
+static StackType_t  xT0Stack[configMINIMAL_STACK_SIZE];
 static StaticTask_t xT1TaskBuffer;
 static StackType_t  xT1Stack[configMINIMAL_STACK_SIZE];
 static StaticTask_t xT2TaskBuffer;
@@ -9,8 +11,12 @@ void setup()
 {
   System::setup();
 
+  System::scanI2C();
+
   BMP280Sensor::setup();
   TOFSensor::setup();
+
+  xTaskCreateStatic(threadT0, NULL, configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT0Stack, &xT0TaskBuffer);
 
   if (BMP280Sensor::isReady) {
     xTaskCreateStatic(threadT1, NULL, configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT1Stack, &xT1TaskBuffer);
@@ -28,19 +34,33 @@ void loop()
   System::idle();
 }
 
+static void threadT0(void* pvParameters)
+{
+  while (1) {
+    System::toggleGreenLed();
+    vTaskDelay(pdMS_TO_TICKS(1000));
+  }
+}
+
 static void threadT1(void* pvParameters)
 {
   while (1) {
+    taskENTER_CRITICAL();
     BMP280Sensor::measure();
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    taskEXIT_CRITICAL();
+
+    vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }
 
 static void threadT2(void* pvParameters)
 {
   while (1) {
+    taskENTER_CRITICAL();
     TOFSensor::measure();
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    taskEXIT_CRITICAL();
+
+    vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }
 
