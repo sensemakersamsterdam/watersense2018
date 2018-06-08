@@ -11,8 +11,6 @@ void setup()
 {
   System::setup();
 
-  System::scanI2C();
-
   BMP280Sensor::setup();
   TOFSensor::setup();
 
@@ -38,12 +36,15 @@ static void threadT0(void* pvParameters)
 {
   while (1) {
     System::toggleGreenLed();
+
     vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }
 
 static void threadT1(void* pvParameters)
 {
+  vTaskDelay(pdMS_TO_TICKS(1000));
+
   while (1) {
     taskENTER_CRITICAL();
     BMP280Sensor::measure();

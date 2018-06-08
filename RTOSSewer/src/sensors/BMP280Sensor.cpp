@@ -8,12 +8,14 @@ Adafruit_BMP280 BMP280Sensor::sensor;
 
 void BMP280Sensor::setup()
 {
-  Serial.println("BMP280: setup");
+  Serial.print("BMP280: setup... ");
 
   isReady = sensor.begin(BMP280_ADDRESS);
 
   if (!isReady) {
-    Serial.println("BMP280: failed to boot BMP280");
+    Serial.println("failed to boot BMP280");
+  } else {
+    Serial.println("done");
   }
 }
 

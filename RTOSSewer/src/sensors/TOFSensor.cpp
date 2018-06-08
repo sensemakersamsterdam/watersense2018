@@ -8,12 +8,14 @@ int TOFSensor::poweronFlag = LOW;
 
 void TOFSensor::setup()
 {
-  Serial.println("TOF: setup");
+  Serial.print("TOF: setup... ");
 
   isReady = sensor.begin();
 
   if (!isReady) {
-    Serial.println("TOF: failed to boot VL53L0X");
+    Serial.println("failed to boot VL53L0X");
+  } else {
+    Serial.println("done");
   }
 }
 

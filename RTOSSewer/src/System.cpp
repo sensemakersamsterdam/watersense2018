@@ -13,6 +13,8 @@ void System::setup()
   Wire.begin();
   delay(200);
   while (!Serial && millis() < 10000);
+
+  System::scanI2C();
 }
 
 void System::idle()
@@ -58,7 +60,7 @@ void System::scanI2C()
   if (nDevices == 0) {
     Serial.println("I2C: no devices found");
   } else {
-    Serial.println("I2C: done");
+    Serial.println("I2C: scanning done");
   }
 }
 
