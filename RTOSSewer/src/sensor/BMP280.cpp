@@ -1,26 +1,32 @@
-#include "../Common.h"
-#include "BMP280Sensor.h"
+#include "../periph/I2C.h"
+#include "BMP280.h"
+
+#define BMP280_ADDRESS 0x76
+
 
 /*******************************************************************************
  * State
  ******************************************************************************/
 
-#define BMP280_ADDRESS 0x76
+bool BMP280::isReady;
 
-bool BMP280Sensor::isReady;
-
-Adafruit_BMP280 BMP280Sensor::sensor;
+Adafruit_BMP280 BMP280::sensor;
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void BMP280Sensor::setup()
+void BMP280::setup()
 {
   Serial.print("BMP280: setup... ");
 
-  isReady = sensor.begin(BMP280_ADDRESS);
+  isReady = false;
+
+  if (I2C::lock()) {
+    isReady = sensor.begin(BMP280_ADDRESS);
+    I2C::unlock();
+  }
 
   Serial.println(isReady ? "done" : "failed");
 }
@@ -30,17 +36,17 @@ void BMP280Sensor::setup()
  * Public
  ******************************************************************************/
 
-void BMP280Sensor::measure()
+void BMP280::measure()
 {
-  if (!isReady) {
-    return;
-  }
+  Serial.println("BMP280: reading a measurement... ");
 
-  taskENTER_CRITICAL();
+  if (!I2C::lock()) { return; }
+
   float t = sensor.readTemperature();
   float p = sensor.readPressure();
   float a = sensor.readAltitude(1013.25); // this should be adjusted to your local forcase
-  taskEXIT_CRITICAL();
+
+  I2C::unlock();
 
   Serial.print("BMP280: temperature = ");
   Serial.print(t);

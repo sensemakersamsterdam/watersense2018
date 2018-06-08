@@ -1,18 +1,25 @@
-#include <Arduino.h>
 #include <Wire.h>
-#include "Common.h"
-#include "System.h"
+#include "I2C.h"
+
+
+/*******************************************************************************
+ * State
+ ******************************************************************************/
+
+SemaphoreHandle_t I2C::busMutex;
+
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void System::setup()
+void I2C::setup()
 {
-  Serial.begin(9600);
+  static StaticSemaphore_t busMutexBuffer;
+
   Wire.begin();
-  delay(200);
-  while (!Serial && millis() < 10000);
+
+  busMutex = xSemaphoreCreateMutexStatic(&busMutexBuffer);
 }
 
 
@@ -20,14 +27,12 @@ void System::setup()
  * Public
  ******************************************************************************/
 
-void System::idle()
+bool I2C::lock()
 {
-  Serial.print("Idle: ");
-  Serial.println(millis());
-  delay(1500);
+  return xSemaphoreTake(busMutex, 100) == pdTRUE;
 }
 
-void System::scanI2C()
+void I2C::logDevices()
 {
   Serial.println("I2C: scanning...");
 
@@ -38,8 +43,13 @@ void System::scanI2C()
     // The i2c_scanner uses the return value of
     // the Write.endTransmisstion to see if
     // a device did acknowledge to the address.
+
+    if (!lock()) { break; }
+
     Wire.beginTransmission(address);
     byte error = Wire.endTransmission();
+
+    unlock();
 
     if (error == 0) {
       Serial.print("I2C: device found at address 0x");
@@ -61,4 +71,9 @@ void System::scanI2C()
   }
 
   Serial.println(nDevices ? "I2C: scanning done" : "I2C: no devices found");
+}
+
+void I2C::unlock()
+{
+  xSemaphoreGive(busMutex);
 }

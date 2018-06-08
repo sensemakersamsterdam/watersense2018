@@ -1,5 +1,7 @@
-#ifndef SODAQONE_BOARD_H
-#define SODAQONE_BOARD_H
+#ifndef SODAQONE_H
+#define SODAQONE_H
+
+#include "../Common.h"
 
 class SODAQONE {
 public:
@@ -14,6 +16,7 @@ public:
   static void turnOnLedGreen();
   static void turnOnLedRed();
 private:
+  static SemaphoreHandle_t ledMutex;
   static uint8_t ledState;
   static void setLed(uint8_t pin, uint8_t state);
 };

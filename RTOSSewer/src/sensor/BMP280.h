@@ -1,9 +1,11 @@
-#ifndef BMP280_SENSOR_H
-#define BMP280_SENSOR_H
+#ifndef BMP280_H
+#define BMP280_H
 
 #include <Adafruit_BMP280.h>
 
-class BMP280Sensor {
+#include "../Common.h"
+
+class BMP280 {
 public:
   static bool isReady;
   static void setup();

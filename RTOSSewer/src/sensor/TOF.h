@@ -1,9 +1,11 @@
-#ifndef TOF_SENSOR_H
-#define TOF_SENSOR_H
+#ifndef TOF_H
+#define TOF_H
 
 #include <Adafruit_VL53L0X.h>
 
-class TOFSensor {
+#include "../Common.h"
+
+class TOF {
 public:
   static bool isReady;
   static void setup();

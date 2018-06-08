@@ -1,11 +1,13 @@
-#include "../Common.h"
 #include "SODAQONE.h"
+
 
 /*******************************************************************************
  * State
  ******************************************************************************/
 
 uint8_t SODAQONE::ledState;
+
+SemaphoreHandle_t SODAQONE::ledMutex;
 
 
 /*******************************************************************************
@@ -14,6 +16,8 @@ uint8_t SODAQONE::ledState;
 
 void SODAQONE::setup()
 {
+  static StaticSemaphore_t ledMutexBuffer;
+
   pinMode(LED_BLUE,  OUTPUT);
   pinMode(LED_GREEN, OUTPUT);
   pinMode(LED_RED,   OUTPUT);
@@ -23,6 +27,7 @@ void SODAQONE::setup()
   digitalWrite(LED_RED,   HIGH);
 
   ledState = HIGH;
+  ledMutex = xSemaphoreCreateMutexStatic(&ledMutexBuffer);
 }
 
 
@@ -82,8 +87,10 @@ void SODAQONE::turnOnLedRed()
 
 void SODAQONE::setLed(uint8_t pin, uint8_t state)
 {
-  // TODO - use MUTEX
+  if (xSemaphoreTake(ledMutex, 100) != pdTRUE) { return; }
 
   ledState = state;
   digitalWrite(pin, state);
+
+  xSemaphoreGive(ledMutex);
 }
