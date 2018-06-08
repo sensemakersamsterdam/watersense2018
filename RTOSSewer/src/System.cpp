@@ -1,27 +1,30 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include "Common.h"
 #include "System.h"
 
-uint8_t System::ledGreenState = HIGH;
+/*******************************************************************************
+ * Lifecycle
+ ******************************************************************************/
 
 void System::setup()
 {
-  pinMode(LED_GREEN, OUTPUT);
-  digitalWrite(LED_GREEN, ledGreenState);
-
   Serial.begin(9600);
   Wire.begin();
   delay(200);
   while (!Serial && millis() < 10000);
-
-  System::scanI2C();
 }
+
+
+/*******************************************************************************
+ * Public
+ ******************************************************************************/
 
 void System::idle()
 {
   Serial.print("Idle: ");
   Serial.println(millis());
-  delay(1000);
+  delay(1500);
 }
 
 void System::scanI2C()
@@ -36,7 +39,6 @@ void System::scanI2C()
     // the Write.endTransmisstion to see if
     // a device did acknowledge to the address.
     Wire.beginTransmission(address);
-
     byte error = Wire.endTransmission();
 
     if (error == 0) {
@@ -53,19 +55,10 @@ void System::scanI2C()
       if (address < 16) {
         Serial.print("0");
       }
+
       Serial.println(address, HEX);
     }
   }
 
-  if (nDevices == 0) {
-    Serial.println("I2C: no devices found");
-  } else {
-    Serial.println("I2C: scanning done");
-  }
-}
-
-void System::toggleGreenLed()
-{
-  ledGreenState ^= 1;
-  digitalWrite(LED_GREEN, ledGreenState);
+  Serial.println(nDevices ? "I2C: scanning done" : "I2C: no devices found");
 }

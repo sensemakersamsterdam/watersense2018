@@ -1,10 +1,18 @@
+#include "../Common.h"
 #include "TOFSensor.h"
 
-bool TOFSensor::isReady = false;
+/*******************************************************************************
+ * State
+ ******************************************************************************/
+
+bool TOFSensor::isReady;
 
 Adafruit_VL53L0X TOFSensor::sensor;
 
-int TOFSensor::poweronFlag = LOW;
+
+/*******************************************************************************
+ * Lifecycle
+ ******************************************************************************/
 
 void TOFSensor::setup()
 {
@@ -12,12 +20,13 @@ void TOFSensor::setup()
 
   isReady = sensor.begin();
 
-  if (!isReady) {
-    Serial.println("failed to boot VL53L0X");
-  } else {
-    Serial.println("done");
-  }
+  Serial.println(isReady ? "done" : "failed");
 }
+
+
+/*******************************************************************************
+ * Public
+ ******************************************************************************/
 
 void TOFSensor::measure()
 {
@@ -29,7 +38,9 @@ void TOFSensor::measure()
 
   VL53L0X_RangingMeasurementData_t measure;
 
-  sensor.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+  taskENTER_CRITICAL();
+  sensor.rangingTest(&measure);
+  taskEXIT_CRITICAL();
 
   // phase failures have incorrect data
   if (measure.RangeStatus != 4) {
@@ -45,6 +56,4 @@ void TOFSensor::measure()
   } else {
     Serial.println("out of range ");
   }
-
-  poweronFlag ^= 1;
 }

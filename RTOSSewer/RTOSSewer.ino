@@ -10,6 +10,7 @@ static StackType_t  xT2Stack[configMINIMAL_STACK_SIZE];
 void setup()
 {
   System::setup();
+  SODAQONE::setup();
 
   BMP280Sensor::setup();
   TOFSensor::setup();
@@ -34,10 +35,12 @@ void loop()
 
 static void threadT0(void* pvParameters)
 {
-  while (1) {
-    System::toggleGreenLed();
+  System::scanI2C();
 
-    vTaskDelay(pdMS_TO_TICKS(1000));
+  while (1) {
+    SODAQONE::toggleLedGreen();
+
+    vTaskDelay(pdMS_TO_TICKS(10000));
   }
 }
 
@@ -46,9 +49,7 @@ static void threadT1(void* pvParameters)
   vTaskDelay(pdMS_TO_TICKS(1000));
 
   while (1) {
-    taskENTER_CRITICAL();
     BMP280Sensor::measure();
-    taskEXIT_CRITICAL();
 
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
@@ -57,11 +58,8 @@ static void threadT1(void* pvParameters)
 static void threadT2(void* pvParameters)
 {
   while (1) {
-    taskENTER_CRITICAL();
     TOFSensor::measure();
-    taskEXIT_CRITICAL();
 
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }
-

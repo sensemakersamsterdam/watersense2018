@@ -1,8 +1,7 @@
 #ifndef TOF_SENSOR_H
 #define TOF_SENSOR_H
 
-#include "Adafruit_VL53L0X.h"
-#include "../Common.h"
+#include <Adafruit_VL53L0X.h>
 
 class TOFSensor {
 public:
@@ -11,7 +10,6 @@ public:
   static void measure();
 private:
   static Adafruit_VL53L0X sensor;
-  static int poweronFlag;
 };
 
 #endif
