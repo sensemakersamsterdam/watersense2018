@@ -13,7 +13,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 
 ### Adafruit BMP280 Library 1.0.2
 
-> *Adafruit invests time and resources providing this open source code, please support Adafruit andopen-source hardware by purchasing products from Adafruit!*
+> *Adafruit invests time and resources providing this open source code, please support Adafruit andopen-source hardware by purchasing products from Adafruit!*  
 > *Written by Kevin Townsend for Adafruit Industries. BSD license, all text above must be included in any redistribution*
 
 *sources, https://github.com/adafruit/Adafruit_BMP280_Library*
@@ -21,7 +21,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 
 ### Adafruit Unified Sensor 1.0.2
 
-> *Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0*
+> *Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0*  
 > *Copyright (C) 2008 The Android Open Source Project*
 
 *sources, https://github.com/adafruit/Adafruit_Sensor*
@@ -29,7 +29,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 
 ### Adafruit VL53L0X Library 1.0.3
 
-> *Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!*
+> *Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!*  
 > *Written by Limor Fried/Ladyada for Adafruit Industries. MIT license, all text above must be included in any redistribution*
 
 *sources, https://github.com/adafruit/Adafruit_VL53L0X*
