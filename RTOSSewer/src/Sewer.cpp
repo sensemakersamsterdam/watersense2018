@@ -51,7 +51,10 @@ void Sewer::initModules()
   SODAQONE::setup();
 
   I2C::setup();
-  I2C::logDevices();
+
+  #if DEBUG
+    I2C::logDevices();
+  #endif
 
   BMP280::setup();
   if (BMP280::isReady) {
