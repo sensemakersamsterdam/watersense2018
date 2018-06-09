@@ -4,18 +4,17 @@
 #include "../Common.h"
 
 #if DEBUG
-#define LOGF(f) Logger_logf(__PRETTY_FUNCTION__, f)
-#define LOGI(i) Logger_logi(__PRETTY_FUNCTION__, i)
-#define LOGS(s) Logger_logs(__PRETTY_FUNCTION__, s)
-#define LOGT(fmt, ...) Logger_logt(__PRETTY_FUNCTION__, fmt, __VA_ARGS__)
+#define LOGF(f) Logger_logf(__FUNCTION__, f)
+#define LOGI(i) Logger_logi(__FUNCTION__, i)
+#define LOGS(s) Logger_logs(__FUNCTION__, s)
+#define LOGT(fmt, ...) Logger_logt(__FUNCTION__, fmt, __VA_ARGS__)
+#define FRAC02(f) (abs((int)(f * 100)) % 100)
 #else
 #define LOGF(f)
 #define LOGI(i)
 #define LOGS(s)
 #define LOGT(fmt, ...)
 #endif
-
-#define FRAC02(f) (abs((int)(f * 100)) % 100)
 
 void Logger_setup();
 void Logger_logf(const char *func, float f);

@@ -101,32 +101,13 @@ static BaseType_t lock()
 
 static void logPrefix(const char *func)
 {
-  const char *tn = pcTaskGetName(NULL);
-
   Serial.write('[');
-  Serial.print(tn);
-  Serial.write(']');
-  Serial.write('[');
+  Serial.print(pcTaskGetName(NULL));
+  Serial.write("][");
   Serial.print(millis());
-  Serial.write(']');
-  Serial.write('[');
-
-  if (func != NULL) {
-    BaseType_t a = 0;
-    BaseType_t b = 0;
-    BaseType_t i = 0;
-
-    while (func[i]) {
-      if (func[i] == ' ') { a = i; }
-      else if (func[i] == '(') { b = i; break; }
-      i++;
-    }
-
-    for (i = a + 1; i < b; i++) { Serial.write(func[i]); }
-  }
-
-  Serial.write(']');
-  Serial.write(' ');
+  Serial.write("][");
+  Serial.write(func);
+  Serial.write("] ");
 }
 
 static void unlock()
