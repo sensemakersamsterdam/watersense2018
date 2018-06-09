@@ -7,7 +7,7 @@
  ******************************************************************************/
 
 static BaseType_t Logger_lock();
-static void Logger_logSystem();
+static void Logger_logSysinfo();
 static void Logger_logPrefix(const char *func);
 static void Logger_unlock();
 
@@ -27,13 +27,14 @@ void Logger_setup()
 {
   static StaticSemaphore_t logMutexBuffer;
 
+  Serial.begin(9600);
   while (!Serial && millis() < 10000);
 
   logMutex = xSemaphoreCreateMutexStatic(&logMutexBuffer);
 
   LOGS("started");
 
-  Logger_logSystem();
+  Logger_logSysinfo();
 }
 
 
@@ -133,7 +134,7 @@ static void Logger_logPrefix(const char *func)
   Serial.write("] ");
 }
 
-static void Logger_logSystem()
+static void Logger_logSysinfo()
 {
   #ifdef ARDUINO
   LOGT("ARDUINO: %d.%d.%d", ARDUINO / 10000, ARDUINO / 100 % 100, ARDUINO % 100);

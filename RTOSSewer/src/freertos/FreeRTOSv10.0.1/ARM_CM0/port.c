@@ -25,6 +25,8 @@
  * 1 tab == 4 spaces!
  */
 
+#ifdef __ARM_ARCH_6M__
+
 /*-----------------------------------------------------------
  * Implementation of functions defined in portable.h for the ARM CM0 port.
  *----------------------------------------------------------*/
@@ -357,3 +359,5 @@ void prvSetupTimerInterrupt( void )
 	*(portNVIC_SYSTICK_CTRL) = portNVIC_SYSTICK_CLK | portNVIC_SYSTICK_INT | portNVIC_SYSTICK_ENABLE;
 }
 /*-----------------------------------------------------------*/
+
+#endif
