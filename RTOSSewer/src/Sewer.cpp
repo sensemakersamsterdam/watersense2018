@@ -2,7 +2,7 @@
 #include "board/SODAQONE.h"
 #include "periph/I2C.h"
 #include "sensor/BMP280.h"
-#include "sensor/TOF.h"
+#include "sensor/VL53L0X.h"
 
 
 /*******************************************************************************
@@ -52,7 +52,7 @@ void Sewer::initModules()
   I2C::setup();
 
   #if DEBUG
-  I2C::logDevices();
+  I2C::scan();
   #endif
 
   BMP280::setup();
@@ -60,8 +60,8 @@ void Sewer::initModules()
     xTaskCreateStatic(threadT1, "TH01", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
   }
 
-  TOF::setup();
-  if (TOF::isReady) {
+  VL53L0X::setup();
+  if (VL53L0X::isReady) {
     xTaskCreateStatic(threadT2, "TH02", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
   }
 }
@@ -88,7 +88,7 @@ void Sewer::threadT1(void* pvParameters)
 void Sewer::threadT2(void* pvParameters)
 {
   while (true) {
-    TOF::measure();
+    VL53L0X::measure();
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }

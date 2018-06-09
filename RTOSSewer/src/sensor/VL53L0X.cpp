@@ -1,21 +1,21 @@
 #include "../periph/I2C.h"
-#include "TOF.h"
+#include "VL53L0X.h"
 
 
 /*******************************************************************************
  * State
  ******************************************************************************/
 
-bool TOF::isReady;
+bool VL53L0X::isReady;
 
-Adafruit_VL53L0X TOF::sensor;
+Adafruit_VL53L0X VL53L0X::sensor;
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void TOF::setup()
+void VL53L0X::setup()
 {
   isReady = false;
 
@@ -32,7 +32,7 @@ void TOF::setup()
  * Public
  ******************************************************************************/
 
-void TOF::measure()
+void VL53L0X::measure()
 {
   LOGS("reading a measurement... ");
 

@@ -1,11 +1,11 @@
-#ifndef TOF_H
-#define TOF_H
+#ifndef VL53L0X_H
+#define VL53L0X_H
 
 #include <Adafruit_VL53L0X.h>
 
 #include "../Common.h"
 
-class TOF {
+class VL53L0X {
 public:
   static bool isReady;
   static void setup();

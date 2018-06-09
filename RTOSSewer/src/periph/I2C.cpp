@@ -34,7 +34,7 @@ bool I2C::lock()
   return xSemaphoreTake(busMutex, 100) == pdTRUE;
 }
 
-void I2C::logDevices()
+void I2C::scan()
 {
   LOGS("scanning...");
 

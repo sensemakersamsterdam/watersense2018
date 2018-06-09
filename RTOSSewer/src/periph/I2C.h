@@ -7,7 +7,7 @@ class I2C {
 public:
   static void setup();
   static bool lock();
-  static void logDevices();
+  static void scan();
   static void unlock();
 private:
   static SemaphoreHandle_t busMutex;
