@@ -1,4 +1,4 @@
-#ifndef SODAQONE_H
+#if !defined(SODAQONE_H) && defined(__ARM_EABI__)
 #define SODAQONE_H
 
 #include "../Common.h"

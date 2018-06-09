@@ -5,7 +5,7 @@
 
 void I2C_setup();
 BaseType_t I2C_lock();
-void I2C_scan();
+void I2C_logDevices();
 void I2C_unlock();
 
 #endif

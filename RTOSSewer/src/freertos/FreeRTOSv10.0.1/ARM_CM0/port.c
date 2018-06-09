@@ -30,8 +30,8 @@
  *----------------------------------------------------------*/
 
 /* Scheduler includes. */
-#include "FreeRTOS.h"
-#include "task.h"
+#include "../FreeRTOS.h"
+#include "../task.h"
 
 /* Constants required to manipulate the NVIC. */
 #define portNVIC_SYSTICK_CTRL			( ( volatile uint32_t * ) 0xe000e010 )
@@ -357,4 +357,3 @@ void prvSetupTimerInterrupt( void )
 	*(portNVIC_SYSTICK_CTRL) = portNVIC_SYSTICK_CLK | portNVIC_SYSTICK_INT | portNVIC_SYSTICK_ENABLE;
 }
 /*-----------------------------------------------------------*/
-

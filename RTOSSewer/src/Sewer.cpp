@@ -9,10 +9,10 @@
  * Functions
  ******************************************************************************/
 
-static void initModules();
-static void threadT0(void* pvParameters);
-static void threadT1(void* pvParameters);
-static void threadT2(void* pvParameters);
+static void Sewer_initModules();
+static void Sewer_T0(void* pvParameters);
+static void Sewer_T1(void* pvParameters);
+static void Sewer_T2(void* pvParameters);
 
 
 /*******************************************************************************
@@ -24,7 +24,7 @@ void Sewer_setup()
   static StaticTask_t xT0TaskBuffer;
   static StackType_t  xT0Stack[configMINIMAL_STACK_SIZE];
 
-  xTaskCreateStatic(threadT0, "MAIN", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT0Stack, &xT0TaskBuffer);
+  xTaskCreateStatic(Sewer_T0, "MAIN", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT0Stack, &xT0TaskBuffer);
   vTaskStartScheduler();
 }
 
@@ -42,7 +42,7 @@ void Sewer_idle()
  * Private
  ******************************************************************************/
 
-static void initModules()
+static void Sewer_initModules()
 {
   static StaticTask_t xT1TaskBuffer;
   static StaticTask_t xT2TaskBuffer;
@@ -57,23 +57,23 @@ static void initModules()
   I2C_setup();
 
   #if DEBUG
-  I2C_scan();
+  I2C_logDevices();
   #endif
 
   BMP280_setup();
   if (BMP280_isReady) {
-    xTaskCreateStatic(threadT1, "TH01", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
+    xTaskCreateStatic(Sewer_T1, "TH01", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
   }
 
   VL53L0X_setup();
   if (VL53L0X_isReady) {
-    xTaskCreateStatic(threadT2, "TH02", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
+    xTaskCreateStatic(Sewer_T2, "TH02", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
   }
 }
 
-static void threadT0(void* pvParameters)
+static void Sewer_T0(void* pvParameters)
 {
-  initModules();
+  Sewer_initModules();
 
   while (true) {
     // TODO - add code for main thread if necesary, for example turn on RED led if fatal error occurs
@@ -81,7 +81,7 @@ static void threadT0(void* pvParameters)
   }
 }
 
-static void threadT1(void* pvParameters)
+static void Sewer_T1(void* pvParameters)
 {
   vTaskDelay(pdMS_TO_TICKS(1000));
 
@@ -91,7 +91,7 @@ static void threadT1(void* pvParameters)
   }
 }
 
-static void threadT2(void* pvParameters)
+static void Sewer_T2(void* pvParameters)
 {
   while (true) {
     VL53L0X_measure();

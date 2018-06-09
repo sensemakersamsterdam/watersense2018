@@ -38,7 +38,7 @@ BaseType_t I2C_lock()
   return b;
 }
 
-void I2C_scan()
+void I2C_logDevices()
 {
   LOGS("scanning...");
 

@@ -6,9 +6,10 @@
  * Functions
  ******************************************************************************/
 
-static BaseType_t lock();
-static void logPrefix(const char *func);
-static void unlock();
+static BaseType_t Logger_lock();
+static void Logger_logSystem();
+static void Logger_logPrefix(const char *func);
+static void Logger_unlock();
 
 
 /*******************************************************************************
@@ -31,6 +32,8 @@ void Logger_setup()
   logMutex = xSemaphoreCreateMutexStatic(&logMutexBuffer);
 
   LOGS("started");
+
+  Logger_logSystem();
 }
 
 
@@ -38,39 +41,59 @@ void Logger_setup()
  * Public
  ******************************************************************************/
 
-void Logger_logs(const char *func, const char *s)
+void Logger_logc(const char *func, char c)
 {
-  if (!lock()) { return; }
+  if (!Logger_lock()) { return; }
 
-  logPrefix(func);
-  Serial.println(s);
+  Logger_logPrefix(func);
+  Serial.println(c);
 
-  unlock();
+  Logger_unlock();
 }
 
 void Logger_logf(const char *func, float f)
 {
-  if (!lock()) { return; }
+  if (!Logger_lock()) { return; }
 
-  logPrefix(func);
+  Logger_logPrefix(func);
   Serial.println(f);
 
-  unlock();
+  Logger_unlock();
 }
 
 void Logger_logi(const char *func, int i)
 {
-  if (!lock()) { return; }
+  if (!Logger_lock()) { return; }
 
-  logPrefix(func);
+  Logger_logPrefix(func);
   Serial.println(i);
 
-  unlock();
+  Logger_unlock();
+}
+
+void Logger_logl(const char *func, long l)
+{
+  if (!Logger_lock()) { return; }
+
+  Logger_logPrefix(func);
+  Serial.println(l);
+
+  Logger_unlock();
+}
+
+void Logger_logs(const char *func, const char *s)
+{
+  if (!Logger_lock()) { return; }
+
+  Logger_logPrefix(func);
+  Serial.println(s);
+
+  Logger_unlock();
 }
 
 void Logger_logt(const char *func, const char *fmt, ...)
 {
-  if (!lock()) { return; }
+  if (!Logger_lock()) { return; }
 
   char s[40];
 
@@ -79,10 +102,10 @@ void Logger_logt(const char *func, const char *fmt, ...)
   vsnprintf(s, sizeof(s), fmt, args);
   va_end(args);
 
-  logPrefix(func);
+  Logger_logPrefix(func);
   Serial.println(s);
 
-  unlock();
+  Logger_unlock();
 }
 
 
@@ -90,7 +113,7 @@ void Logger_logt(const char *func, const char *fmt, ...)
  * Private
  ******************************************************************************/
 
-static BaseType_t lock()
+static BaseType_t Logger_lock()
 {
   BaseType_t b = xSemaphoreTake(logMutex, 100);
 
@@ -99,7 +122,7 @@ static BaseType_t lock()
   return b;
 }
 
-static void logPrefix(const char *func)
+static void Logger_logPrefix(const char *func)
 {
   Serial.write('[');
   Serial.print(pcTaskGetName(NULL));
@@ -110,7 +133,42 @@ static void logPrefix(const char *func)
   Serial.write("] ");
 }
 
-static void unlock()
+static void Logger_logSystem()
+{
+  #ifdef ARDUINO
+  LOGT("ARDUINO: %d.%d.%d", ARDUINO / 10000, ARDUINO / 100 % 100, ARDUINO % 100);
+  #endif
+
+  #if defined(__ARM_ARCH) && defined(__ARM_ARCH_PROFILE)
+  LOGT("ARM_ARCH: %d%c", __ARM_ARCH, __ARM_ARCH_PROFILE);
+  #endif
+
+  #ifdef __VERSION__
+  #ifdef __GNUG__
+  LOGS("COMPILER: G++ " __VERSION__);
+  #else
+  LOGS("COMPILER: GCC " __VERSION__);
+  #endif
+  #endif
+
+  #ifdef F_CPU
+  LOGT("F_CPU: %ld", F_CPU);
+  #endif
+
+  #if defined(ARDUINO_SODAQ_ONE) && defined(ARDUINO_ARCH_SAMD) && defined(__SAMD21G18A__)
+  LOGS("MACROSES: ARDUINO_SODAQ_ONE, ARDUINO_ARCH_SAMD, __SAMD21G18A__");
+  #endif
+
+  #ifdef USB_MANUFACTURER
+  LOGT("USB_MANUFACTURER: %s", USB_MANUFACTURER);
+  #endif
+
+  #ifdef USB_PRODUCT
+  LOGT("USB_PRODUCT: %s", USB_PRODUCT);
+  #endif
+}
+
+static void Logger_unlock()
 {
   xSemaphoreGive(logMutex);
 }
