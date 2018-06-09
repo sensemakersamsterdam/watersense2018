@@ -5,12 +5,12 @@
 
 #if DEBUG
   #define LOGA(s) Logger::loga(__PRETTY_FUNCTION__, s)
-  #define LOGI(f) Logger::logf(__PRETTY_FUNCTION__, f)
+  #define LOGF(f) Logger::logf(__PRETTY_FUNCTION__, f)
   #define LOGI(i) Logger::logi(__PRETTY_FUNCTION__, i)
   #define LOGT(fmt, ...) Logger::logt(__PRETTY_FUNCTION__, fmt, __VA_ARGS__)
 #else
   #define LOGA(s)
-  #define LOGI(f)
+  #define LOGF(f)
   #define LOGI(i)
   #define LOGT(fmt, ...)
 #endif
