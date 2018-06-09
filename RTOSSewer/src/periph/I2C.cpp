@@ -21,7 +21,7 @@ void I2C::setup()
 
   busMutex = xSemaphoreCreateMutexStatic(&busMutexBuffer);
 
-  LOGA("started");
+  LOGS("started");
 }
 
 
@@ -36,7 +36,7 @@ bool I2C::lock()
 
 void I2C::logDevices()
 {
-  LOGA("scanning...");
+  LOGS("scanning...");
 
   bool b = false;
 
@@ -61,7 +61,7 @@ void I2C::logDevices()
     }
   }
 
-  LOGA(b ? "scanning done" : "no devices found");
+  LOGS(b ? "scanning done" : "no devices found");
 }
 
 void I2C::unlock()

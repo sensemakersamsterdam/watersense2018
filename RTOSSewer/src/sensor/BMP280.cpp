@@ -26,7 +26,7 @@ void BMP280::setup()
     I2C::unlock();
   }
 
-  LOGA(isReady ? "started" : "failed");
+  LOGS(isReady ? "started" : "failed");
 }
 
 
@@ -36,7 +36,7 @@ void BMP280::setup()
 
 void BMP280::measure()
 {
-  LOGA("reading a measurement...");
+  LOGS("reading a measurement...");
 
   if (!I2C::lock()) { return; }
   float t = sensor.readTemperature();

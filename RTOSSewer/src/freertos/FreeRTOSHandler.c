@@ -5,10 +5,7 @@
 
 int sysTickHook()
 {
-  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
-    xPortSysTickHandler();
-  }
-
+  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) { xPortSysTickHandler(); }
   return 0;
 }
 
@@ -61,15 +58,19 @@ void vApplicationIdleHook()
    function is called if a stack overflow is detected.
    See https://www.freertos.org/Stacks-and-stack-overflow-checking.html */
 
+#if configCHECK_FOR_STACK_OVERFLOW > 0
 void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName)
 {
-  vAssertCalled();
+  vAssertCalled(__PRETTY_FUNCTION__);
 }
+#endif
 
 /* See https://www.freertos.org/a00110.html#configASSERT */
 
-void vAssertCalled()
+#if configASSERT_DEFINED == 1
+void vAssertCalled(const char *func)
 {
   taskDISABLE_INTERRUPTS();
   for(;;);
 }
+#endif

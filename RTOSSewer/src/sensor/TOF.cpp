@@ -24,7 +24,7 @@ void TOF::setup()
     I2C::unlock();
   }
 
-  LOGA(isReady ? "started" : "failed");
+  LOGS(isReady ? "started" : "failed");
 }
 
 
@@ -34,7 +34,7 @@ void TOF::setup()
 
 void TOF::measure()
 {
-  LOGA("reading a measurement... ");
+  LOGS("reading a measurement... ");
 
   VL53L0X_RangingMeasurementData_t measure;
 
@@ -51,6 +51,6 @@ void TOF::measure()
 
     LOGT("distance: %d mm", measure.RangeMilliMeter);
   } else {
-    LOGA("out of range");
+    LOGS("out of range");
   }
 }

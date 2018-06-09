@@ -29,7 +29,7 @@ void SODAQONE::setup()
   ledState = HIGH;
   ledMutex = xSemaphoreCreateMutexStatic(&ledMutexBuffer);
 
-  LOGA("started");
+  LOGS("started");
 }
 
 

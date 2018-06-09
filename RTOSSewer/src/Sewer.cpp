@@ -21,14 +21,14 @@ void Sewer::setup()
 void Sewer::idle()
 {
   #if DEBUG
-    static unsigned long last = 0;
+  static unsigned long last = 0;
 
-    unsigned long now = millis();
+  unsigned long now = millis();
 
-    if (now - last >= 1000) {
-      LOGA("zzz...");
-      last = now;
-    }
+  if (now - last >= 1000) {
+    LOGS("zzz...");
+    last = now;
+  }
   #endif
 }
 
@@ -45,15 +45,14 @@ void Sewer::initModules()
   static StackType_t  xT2Stack[configMINIMAL_STACK_SIZE];
 
   #if DEBUG
-    Logger::setup();
+  Logger::setup();
   #endif
 
-  SODAQONE::setup();
-
+  Board::setup();
   I2C::setup();
 
   #if DEBUG
-    I2C::logDevices();
+  I2C::logDevices();
   #endif
 
   BMP280::setup();
@@ -72,8 +71,7 @@ void Sewer::threadT0(void* pvParameters)
   initModules();
 
   while (true) {
-    // TODO - add implementation of main thread
-    vTaskDelay(pdMS_TO_TICKS(10000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }
 
