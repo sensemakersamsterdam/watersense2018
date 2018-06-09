@@ -20,6 +20,8 @@ void I2C::setup()
   Wire.begin();
 
   busMutex = xSemaphoreCreateMutexStatic(&busMutexBuffer);
+
+  LOGA("started");
 }
 
 
@@ -34,11 +36,11 @@ bool I2C::lock()
 
 void I2C::logDevices()
 {
-  Serial.println("I2C: scanning...");
+  LOGA("scanning...");
 
-  int nDevices = 0;
+  bool b = false;
 
-  for(byte address = 1; address < 127; address++ )
+  for (uint8_t address = 1; address < 127; address++)
   {
     // The i2c_scanner uses the return value of
     // the Write.endTransmisstion to see if
@@ -47,30 +49,19 @@ void I2C::logDevices()
     if (!lock()) { break; }
 
     Wire.beginTransmission(address);
-    byte error = Wire.endTransmission();
+    uint8_t error = Wire.endTransmission();
 
     unlock();
 
     if (error == 0) {
-      Serial.print("I2C: device found at address 0x");
-      if (address < 16) {
-        Serial.print("0");
-      }
-
-      Serial.println(address, HEX);
-
-      nDevices++;
+      b = true;
+      LOGT("device found at address 0x%02X", address);
     } else if (error == 4) {
-      Serial.print("I2C: unknow error at address 0x");
-      if (address < 16) {
-        Serial.print("0");
-      }
-
-      Serial.println(address, HEX);
+      LOGT("unknow error at address 0x%02X", address);
     }
   }
 
-  Serial.println(nDevices ? "I2C: scanning done" : "I2C: no devices found");
+  LOGA(b ? "scanning done" : "no devices found");
 }
 
 void I2C::unlock()

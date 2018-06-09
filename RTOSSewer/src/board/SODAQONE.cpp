@@ -28,6 +28,8 @@ void SODAQONE::setup()
 
   ledState = HIGH;
   ledMutex = xSemaphoreCreateMutexStatic(&ledMutexBuffer);
+
+  LOGA("started");
 }
 
 
@@ -88,9 +90,7 @@ void SODAQONE::turnOnLedRed()
 void SODAQONE::setLed(uint8_t pin, uint8_t state)
 {
   if (xSemaphoreTake(ledMutex, 100) != pdTRUE) { return; }
-
   ledState = state;
   digitalWrite(pin, state);
-
   xSemaphoreGive(ledMutex);
 }

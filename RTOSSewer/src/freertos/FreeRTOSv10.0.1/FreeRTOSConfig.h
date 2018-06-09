@@ -43,9 +43,10 @@
 #define configCPU_CLOCK_HZ                      F_CPU
 #define configENABLE_BACKWARD_COMPATIBILITY     0
 #define configIDLE_SHOULD_YIELD                 1
+#define configIDLE_TASK_NAME                    "IDLE"
 #define configMAX_PRIORITIES                    9
-#define configMAX_TASK_NAME_LEN                 1
-#define configMINIMAL_STACK_SIZE                ((unsigned short)128)
+#define configMAX_TASK_NAME_LEN                 5
+#define configMINIMAL_STACK_SIZE                ((unsigned short)256)
 #define configNUM_THREAD_LOCAL_STORAGE_POINTERS 0
 #define configQUEUE_REGISTRY_SIZE               0
 #define configTICK_RATE_HZ                      ((TickType_t)1000)

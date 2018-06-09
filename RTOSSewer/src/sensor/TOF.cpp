@@ -17,8 +17,6 @@ Adafruit_VL53L0X TOF::sensor;
 
 void TOF::setup()
 {
-  Serial.print("TOF: setup... ");
-
   isReady = false;
 
   if (I2C::lock()) {
@@ -26,7 +24,7 @@ void TOF::setup()
     I2C::unlock();
   }
 
-  Serial.println(isReady ? "done" : "failed");
+  LOGA(isReady ? "started" : "failed");
 }
 
 
@@ -36,28 +34,23 @@ void TOF::setup()
 
 void TOF::measure()
 {
-  Serial.println("TOF: reading a measurement... ");
+  LOGA("reading a measurement... ");
 
   VL53L0X_RangingMeasurementData_t measure;
 
   if (!I2C::lock()) { return; }
-
   sensor.rangingTest(&measure);
-
   I2C::unlock();
 
   // phase failures have incorrect data
   if (measure.RangeStatus != 4) {
     // 0 means no proper data beacuse there is no reflection within range
     if (measure.RangeMilliMeter < 80 && measure.RangeMilliMeter != 0 ) {
-      Serial.print("TOF: sewer is getting full, only ");
-      Serial.print(measure.RangeMilliMeter);
-      Serial.println(" mm left! ");
+      LOGT("sewer is getting full, only %d mm left", measure.RangeMilliMeter);
     }
 
-    Serial.print("TOF: distance (mm): ");
-    Serial.println(measure.RangeMilliMeter);
+    LOGT("distance: %d mm", measure.RangeMilliMeter);
   } else {
-    Serial.println("TOF: out of range ");
+    LOGA("out of range");
   }
 }

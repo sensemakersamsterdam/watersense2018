@@ -8,7 +8,7 @@ public:
   static void setup();
   static void idle();
 private:
-  static void initSystem();
+  static void initModules();
   static void threadT0(void* pvParameters);
   static void threadT1(void* pvParameters);
   static void threadT2(void* pvParameters);
