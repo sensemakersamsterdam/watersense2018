@@ -3,17 +3,26 @@
 
 
 /*******************************************************************************
+ * Functions
+ ******************************************************************************/
+
+static BaseType_t lock();
+static void logPrefix(const char *func);
+static void unlock();
+
+
+/*******************************************************************************
  * State
  ******************************************************************************/
 
-SemaphoreHandle_t Logger::logMutex;
+static SemaphoreHandle_t logMutex;
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void Logger::setup()
+void Logger_setup()
 {
   static StaticSemaphore_t logMutexBuffer;
 
@@ -29,31 +38,37 @@ void Logger::setup()
  * Public
  ******************************************************************************/
 
-void Logger::logs(const char *func, const char *s)
+void Logger_logs(const char *func, const char *s)
 {
   if (!lock()) { return; }
+
   logPrefix(func);
   Serial.println(s);
+
   unlock();
 }
 
-void Logger::logf(const char *func, float f)
+void Logger_logf(const char *func, float f)
 {
   if (!lock()) { return; }
+
   logPrefix(func);
   Serial.println(f);
+
   unlock();
 }
 
-void Logger::logi(const char *func, int i)
+void Logger_logi(const char *func, int i)
 {
   if (!lock()) { return; }
+
   logPrefix(func);
   Serial.println(i);
+
   unlock();
 }
 
-void Logger::logt(const char *func, const char *fmt, ...)
+void Logger_logt(const char *func, const char *fmt, ...)
 {
   if (!lock()) { return; }
 
@@ -75,12 +90,16 @@ void Logger::logt(const char *func, const char *fmt, ...)
  * Private
  ******************************************************************************/
 
-bool Logger::lock()
+static BaseType_t lock()
 {
-  return xSemaphoreTake(logMutex, 100) == pdTRUE;
+  BaseType_t b = xSemaphoreTake(logMutex, 100);
+
+  if (!b) { LOGS("resource is busy"); }
+
+  return b;
 }
 
-void Logger::logPrefix(const char *func)
+static void logPrefix(const char *func)
 {
   const char *tn = pcTaskGetName(NULL);
 
@@ -93,9 +112,9 @@ void Logger::logPrefix(const char *func)
   Serial.write('[');
 
   if (func != NULL) {
-    int a = 0;
-    int b = 0;
-    int i = 0;
+    BaseType_t a = 0;
+    BaseType_t b = 0;
+    BaseType_t i = 0;
 
     while (func[i]) {
       if (func[i] == ' ') { a = i; }
@@ -110,7 +129,7 @@ void Logger::logPrefix(const char *func)
   Serial.write(' ');
 }
 
-void Logger::unlock()
+static void unlock()
 {
   xSemaphoreGive(logMutex);
 }

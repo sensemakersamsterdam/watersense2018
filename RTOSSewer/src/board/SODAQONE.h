@@ -3,22 +3,15 @@
 
 #include "../Common.h"
 
-class SODAQONE {
-public:
-  static void setup();
-  static void toggleLedBlue();
-  static void toggleLedGreen();
-  static void toggleLedRed();
-  static void turnOffLedBlue();
-  static void turnOffLedGreen();
-  static void turnOffLedRed();
-  static void turnOnLedBlue();
-  static void turnOnLedGreen();
-  static void turnOnLedRed();
-private:
-  static SemaphoreHandle_t ledMutex;
-  static uint8_t ledState;
-  static void setLed(uint8_t pin, uint8_t state);
-};
+void SODAQONE_setup();
+void SODAQONE_toggleLedBlue();
+void SODAQONE_toggleLedGreen();
+void SODAQONE_toggleLedRed();
+void SODAQONE_turnOffLedBlue();
+void SODAQONE_turnOffLedGreen();
+void SODAQONE_turnOffLedRed();
+void SODAQONE_turnOnLedBlue();
+void SODAQONE_turnOnLedGreen();
+void SODAQONE_turnOnLedRed();
 
 #endif

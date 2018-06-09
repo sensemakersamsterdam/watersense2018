@@ -2,19 +2,26 @@
 
 
 /*******************************************************************************
+ * Functions
+ ******************************************************************************/
+
+void setLed(uint8_t pin, uint8_t state);
+
+
+/*******************************************************************************
  * State
  ******************************************************************************/
 
-uint8_t SODAQONE::ledState;
+static uint8_t ledState;
 
-SemaphoreHandle_t SODAQONE::ledMutex;
+static SemaphoreHandle_t ledMutex;
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void SODAQONE::setup()
+void SODAQONE_setup()
 {
   static StaticSemaphore_t ledMutexBuffer;
 
@@ -37,47 +44,47 @@ void SODAQONE::setup()
  * Public
  ******************************************************************************/
 
-void SODAQONE::toggleLedBlue()
+void SODAQONE_toggleLedBlue()
 {
   setLed(LED_BLUE, ledState ^ 1);
 }
 
-void SODAQONE::toggleLedGreen()
+void SODAQONE_toggleLedGreen()
 {
   setLed(LED_GREEN, ledState ^ 1);
 }
 
-void SODAQONE::toggleLedRed()
+void SODAQONE_toggleLedRed()
 {
   setLed(LED_RED, ledState ^ 1);
 }
 
-void SODAQONE::turnOffLedBlue()
+void SODAQONE_turnOffLedBlue()
 {
   setLed(LED_BLUE, HIGH);
 }
 
-void SODAQONE::turnOffLedGreen()
+void SODAQONE_turnOffLedGreen()
 {
   setLed(LED_GREEN, HIGH);
 }
 
-void SODAQONE::turnOffLedRed()
+void SODAQONE_turnOffLedRed()
 {
   setLed(LED_RED, HIGH);
 }
 
-void SODAQONE::turnOnLedBlue()
+void SODAQONE_turnOnLedBlue()
 {
   setLed(LED_BLUE, LOW);
 }
 
-void SODAQONE::turnOnLedGreen()
+void SODAQONE_turnOnLedGreen()
 {
   setLed(LED_GREEN, LOW);
 }
 
-void SODAQONE::turnOnLedRed()
+void SODAQONE_turnOnLedRed()
 {
   setLed(LED_RED, LOW);
 }
@@ -87,10 +94,12 @@ void SODAQONE::turnOnLedRed()
  * Private
  ******************************************************************************/
 
-void SODAQONE::setLed(uint8_t pin, uint8_t state)
+void setLed(uint8_t pin, uint8_t state)
 {
   if (xSemaphoreTake(ledMutex, 100) != pdTRUE) { return; }
+
   ledState = state;
   digitalWrite(pin, state);
+
   xSemaphoreGive(ledMutex);
 }

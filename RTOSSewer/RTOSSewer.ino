@@ -2,10 +2,10 @@
 
 void setup()
 {
-  Sewer::setup();
+  Sewer_setup();
 }
 
 void loop()
 {
-  Sewer::idle();
+  Sewer_idle();
 }

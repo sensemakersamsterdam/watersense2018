@@ -3,16 +3,7 @@
 
 #include "Common.h"
 
-class Sewer {
-public:
-  static void setup();
-  static void idle();
-private:
-  static void initModules();
-  static void threadT0(void* pvParameters);
-  static void threadT1(void* pvParameters);
-  static void threadT2(void* pvParameters);
-  static void threadT3(void* pvParameters);
-};
+void Sewer_setup();
+void Sewer_idle();
 
 #endif

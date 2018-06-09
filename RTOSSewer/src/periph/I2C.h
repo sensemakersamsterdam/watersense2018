@@ -3,14 +3,9 @@
 
 #include "../Common.h"
 
-class I2C {
-public:
-  static void setup();
-  static bool lock();
-  static void scan();
-  static void unlock();
-private:
-  static SemaphoreHandle_t busMutex;
-};
+void I2C_setup();
+BaseType_t I2C_lock();
+void I2C_scan();
+void I2C_unlock();
 
 #endif

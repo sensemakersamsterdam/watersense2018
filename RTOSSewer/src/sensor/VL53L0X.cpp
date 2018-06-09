@@ -1,3 +1,4 @@
+#include <Adafruit_VL53L0X.h>
 #include "../periph/I2C.h"
 #include "VL53L0X.h"
 
@@ -6,25 +7,25 @@
  * State
  ******************************************************************************/
 
-bool VL53L0X::isReady;
+BaseType_t VL53L0X_isReady;
 
-Adafruit_VL53L0X VL53L0X::sensor;
+static Adafruit_VL53L0X sensor;
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void VL53L0X::setup()
+void VL53L0X_setup()
 {
-  isReady = false;
+  VL53L0X_isReady = false;
 
-  if (I2C::lock()) {
-    isReady = sensor.begin();
-    I2C::unlock();
+  if (I2C_lock()) {
+    VL53L0X_isReady = sensor.begin();
+    I2C_unlock();
   }
 
-  LOGS(isReady ? "started" : "failed");
+  LOGS(VL53L0X_isReady ? "started" : "failed");
 }
 
 
@@ -32,15 +33,17 @@ void VL53L0X::setup()
  * Public
  ******************************************************************************/
 
-void VL53L0X::measure()
+void VL53L0X_measure()
 {
   LOGS("reading a measurement... ");
 
   VL53L0X_RangingMeasurementData_t measure;
 
-  if (!I2C::lock()) { return; }
+  if (!I2C_lock()) { return; }
+
   sensor.rangingTest(&measure);
-  I2C::unlock();
+
+  I2C_unlock();
 
   // phase failures have incorrect data
   if (measure.RangeStatus != 4) {

@@ -6,14 +6,14 @@
  * State
  ******************************************************************************/
 
-SemaphoreHandle_t I2C::busMutex;
+static SemaphoreHandle_t busMutex;
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void I2C::setup()
+void I2C_setup()
 {
   static StaticSemaphore_t busMutexBuffer;
 
@@ -29,12 +29,16 @@ void I2C::setup()
  * Public
  ******************************************************************************/
 
-bool I2C::lock()
+BaseType_t I2C_lock()
 {
-  return xSemaphoreTake(busMutex, 100) == pdTRUE;
+  BaseType_t b = xSemaphoreTake(busMutex, 100);
+
+  if (!b) { LOGS("resource is busy"); }
+
+  return b;
 }
 
-void I2C::scan()
+void I2C_scan()
 {
   LOGS("scanning...");
 
@@ -46,12 +50,12 @@ void I2C::scan()
     // the Write.endTransmisstion to see if
     // a device did acknowledge to the address.
 
-    if (!lock()) { break; }
+    if (!I2C_lock()) { break; }
 
     Wire.beginTransmission(address);
     uint8_t error = Wire.endTransmission();
 
-    unlock();
+    I2C_unlock();
 
     if (error == 0) {
       b = true;
@@ -64,7 +68,7 @@ void I2C::scan()
   LOGS(b ? "scanning done" : "no devices found");
 }
 
-void I2C::unlock()
+void I2C_unlock()
 {
   xSemaphoreGive(busMutex);
 }
