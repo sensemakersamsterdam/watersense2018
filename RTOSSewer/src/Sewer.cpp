@@ -1,8 +1,11 @@
 #include "Sewer.h"
-#include "board/SODAQONE.h"
 #include "periph/I2C.h"
 #include "sensor/BMP280.h"
 #include "sensor/VL53L0X.h"
+
+#ifdef ARDUINO_SODAQ_ONE
+#include "board/SODAQ_ONE_V3.h"
+#endif
 
 
 /*******************************************************************************
@@ -53,7 +56,10 @@ static void Sewer_initModules()
   Logger_setup();
   #endif
 
-  SODAQONE_setup();
+  #ifdef ARDUINO_SODAQ_ONE
+  SODAQ_ONE_V3_setup();
+  #endif
+
   I2C_setup();
 
   #if DEBUG

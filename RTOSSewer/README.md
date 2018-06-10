@@ -64,10 +64,11 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *https://www.arduino.cc/en/Main/FAQ*
 
 
-### GCC 4.8.3
+### ARM EABI GCC 4.8.3
 
 > *arm-none-eabi-gcc (GNU Tools for ARM Embedded Processors (Arduino build)) 4.8.3 20140228 (release) [ARM/embedded-4_8-branch revision 208322]*  
-> *Copyright (C) 2013 Free Software Foundation, Inc.*
+> *Copyright (C) 2013 Free Software Foundation, Inc.*  
+> *This is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.*
 
 *arm-none-eabi-gcc --version*
 

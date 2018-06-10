@@ -1,12 +1,12 @@
-#if ARDUINO_SODAQ_ONE
-#include "SODAQONE.h"
+#ifdef ARDUINO_SODAQ_ONE
+#include "SODAQ_ONE_V3.h"
 
 
 /*******************************************************************************
  * Functions
  ******************************************************************************/
 
-void SODAQONE_setLed(uint8_t pin, uint8_t state);
+void SODAQ_ONE_V3_setLed(uint8_t pin, uint8_t state);
 
 
 /*******************************************************************************
@@ -22,7 +22,7 @@ static SemaphoreHandle_t ledMutex;
  * Lifecycle
  ******************************************************************************/
 
-void SODAQONE_setup()
+void SODAQ_ONE_V3_setup()
 {
   static StaticSemaphore_t ledMutexBuffer;
 
@@ -45,49 +45,49 @@ void SODAQONE_setup()
  * Public
  ******************************************************************************/
 
-void SODAQONE_toggleLedBlue()
+void SODAQ_ONE_V3_toggleLedBlue()
 {
-  SODAQONE_setLed(LED_BLUE, ledState ^ 1);
+  SODAQ_ONE_V3_setLed(LED_BLUE, ledState ^ 1);
 }
 
-void SODAQONE_toggleLedGreen()
+void SODAQ_ONE_V3_toggleLedGreen()
 {
-  SODAQONE_setLed(LED_GREEN, ledState ^ 1);
+  SODAQ_ONE_V3_setLed(LED_GREEN, ledState ^ 1);
 }
 
-void SODAQONE_toggleLedRed()
+void SODAQ_ONE_V3_toggleLedRed()
 {
-  SODAQONE_setLed(LED_RED, ledState ^ 1);
+  SODAQ_ONE_V3_setLed(LED_RED, ledState ^ 1);
 }
 
-void SODAQONE_turnOffLedBlue()
+void SODAQ_ONE_V3_turnOffLedBlue()
 {
-  SODAQONE_setLed(LED_BLUE, HIGH);
+  SODAQ_ONE_V3_setLed(LED_BLUE, HIGH);
 }
 
-void SODAQONE_turnOffLedGreen()
+void SODAQ_ONE_V3_turnOffLedGreen()
 {
-  SODAQONE_setLed(LED_GREEN, HIGH);
+  SODAQ_ONE_V3_setLed(LED_GREEN, HIGH);
 }
 
-void SODAQONE_turnOffLedRed()
+void SODAQ_ONE_V3_turnOffLedRed()
 {
-  SODAQONE_setLed(LED_RED, HIGH);
+  SODAQ_ONE_V3_setLed(LED_RED, HIGH);
 }
 
-void SODAQONE_turnOnLedBlue()
+void SODAQ_ONE_V3_turnOnLedBlue()
 {
-  SODAQONE_setLed(LED_BLUE, LOW);
+  SODAQ_ONE_V3_setLed(LED_BLUE, LOW);
 }
 
-void SODAQONE_turnOnLedGreen()
+void SODAQ_ONE_V3_turnOnLedGreen()
 {
-  SODAQONE_setLed(LED_GREEN, LOW);
+  SODAQ_ONE_V3_setLed(LED_GREEN, LOW);
 }
 
-void SODAQONE_turnOnLedRed()
+void SODAQ_ONE_V3_turnOnLedRed()
 {
-  SODAQONE_setLed(LED_RED, LOW);
+  SODAQ_ONE_V3_setLed(LED_RED, LOW);
 }
 
 
@@ -95,7 +95,7 @@ void SODAQONE_turnOnLedRed()
  * Private
  ******************************************************************************/
 
-void SODAQONE_setLed(uint8_t pin, uint8_t state)
+void SODAQ_ONE_V3_setLed(uint8_t pin, uint8_t state)
 {
   if (!xSemaphoreTake(ledMutex, 100)) { LOGS("resource is busy"); return; }
 
