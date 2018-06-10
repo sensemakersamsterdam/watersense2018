@@ -3,23 +3,34 @@
 
 
 /*******************************************************************************
+ * Functions
+ ******************************************************************************/
+
+static void ARDUINO_MEGA2560_R3_logSysinfo();
+
+
+/*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
 void ARDUINO_MEGA2560_R3_setup()
 {
   LOGS("started");
+
+  #if DEBUG
+  ARDUINO_MEGA2560_R3_logSysinfo();
+  #endif
 }
 
 
 /*******************************************************************************
- * Public
+ * Private
  ******************************************************************************/
 
-void ARDUINO_MEGA2560_R3_logSysinfo()
+static void ARDUINO_MEGA2560_R3_logSysinfo()
 {
   #ifdef ARDUINO
-  LOGT("ARDUINO: %d.%d.%d", ARDUINO / 10000, ARDUINO / 100 % 100, ARDUINO % 100);
+  LOG(VS("ARDUINO: "), VI(ARDUINO / 10000), VC('.'), VI(ARDUINO / 100 % 100), VC('.'), VI(ARDUINO % 100));
   #endif
 
   #if defined(ARDUINO_ARCH_AVR) && defined(ARDUINO_AVR_MEGA2560)
@@ -35,15 +46,15 @@ void ARDUINO_MEGA2560_R3_logSysinfo()
   #endif
 
   #ifdef __AVR_ARCH__
-  LOGT("AVR ARCH: %d", __AVR_ARCH__);
+  LOG(VS("AVR ARCH: "), VI(__AVR_ARCH__));
   #endif
 
   #ifdef __AVR_ATmega2560__
   LOGS("MCU: ATmega2560");
   #endif
-  
+
   #ifdef F_CPU
-  LOGT("F_CPU: %ld", F_CPU);
+  LOG(VS("F_CPU: "), VL(F_CPU));
   #endif
 }
 

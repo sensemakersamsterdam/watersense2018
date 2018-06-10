@@ -4,6 +4,5 @@
 #include "../Common.h"
 
 void ARDUINO_MEGA2560_R3_setup();
-void ARDUINO_MEGA2560_R3_logSysinfo();
 
 #endif

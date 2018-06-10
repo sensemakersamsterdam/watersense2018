@@ -29,7 +29,7 @@ void Sewer_setup()
   static StaticTask_t xT0TaskBuffer;
   static StackType_t  xT0Stack[configMINIMAL_STACK_SIZE];
 
-  xTaskCreateStatic(Sewer_T0, "MAIN", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT0Stack, &xT0TaskBuffer);
+  xTaskCreateStatic(Sewer_T0, "M", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT0Stack, &xT0TaskBuffer);
   vTaskStartScheduler();
 }
 
@@ -60,16 +60,10 @@ static void Sewer_initModules()
 
   #ifdef ARDUINO_AVR_MEGA2560
   ARDUINO_MEGA2560_R3_setup();
-  #if DEBUG
-  ARDUINO_MEGA2560_R3_logSysinfo();
-  #endif
   #endif
 
   #ifdef ARDUINO_SODAQ_ONE
   SODAQ_ONE_V3_setup();
-  #if DEBUG
-  SODAQ_ONE_V3_logSysinfo();
-  #endif
   #endif
 
   I2C_setup();
@@ -80,12 +74,12 @@ static void Sewer_initModules()
 
   BMP280_setup();
   if (BMP280_isReady) {
-    xTaskCreateStatic(Sewer_T1, "TH01", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
+    xTaskCreateStatic(Sewer_T1, "1", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
   }
 
   VL53L0X_setup();
   if (VL53L0X_isReady) {
-    xTaskCreateStatic(Sewer_T2, "TH02", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
+    xTaskCreateStatic(Sewer_T2, "2", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
   }
 }
 

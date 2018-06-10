@@ -32,7 +32,11 @@ void BMP280_setup()
     I2C_unlock();
   }
 
-  LOGS(BMP280_isReady ? "started" : "failed");
+  if (BMP280_isReady) {
+    LOGS("started");
+  } else {
+    LOGS("failed");
+  }
 }
 
 
@@ -52,7 +56,7 @@ void BMP280_measure()
 
   I2C_unlock();
 
-  LOGT("temperature = %d.%02d *C", (int)t, FRAC02(t));
-  LOGT("pressure = %d.%02d Pa",    (int)p, FRAC02(p));
-  LOGT("altitude = %d.%02d m",     (int)a, FRAC02(a));
+  LOG(VS("temperature = "), VF(t), VS(" *C"));
+  LOG(VS("pressure = "),    VF(p), VS(" Pa"));
+  LOG(VS("altitude = "),    VF(a), VS(" m"));
 }

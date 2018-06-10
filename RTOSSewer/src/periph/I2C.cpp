@@ -59,13 +59,17 @@ void I2C_logDevices()
 
     if (error == 0) {
       b = true;
-      LOGT("device found at address 0x%02X", address);
+      LOG(VS("device found at address 0x"), VH2(address));
     } else if (error == 4) {
-      LOGT("unknow error at address 0x%02X", address);
+      LOG(VS("unknow error at address 0x"), VH2(address));
     }
   }
 
-  LOGS(b ? "scanning done" : "no devices found");
+  if (b) {
+    LOGS("scanning done");
+  } else {
+    LOGS("no devices found");
+  }
 }
 
 void I2C_unlock()

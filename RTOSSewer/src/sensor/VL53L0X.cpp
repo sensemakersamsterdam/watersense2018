@@ -25,7 +25,11 @@ void VL53L0X_setup()
     I2C_unlock();
   }
 
-  LOGS(VL53L0X_isReady ? "started" : "failed");
+  if (VL53L0X_isReady) {
+    LOGS("started");
+  } else {
+    LOGS("failed");
+  }
 }
 
 
@@ -49,10 +53,10 @@ void VL53L0X_measure()
   if (measure.RangeStatus != 4) {
     // 0 means no proper data beacuse there is no reflection within range
     if (measure.RangeMilliMeter < 80 && measure.RangeMilliMeter != 0 ) {
-      LOGT("sewer is getting full, only %d mm left", measure.RangeMilliMeter);
+      LOG(VS("sewer is getting full, only "), VI(measure.RangeMilliMeter), VS(" mm left"));
     }
 
-    LOGT("distance: %d mm", measure.RangeMilliMeter);
+    LOG(VS("distance: "), VI(measure.RangeMilliMeter), VS(" mm"));
   } else {
     LOGS("out of range");
   }

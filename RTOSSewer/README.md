@@ -6,7 +6,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 ## Tested on hardware:
 
 - Board [SODAQ ONE-EU-RN2483-V3](https://shop.sodaq.com/sodaq-one-eu-rn2483-v3.html)
-- Board [ELEGOO MEGA 2560 R3](https://www.elegoo.com/product/elegoo-mega-2560-r3-board-blue-atmega2560-atmega16u2-usb-cable/) note: compatible with ARDUINO MEGA 2560 REV3
+- Board [ELEGOO MEGA 2560 R3](https://www.elegoo.com/product/elegoo-mega-2560-r3-board-blue-atmega2560-atmega16u2-usb-cable/) (compatible with ARDUINO MEGA 2560 REV3)
 - Sensor [BMP280](https://www.adafruit.com/product/2651)
 
 

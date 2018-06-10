@@ -6,7 +6,8 @@
  * Functions
  ******************************************************************************/
 
-void SODAQ_ONE_V3_setLed(uint8_t pin, uint8_t state);
+static void SODAQ_ONE_V3_logSysinfo();
+static void SODAQ_ONE_V3_setLed(uint8_t pin, uint8_t state);
 
 
 /*******************************************************************************
@@ -38,47 +39,16 @@ void SODAQ_ONE_V3_setup()
   ledMutex = xSemaphoreCreateMutexStatic(&ledMutexBuffer);
 
   LOGS("started");
+
+  #if DEBUG
+  SODAQ_ONE_V3_logSysinfo();
+  #endif
 }
 
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
-
-void SODAQ_ONE_V3_logSysinfo()
-{
-  #ifdef ARDUINO
-  LOGT("ARDUINO: %d.%d.%d", ARDUINO / 10000, ARDUINO / 100 % 100, ARDUINO % 100);
-  #endif
-
-  #if defined(ARDUINO_ARCH_SAMD) && defined(__SAMD21G18A__)
-  LOGS("ARDUINO ARCH: ARDUINO_ARCH_SAMD, __SAMD21G18A__");
-  #endif
-
-  #ifdef __VERSION__
-  #ifdef __GNUG__
-  LOGS("COMPILER: G++ " __VERSION__);
-  #else
-  LOGS("COMPILER: GCC " __VERSION__);
-  #endif
-  #endif
-
-  #if defined(__ARM_ARCH) && defined(__ARM_ARCH_PROFILE)
-  LOGT("ARM ARCH: %d%c", __ARM_ARCH, __ARM_ARCH_PROFILE);
-  #endif
-
-  #ifdef USB_MANUFACTURER
-  LOGT("USB_MANUFACTURER: %s", USB_MANUFACTURER);
-  #endif
-
-  #ifdef USB_PRODUCT
-  LOGT("USB_PRODUCT: %s", USB_PRODUCT);
-  #endif
-
-  #ifdef F_CPU
-  LOGT("F_CPU: %ld", F_CPU);
-  #endif
-}
 
 void SODAQ_ONE_V3_toggleLedBlue()
 {
@@ -129,6 +99,41 @@ void SODAQ_ONE_V3_turnOnLedRed()
 /*******************************************************************************
  * Private
  ******************************************************************************/
+
+static void SODAQ_ONE_V3_logSysinfo()
+{
+  #ifdef ARDUINO
+  LOG(VS("ARDUINO: "), VI(ARDUINO / 10000), VC('.'), VI(ARDUINO / 100 % 100), VC('.'), VI(ARDUINO % 100));
+  #endif
+
+  #if defined(ARDUINO_ARCH_SAMD) && defined(__SAMD21G18A__)
+  LOGS("ARDUINO ARCH: ARDUINO_ARCH_SAMD, __SAMD21G18A__");
+  #endif
+
+  #ifdef __VERSION__
+  #ifdef __GNUG__
+  LOGS("COMPILER: G++ " __VERSION__);
+  #else
+  LOGS("COMPILER: GCC " __VERSION__);
+  #endif
+  #endif
+
+  #if defined(__ARM_ARCH) && defined(__ARM_ARCH_PROFILE)
+  LOG(VS("ARM ARCH: "), VI(__ARM_ARCH), VC(__ARM_ARCH_PROFILE));
+  #endif
+
+  #ifdef USB_MANUFACTURER
+  LOGS("USB_MANUFACTURER: " USB_MANUFACTURER);
+  #endif
+
+  #ifdef USB_PRODUCT
+  LOGS("USB_PRODUCT: " USB_PRODUCT);
+  #endif
+
+  #ifdef F_CPU
+  LOG(VS("F_CPU: "), VL(F_CPU));
+  #endif
+}
 
 void SODAQ_ONE_V3_setLed(uint8_t pin, uint8_t state)
 {

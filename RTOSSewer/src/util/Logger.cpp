@@ -34,32 +34,52 @@ void Logger_setup()
  * Public
  ******************************************************************************/
 
-void Logger_logs(const char *func, const char *s)
+BaseType_t Logger_begin(const char *func)
 {
-  Logger_logt(func, "%s", s);
-}
-
-void Logger_logt(const char *func, const char *fmt, ...)
-{
-  char s[96];
-
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(s, sizeof(s), fmt, args);
-  va_end(args);
-
-  if (!xSemaphoreTake(logMutex, 100)) { LOGS("resource is busy"); return; }
+  if (!xSemaphoreTake(logMutex, 100)) { return false; }
 
   Serial.write('[');
   Serial.write(pcTaskGetName(NULL));
-  Serial.write("][");
+  Serial.write(']');
+  Serial.write('[');
   Serial.print(millis());
-  Serial.write("][");
+  Serial.write(']');
+  Serial.write('[');
   Serial.write(func);
-  Serial.write("] ");
-  Serial.println(s);
+  Serial.write(']');
+  Serial.write(' ');
 
+  return true;
+}
+
+void Logger_end()
+{
+  Serial.println();
   xSemaphoreGive(logMutex);
+}
+
+void Logger_printHex2(BaseType_t b)
+{
+  if (b < 10) { Serial.write(' '); }
+  Serial.print(b, HEX);
+}
+
+void Logger_printPSTR(const char *s)
+{
+  while (1) {
+    unsigned char c = pgm_read_byte(s++);
+    if (c == 0) break;
+    Serial.write(c);
+  }
+}
+
+void Logger_printSTR(const char *s)
+{
+  while (1) {
+    unsigned char c = *s++;
+    if (c == 0) break;
+    Serial.write(c);
+  }
 }
 
 #endif
