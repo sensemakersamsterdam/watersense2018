@@ -3,7 +3,9 @@
 #include "sensor/BMP280.h"
 #include "sensor/VL53L0X.h"
 
-#ifdef ARDUINO_SODAQ_ONE
+#if defined(ARDUINO_AVR_MEGA2560)
+#include "board/ARDUINO_MEGA2560_R3.h"
+#elif defined(ARDUINO_SODAQ_ONE)
 #include "board/SODAQ_ONE_V3.h"
 #endif
 
@@ -54,11 +56,20 @@ static void Sewer_initModules()
 
   #if DEBUG
   Logger_setup();
-  Logger_logSysinfo();
+  #endif
+
+  #ifdef ARDUINO_AVR_MEGA2560
+  ARDUINO_MEGA2560_R3_setup();
+  #if DEBUG
+  ARDUINO_MEGA2560_R3_logSysinfo();
+  #endif
   #endif
 
   #ifdef ARDUINO_SODAQ_ONE
   SODAQ_ONE_V3_setup();
+  #if DEBUG
+  SODAQ_ONE_V3_logSysinfo();
+  #endif
   #endif
 
   I2C_setup();
@@ -83,7 +94,7 @@ static void Sewer_T0(void* pvParameters)
   Sewer_initModules();
 
   while (true) {
-    // TODO - add code for main thread if necesary, for example turn on RED led if fatal error occurs
+    LOGS("zzz...");
     vTaskDelay(pdMS_TO_TICKS(10000));
   }
 }

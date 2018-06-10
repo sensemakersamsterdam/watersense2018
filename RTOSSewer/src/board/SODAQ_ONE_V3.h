@@ -4,6 +4,7 @@
 #include "../Common.h"
 
 void SODAQ_ONE_V3_setup();
+void SODAQ_ONE_V3_logSysinfo();
 void SODAQ_ONE_V3_toggleLedBlue();
 void SODAQ_ONE_V3_toggleLedGreen();
 void SODAQ_ONE_V3_toggleLedRed();

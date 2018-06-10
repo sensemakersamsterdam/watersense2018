@@ -11,7 +11,6 @@
 #define FRAC02(f) (abs((int)(f * 100)) % 100)
 
 void Logger_setup();
-void Logger_logSysinfo();
 void Logger_logs(const char *func, const char *s);
 void Logger_logt(const char *func, const char *fmt, ...);
 
