@@ -54,6 +54,7 @@ static void Sewer_initModules()
 
   #if DEBUG
   Logger_setup();
+  Logger_logSysinfo();
   #endif
 
   #ifdef ARDUINO_SODAQ_ONE

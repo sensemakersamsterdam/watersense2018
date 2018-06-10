@@ -3,16 +3,6 @@
 
 
 /*******************************************************************************
- * Functions
- ******************************************************************************/
-
-static BaseType_t Logger_lock();
-static void Logger_logSysinfo();
-static void Logger_logPrefix(const char *func);
-static void Logger_unlock();
-
-
-/*******************************************************************************
  * State
  ******************************************************************************/
 
@@ -33,8 +23,6 @@ void Logger_setup()
   logMutex = xSemaphoreCreateMutexStatic(&logMutexBuffer);
 
   LOGS("started");
-
-  Logger_logSysinfo();
 }
 
 
@@ -42,99 +30,7 @@ void Logger_setup()
  * Public
  ******************************************************************************/
 
-void Logger_logc(const char *func, char c)
-{
-  if (!Logger_lock()) { return; }
-
-  Logger_logPrefix(func);
-  Serial.println(c);
-
-  Logger_unlock();
-}
-
-void Logger_logf(const char *func, float f)
-{
-  if (!Logger_lock()) { return; }
-
-  Logger_logPrefix(func);
-  Serial.println(f);
-
-  Logger_unlock();
-}
-
-void Logger_logi(const char *func, int i)
-{
-  if (!Logger_lock()) { return; }
-
-  Logger_logPrefix(func);
-  Serial.println(i);
-
-  Logger_unlock();
-}
-
-void Logger_logl(const char *func, long l)
-{
-  if (!Logger_lock()) { return; }
-
-  Logger_logPrefix(func);
-  Serial.println(l);
-
-  Logger_unlock();
-}
-
-void Logger_logs(const char *func, const char *s)
-{
-  if (!Logger_lock()) { return; }
-
-  Logger_logPrefix(func);
-  Serial.println(s);
-
-  Logger_unlock();
-}
-
-void Logger_logt(const char *func, const char *fmt, ...)
-{
-  if (!Logger_lock()) { return; }
-
-  char s[40];
-
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(s, sizeof(s), fmt, args);
-  va_end(args);
-
-  Logger_logPrefix(func);
-  Serial.println(s);
-
-  Logger_unlock();
-}
-
-
-/*******************************************************************************
- * Private
- ******************************************************************************/
-
-static BaseType_t Logger_lock()
-{
-  BaseType_t b = xSemaphoreTake(logMutex, 100);
-
-  if (!b) { LOGS("resource is busy"); }
-
-  return b;
-}
-
-static void Logger_logPrefix(const char *func)
-{
-  Serial.write('[');
-  Serial.print(pcTaskGetName(NULL));
-  Serial.write("][");
-  Serial.print(millis());
-  Serial.write("][");
-  Serial.write(func);
-  Serial.write("] ");
-}
-
-static void Logger_logSysinfo()
+void Logger_logSysinfo()
 {
   #ifdef ARDUINO
   LOGT("ARDUINO: %d.%d.%d", ARDUINO / 10000, ARDUINO / 100 % 100, ARDUINO % 100);
@@ -169,7 +65,30 @@ static void Logger_logSysinfo()
   #endif
 }
 
-static void Logger_unlock()
+void Logger_logs(const char *func, const char *s)
 {
+  Logger_logt(func, "%s", s);
+}
+
+void Logger_logt(const char *func, const char *fmt, ...)
+{
+  char s[40];
+
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(s, sizeof(s), fmt, args);
+  va_end(args);
+
+  if (!xSemaphoreTake(logMutex, 100)) { LOGS("resource is busy"); return; }
+
+  Serial.write('[');
+  Serial.write(pcTaskGetName(NULL));
+  Serial.write("][");
+  Serial.print(millis());
+  Serial.write("][");
+  Serial.write(func);
+  Serial.write("] ");
+  Serial.println(s);
+
   xSemaphoreGive(logMutex);
 }
