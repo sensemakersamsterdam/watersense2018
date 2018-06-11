@@ -7,8 +7,6 @@
  * State
  ******************************************************************************/
 
-BaseType_t VL53L0X_isReady;
-
 static Adafruit_VL53L0X sensor;
 
 
@@ -16,20 +14,22 @@ static Adafruit_VL53L0X sensor;
  * Lifecycle
  ******************************************************************************/
 
-void VL53L0X_setup()
+uint8_t VL53L0X_setup()
 {
-  VL53L0X_isReady = false;
+  uint8_t b = false;
 
   if (I2C_lock()) {
-    VL53L0X_isReady = sensor.begin();
+    b = sensor.begin();
     I2C_unlock();
   }
 
-  if (VL53L0X_isReady) {
+  if (b) {
     LOGS("started");
   } else {
     LOGS("failed");
   }
+
+  return b;
 }
 
 
@@ -53,10 +53,10 @@ void VL53L0X_measure()
   if (measure.RangeStatus != 4) {
     // 0 means no proper data beacuse there is no reflection within range
     if (measure.RangeMilliMeter < 80 && measure.RangeMilliMeter != 0 ) {
-      LOG(VS("sewer is getting full, only "), VI(measure.RangeMilliMeter), VS(" mm left"));
+      LOG(VS("sewer is getting full, only "), VUI16(measure.RangeMilliMeter), VS(" mm left"));
     }
 
-    LOG(VS("distance: "), VI(measure.RangeMilliMeter), VS(" mm"));
+    LOG(VS("distance: "), VUI16(measure.RangeMilliMeter), VS(" mm"));
   } else {
     LOGS("out of range");
   }

@@ -3,7 +3,7 @@
 
 
 /*******************************************************************************
- * Functions
+ * Private functions declarations
  ******************************************************************************/
 
 static void SODAQ_ONE_V3_logSysinfo();
@@ -103,7 +103,7 @@ void SODAQ_ONE_V3_turnOnLedRed()
 static void SODAQ_ONE_V3_logSysinfo()
 {
   #ifdef ARDUINO
-  LOG(VS("ARDUINO: "), VI(ARDUINO / 10000), VC('.'), VI(ARDUINO / 100 % 100), VC('.'), VI(ARDUINO % 100));
+  LOG(VS("ARDUINO: "), VUI16(ARDUINO / 10000), VC('.'), VUI16(ARDUINO / 100 % 100), VC('.'), VUI16(ARDUINO % 100));
   #endif
 
   #if defined(ARDUINO_ARCH_SAMD) && defined(__SAMD21G18A__)
@@ -119,7 +119,7 @@ static void SODAQ_ONE_V3_logSysinfo()
   #endif
 
   #if defined(__ARM_ARCH) && defined(__ARM_ARCH_PROFILE)
-  LOG(VS("ARM ARCH: "), VI(__ARM_ARCH), VC(__ARM_ARCH_PROFILE));
+  LOG(VS("ARM ARCH: "), VUI16(__ARM_ARCH), VC(__ARM_ARCH_PROFILE));
   #endif
 
   #ifdef USB_MANUFACTURER
@@ -131,7 +131,7 @@ static void SODAQ_ONE_V3_logSysinfo()
   #endif
 
   #ifdef F_CPU
-  LOG(VS("F_CPU: "), VL(F_CPU));
+  LOG(VS("F_CPU: "), VUI32(F_CPU));
   #endif
 }
 

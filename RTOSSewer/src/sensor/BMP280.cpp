@@ -14,8 +14,6 @@
  * State
  ******************************************************************************/
 
-BaseType_t BMP280_isReady;
-
 static Adafruit_BMP280 sensor;
 
 
@@ -23,20 +21,22 @@ static Adafruit_BMP280 sensor;
  * Lifecycle
  ******************************************************************************/
 
-void BMP280_setup()
+uint8_t BMP280_setup()
 {
-  BMP280_isReady = false;
+  uint8_t b = false;
 
   if (I2C_lock()) {
-    BMP280_isReady = sensor.begin(BMP280_ADDRESS);
+    b = sensor.begin(BMP280_ADDRESS);
     I2C_unlock();
   }
 
-  if (BMP280_isReady) {
+  if (b) {
     LOGS("started");
   } else {
     LOGS("failed");
   }
+
+  return b;
 }
 
 

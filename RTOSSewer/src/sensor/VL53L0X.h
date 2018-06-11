@@ -3,9 +3,7 @@
 
 #include "../Common.h"
 
-extern BaseType_t VL53L0X_isReady;
-
-void VL53L0X_setup();
+uint8_t VL53L0X_setup();
 void VL53L0X_measure();
 
 #endif

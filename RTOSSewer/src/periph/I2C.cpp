@@ -3,6 +3,13 @@
 
 
 /*******************************************************************************
+ * Private functions declarations
+ ******************************************************************************/
+
+static void I2C_logDevices();
+
+
+/*******************************************************************************
  * State
  ******************************************************************************/
 
@@ -22,6 +29,10 @@ void I2C_setup()
   busMutex = xSemaphoreCreateMutexStatic(&busMutexBuffer);
 
   LOGS("started");
+
+  #if DEBUG
+  I2C_logDevices();
+  #endif
 }
 
 
@@ -38,7 +49,17 @@ BaseType_t I2C_lock()
   return b;
 }
 
-void I2C_logDevices()
+void I2C_unlock()
+{
+  xSemaphoreGive(busMutex);
+}
+
+
+/*******************************************************************************
+ * Private
+ ******************************************************************************/
+
+static void I2C_logDevices()
 {
   LOGS("scanning...");
 
@@ -59,9 +80,9 @@ void I2C_logDevices()
 
     if (error == 0) {
       b = true;
-      LOG(VS("device found at address 0x"), VH2(address));
+      LOG(VS("device found at address 0x"), VH02(address));
     } else if (error == 4) {
-      LOG(VS("unknow error at address 0x"), VH2(address));
+      LOG(VS("unknow error at address 0x"), VH02(address));
     }
   }
 
@@ -70,9 +91,4 @@ void I2C_logDevices()
   } else {
     LOGS("no devices found");
   }
-}
-
-void I2C_unlock()
-{
-  xSemaphoreGive(busMutex);
 }

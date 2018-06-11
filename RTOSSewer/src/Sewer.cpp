@@ -11,7 +11,7 @@
 
 
 /*******************************************************************************
- * Functions
+ * Private functions declarations
  ******************************************************************************/
 
 static void Sewer_initModules();
@@ -68,17 +68,11 @@ static void Sewer_initModules()
 
   I2C_setup();
 
-  #if DEBUG
-  I2C_logDevices();
-  #endif
-
-  BMP280_setup();
-  if (BMP280_isReady) {
+  if (BMP280_setup()) {
     xTaskCreateStatic(Sewer_T1, "1", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
   }
 
-  VL53L0X_setup();
-  if (VL53L0X_isReady) {
+  if (VL53L0X_setup()) {
     xTaskCreateStatic(Sewer_T2, "2", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
   }
 }

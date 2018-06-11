@@ -3,7 +3,7 @@
 
 
 /*******************************************************************************
- * Functions
+ * Private functions declarations
  ******************************************************************************/
 
 static void ARDUINO_MEGA2560_R3_logSysinfo();
@@ -30,7 +30,7 @@ void ARDUINO_MEGA2560_R3_setup()
 static void ARDUINO_MEGA2560_R3_logSysinfo()
 {
   #ifdef ARDUINO
-  LOG(VS("ARDUINO: "), VI(ARDUINO / 10000), VC('.'), VI(ARDUINO / 100 % 100), VC('.'), VI(ARDUINO % 100));
+  LOG(VS("ARDUINO: "), VUI16(ARDUINO / 10000), VC('.'), VUI16(ARDUINO / 100 % 100), VC('.'), VUI16(ARDUINO % 100));
   #endif
 
   #if defined(ARDUINO_ARCH_AVR) && defined(ARDUINO_AVR_MEGA2560)
@@ -46,7 +46,7 @@ static void ARDUINO_MEGA2560_R3_logSysinfo()
   #endif
 
   #ifdef __AVR_ARCH__
-  LOG(VS("AVR ARCH: "), VI(__AVR_ARCH__));
+  LOG(VS("AVR ARCH: "), VUI16(__AVR_ARCH__));
   #endif
 
   #ifdef __AVR_ATmega2560__
@@ -54,7 +54,7 @@ static void ARDUINO_MEGA2560_R3_logSysinfo()
   #endif
 
   #ifdef F_CPU
-  LOG(VS("F_CPU: "), VL(F_CPU));
+  LOG(VS("F_CPU: "), VUI32(F_CPU));
   #endif
 }
 
