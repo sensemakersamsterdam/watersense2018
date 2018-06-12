@@ -9,6 +9,8 @@
 #define USE_BOARD_LED                 0
 
 #define USE_I2C                       1
+#define USE_LORA                      1 && USE_BOARD_SODAQ_ONE_V3
+
 #define USE_BMP280                    1 && USE_I2C
 #define USE_VL53L0X                   1 && USE_I2C
 
@@ -17,6 +19,8 @@
 #define USE_LOGGER_BOARD              1 && USE_LOGGER
 #define USE_LOGGER_I2C                1 && USE_LOGGER && USE_I2C
 #define USE_LOGGER_I2C_DEVICES        1 && USE_LOGGER && USE_I2C
+#define USE_LOGGER_LORA               1 && USE_LOGGER && USE_LORA
+#define USE_LOGGER_LORA_DEVICEINFO    1 && USE_LOGGER && USE_LORA
 #define USE_LOGGER_MAIN               1 && USE_LOGGER
 #define USE_LOGGER_SYSINFO            1 && USE_LOGGER
 #define USE_LOGGER_VL53L0X            1 && USE_LOGGER && USE_VL53L0X

@@ -43,7 +43,15 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 > *Both the FreeRTOS kernel and Amazon FreeRTOS are provided under the following MIT open source license.*  
 > *Copyright (C) 2017 Amazon.com, Inc. or its affiliates.*
 
-*See: sources, https://www.freertos.org/a00114.html*  
+*See: sources, https://www.freertos.org/a00114.html*
+
+
+### TheThingsNetwork 2.5.7
+
+> *The MIT License (MIT)*  
+> *Copyright (c) 2016 The Things Network*
+
+*See: sources, https://github.com/TheThingsNetwork/arduino-device-lib*
 
 
 ### Arduino software for Arduino AVR 1.6.21

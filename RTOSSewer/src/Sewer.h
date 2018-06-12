@@ -12,6 +12,10 @@
 #include "periph/I2C.h"
 #endif
 
+#if USE_LORA
+#include "periph/LORA.h"
+#endif
+
 #if USE_BMP280
 #include "sensor/BMP280.h"
 #endif

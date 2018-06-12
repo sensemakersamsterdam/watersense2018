@@ -37,6 +37,11 @@ static void Sewer_initModules()
 
   #if USE_I2C
   I2C_setup();
+  #endif
+
+  #if USE_LORA
+  LORA_setup();
+  #endif
 
   #if USE_BMP280
   static StaticTask_t xT1TaskBuffer;
@@ -53,8 +58,6 @@ static void Sewer_initModules()
     xTaskCreateStatic(Sewer_T2, "2", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
   }
   #endif // USE_VL53L0X
-
-  #endif // USE_I2C
 }
 
 static void Sewer_T0(void* pvParameters)
@@ -79,7 +82,7 @@ static void Sewer_T1(void* pvParameters)
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }
-#endif
+#endif // USE_BMP280
 
 #if USE_VL53L0X
 static void Sewer_T2(void* pvParameters)
@@ -89,4 +92,4 @@ static void Sewer_T2(void* pvParameters)
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }
-#endif
+#endif // USE_VL53L0X
