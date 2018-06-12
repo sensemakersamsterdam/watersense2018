@@ -62,6 +62,8 @@ static void Sewer_T0(void* pvParameters)
   Sewer_initModules();
 
   while (true) {
+    Board_toggleLed();
+
     #if USE_LOGGER_MAIN
     LOGS("zzz...");
     #endif

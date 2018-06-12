@@ -141,6 +141,8 @@ static void Logger_printSysinfo()
   #ifdef ARDUINO_ARCH_AVR
   #if defined(ARDUINO_AVR_MEGA2560)
   LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR, ARDUINO_AVR_MEGA2560");
+  #elif defined(ARDUINO_AVR_PRO)
+  LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR, ARDUINO_AVR_PRO");
   #elif defined(ARDUINO_AVR_UNO)
   LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR, ARDUINO_AVR_UNO");
   #else
@@ -166,6 +168,10 @@ static void Logger_printSysinfo()
 
   #ifdef __AVR_LIBC_VERSION_STRING__
   LOGS("AVR LIBC: " __AVR_LIBC_VERSION_STRING__)
+  #endif
+
+  #ifdef _NEWLIB_VERSION
+  LOGS("NEWLIB: " _NEWLIB_VERSION)
   #endif
 
   #ifdef __ARM_ARCH

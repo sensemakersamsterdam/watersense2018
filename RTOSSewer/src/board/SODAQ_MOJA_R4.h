@@ -1,7 +1,7 @@
 #include "../Common.h"
 
-#if USE_BOARD_ARDUINO_MEGA2560_R3 && !defined(ARDUINO_MEGA2560_R3_H)
-#define ARDUINO_MEGA2560_R3_H
+#if USE_BOARD_SODAQ_MOJA_R4 && !defined(SODAQ_MOJA_R4_H)
+#define SODAQ_MOJA_R4_H
 
 
 /*******************************************************************************
@@ -30,4 +30,4 @@ void Board_turnOnLed();
 static void Board_setLed(uint8_t state);
 #endif
 
-#endif // USE_BOARD_ARDUINO_MEGA2560_R3 && !defined(ARDUINO_MEGA2560_R3_H)
+#endif // USE_BOARD_SODAQ_MOJA_R4 && !defined(SODAQ_MOJA_R4_H)

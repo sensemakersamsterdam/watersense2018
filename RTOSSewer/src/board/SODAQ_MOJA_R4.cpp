@@ -1,6 +1,12 @@
-#include "ARDUINO_MEGA2560_R3.h"
+#include "SODAQ_MOJA_R4.h"
 
-#if USE_BOARD_ARDUINO_MEGA2560_R3
+#if USE_BOARD_SODAQ_MOJA_R4
+
+/*******************************************************************************
+ * Definitions
+ ******************************************************************************/
+
+#define PIN_LED 6
 
 
 /*******************************************************************************
@@ -19,9 +25,9 @@ static SemaphoreHandle_t ledMutex;
 
 void Board_setup()
 {
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(PIN_LED, OUTPUT);
 
-  digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(PIN_LED, LOW);
 
   #if USE_BOARD_LED
   static StaticSemaphore_t ledMutexBuffer;
@@ -30,7 +36,7 @@ void Board_setup()
   #endif
 
   #if USE_LOGGER_BOARD
-  LOGS("ARDUINO_MEGA2560_R3 started");
+  LOGS("SODAQ_MOJA_R4 started");
   #endif
 }
 
@@ -72,10 +78,10 @@ void Board_setLed(uint8_t state)
   }
 
   ledState = state;
-  digitalWrite(LED_BUILTIN, state);
+  digitalWrite(PIN_LED, state);
 
   xSemaphoreGive(ledMutex);
 }
 #endif // USE_BOARD_LED
 
-#endif // USE_BOARD_ARDUINO_MEGA2560_R3
+#endif // USE_BOARD_SODAQ_MOJA_R4

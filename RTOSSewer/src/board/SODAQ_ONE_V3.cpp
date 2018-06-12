@@ -19,13 +19,13 @@ static SemaphoreHandle_t ledMutex;
 
 void Board_setup()
 {
-  pinMode(LED_BLUE,  OUTPUT);
-  pinMode(LED_GREEN, OUTPUT);
-  pinMode(LED_RED,   OUTPUT);
+  pinMode(PIN_LED_BLUE,  OUTPUT);
+  pinMode(PIN_LED_GREEN, OUTPUT);
+  pinMode(PIN_LED_RED,   OUTPUT);
 
-  digitalWrite(LED_BLUE,  HIGH);
-  digitalWrite(LED_GREEN, HIGH);
-  digitalWrite(LED_RED,   HIGH);
+  digitalWrite(PIN_LED_BLUE,  HIGH);
+  digitalWrite(PIN_LED_GREEN, HIGH);
+  digitalWrite(PIN_LED_RED,   HIGH);
 
   #if USE_BOARD_LED
   static StaticSemaphore_t ledMutexBuffer;
@@ -34,7 +34,7 @@ void Board_setup()
   #endif
 
   #if USE_LOGGER_BOARD
-  LOGS("started");
+  LOGS("SODAQ_ONE_V3 started");
   #endif
 }
 
@@ -46,47 +46,47 @@ void Board_setup()
 #if USE_BOARD_LED
 void Board_toggleLedBlue()
 {
-  Board_setLed(LED_BLUE, ledState ^ 1);
+  Board_setLed(PIN_LED_BLUE, ledState ^ 1);
 }
 
 void Board_toggleLedGreen()
 {
-  Board_setLed(LED_GREEN, ledState ^ 1);
+  Board_setLed(PIN_LED_GREEN, ledState ^ 1);
 }
 
 void Board_toggleLedRed()
 {
-  Board_setLed(LED_RED, ledState ^ 1);
+  Board_setLed(PIN_LED_RED, ledState ^ 1);
 }
 
 void Board_turnOffLedBlue()
 {
-  Board_setLed(LED_BLUE, HIGH);
+  Board_setLed(PIN_LED_BLUE, HIGH);
 }
 
 void Board_turnOffLedGreen()
 {
-  Board_setLed(LED_GREEN, HIGH);
+  Board_setLed(PIN_LED_GREEN, HIGH);
 }
 
 void Board_turnOffLedRed()
 {
-  Board_setLed(LED_RED, HIGH);
+  Board_setLed(PIN_LED_RED, HIGH);
 }
 
 void Board_turnOnLedBlue()
 {
-  Board_setLed(LED_BLUE, LOW);
+  Board_setLed(PIN_LED_BLUE, LOW);
 }
 
 void Board_turnOnLedGreen()
 {
-  Board_setLed(LED_GREEN, LOW);
+  Board_setLed(PIN_LED_GREEN, LOW);
 }
 
 void Board_turnOnLedRed()
 {
-  Board_setLed(LED_RED, LOW);
+  Board_setLed(PIN_LED_RED, LOW);
 }
 #endif // USE_BOARD_LED
 

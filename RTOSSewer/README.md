@@ -5,10 +5,11 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 
 ## Tested on hardware:
 
-- Board [SODAQ ONE-EU-RN2483-V3](https://shop.sodaq.com/sodaq-one-eu-rn2483-v3.html)
-- Board [ARDUINO UNO R3](https://store.arduino.cc/arduino-uno-rev3)
-- Board [ELEGOO MEGA 2560 R3](https://www.elegoo.com/product/elegoo-mega-2560-r3-board-blue-atmega2560-atmega16u2-usb-cable/) (compatible with ARDUINO MEGA 2560 REV3)
-- Sensor [BMP280](https://www.adafruit.com/product/2651)
+- Board [SODAQ ONE-EU-RN2483-V3](http://support.sodaq.com/sodaq-one/sodaq-one/) ([shop](https://shop.sodaq.com/sodaq-one-eu-rn2483-v3.html))
+- Board [SODAQ MOJA REV4](http://support.sodaq.com/sodaq-one/moja/)
+- Board [ARDUINO UNO REV3](https://store.arduino.cc/arduino-uno-rev3)
+- Board ELEGOO MEGA 2560 R3 - compatible with [ARDUINO MEGA 2560 REV3](https://store.arduino.cc/arduino-mega-2560-rev3)) ([shop](https://www.elegoo.com/product/elegoo-mega-2560-r3-board-blue-atmega2560-atmega16u2-usb-cable/))
+- Sensor [BMP280](https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout/) ([shop](https://www.adafruit.com/product/2651))
 
 
 ## Used open source software:
