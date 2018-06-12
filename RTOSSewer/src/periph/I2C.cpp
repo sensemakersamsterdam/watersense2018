@@ -1,12 +1,8 @@
-#include <Wire.h>
 #include "I2C.h"
 
+#if USE_I2C
 
-/*******************************************************************************
- * Private functions declarations
- ******************************************************************************/
-
-static void I2C_logDevices();
+#include <Wire.h>
 
 
 /*******************************************************************************
@@ -28,9 +24,11 @@ void I2C_setup()
 
   busMutex = xSemaphoreCreateMutexStatic(&busMutexBuffer);
 
+  #if USE_LOGGER_I2C
   LOGS("started");
+  #endif
 
-  #if DEBUG
+  #if USE_LOGGER_I2C_DEVICES
   I2C_logDevices();
   #endif
 }
@@ -44,7 +42,9 @@ BaseType_t I2C_lock()
 {
   BaseType_t b = xSemaphoreTake(busMutex, 100);
 
+  #if USE_LOGGER_I2C
   if (!b) { LOGS("resource is busy"); }
+  #endif
 
   return b;
 }
@@ -59,6 +59,7 @@ void I2C_unlock()
  * Private
  ******************************************************************************/
 
+#if USE_LOGGER_I2C_DEVICES
 static void I2C_logDevices()
 {
   LOGS("scanning...");
@@ -92,3 +93,6 @@ static void I2C_logDevices()
     LOGS("no devices found");
   }
 }
+#endif // USE_LOGGER_I2C_DEVICES
+
+#endif // USE_I2C

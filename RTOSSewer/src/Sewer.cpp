@@ -1,24 +1,4 @@
 #include "Sewer.h"
-#include "periph/I2C.h"
-#include "sensor/BMP280.h"
-#include "sensor/VL53L0X.h"
-
-#if defined(ARDUINO_AVR_MEGA2560)
-#include "board/ARDUINO_MEGA2560_R3.h"
-#elif defined(ARDUINO_SODAQ_ONE)
-#include "board/SODAQ_ONE_V3.h"
-#endif
-
-
-/*******************************************************************************
- * Private functions declarations
- ******************************************************************************/
-
-static void Sewer_initModules();
-static void Sewer_T0(void* pvParameters);
-static void Sewer_T1(void* pvParameters);
-static void Sewer_T2(void* pvParameters);
-
 
 /*******************************************************************************
  * Lifecycle
@@ -35,7 +15,7 @@ void Sewer_setup()
 
 void Sewer_idle()
 {
-  #if DEBUG
+  #if USE_LOGGER_MAIN
   static unsigned long last = 0;
   unsigned long now = millis();
   if (now - last >= 1000) { LOGS("zzz..."); last = now; }
@@ -49,32 +29,34 @@ void Sewer_idle()
 
 static void Sewer_initModules()
 {
-  static StaticTask_t xT1TaskBuffer;
-  static StaticTask_t xT2TaskBuffer;
-  static StackType_t  xT1Stack[configMINIMAL_STACK_SIZE];
-  static StackType_t  xT2Stack[configMINIMAL_STACK_SIZE];
-
-  #if DEBUG
+  #if USE_LOGGER
   Logger_setup();
   #endif
 
-  #ifdef ARDUINO_AVR_MEGA2560
-  ARDUINO_MEGA2560_R3_setup();
+  #if USE_BOARD
+  Board_setup();
   #endif
 
-  #ifdef ARDUINO_SODAQ_ONE
-  SODAQ_ONE_V3_setup();
-  #endif
-
+  #if USE_I2C
   I2C_setup();
 
+  #if USE_BMP280
+  static StaticTask_t xT1TaskBuffer;
+  static StackType_t  xT1Stack[configMINIMAL_STACK_SIZE];
   if (BMP280_setup()) {
     xTaskCreateStatic(Sewer_T1, "1", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
   }
+  #endif // USE_BMP280
 
+  #if USE_VL53L0X
+  static StaticTask_t xT2TaskBuffer;
+  static StackType_t  xT2Stack[configMINIMAL_STACK_SIZE];
   if (VL53L0X_setup()) {
     xTaskCreateStatic(Sewer_T2, "2", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
   }
+  #endif // USE_VL53L0X
+
+  #endif // USE_I2C
 }
 
 static void Sewer_T0(void* pvParameters)
@@ -82,11 +64,14 @@ static void Sewer_T0(void* pvParameters)
   Sewer_initModules();
 
   while (true) {
+    #if USE_LOGGER_MAIN
     LOGS("zzz...");
+    #endif
     vTaskDelay(pdMS_TO_TICKS(10000));
   }
 }
 
+#if USE_BMP280
 static void Sewer_T1(void* pvParameters)
 {
   vTaskDelay(pdMS_TO_TICKS(1000));
@@ -96,7 +81,9 @@ static void Sewer_T1(void* pvParameters)
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }
+#endif
 
+#if USE_VL53L0X
 static void Sewer_T2(void* pvParameters)
 {
   while (true) {
@@ -104,3 +91,4 @@ static void Sewer_T2(void* pvParameters)
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }
+#endif

@@ -1,32 +1,24 @@
-#ifdef ARDUINO_SODAQ_ONE
 #include "SODAQ_ONE_V3.h"
 
-
-/*******************************************************************************
- * Private functions declarations
- ******************************************************************************/
-
-static void SODAQ_ONE_V3_logSysinfo();
-static void SODAQ_ONE_V3_setLed(uint8_t pin, uint8_t state);
+#if USE_BOARD && defined(ARDUINO_SODAQ_ONE)
 
 
 /*******************************************************************************
  * State
  ******************************************************************************/
 
+#if USE_BOARD_LED
 static uint8_t ledState;
-
 static SemaphoreHandle_t ledMutex;
+#endif
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void SODAQ_ONE_V3_setup()
+void Board_setup()
 {
-  static StaticSemaphore_t ledMutexBuffer;
-
   pinMode(LED_BLUE,  OUTPUT);
   pinMode(LED_GREEN, OUTPUT);
   pinMode(LED_RED,   OUTPUT);
@@ -35,13 +27,14 @@ void SODAQ_ONE_V3_setup()
   digitalWrite(LED_GREEN, HIGH);
   digitalWrite(LED_RED,   HIGH);
 
+  #if USE_BOARD_LED
+  static StaticSemaphore_t ledMutexBuffer;
   ledState = HIGH;
   ledMutex = xSemaphoreCreateMutexStatic(&ledMutexBuffer);
+  #endif
 
+  #if USE_LOGGER_BOARD
   LOGS("started");
-
-  #if DEBUG
-  SODAQ_ONE_V3_logSysinfo();
   #endif
 }
 
@@ -50,92 +43,60 @@ void SODAQ_ONE_V3_setup()
  * Public
  ******************************************************************************/
 
-void SODAQ_ONE_V3_toggleLedBlue()
+#if USE_BOARD_LED
+void Board_toggleLedBlue()
 {
-  SODAQ_ONE_V3_setLed(LED_BLUE, ledState ^ 1);
+  Board_setLed(LED_BLUE, ledState ^ 1);
 }
 
-void SODAQ_ONE_V3_toggleLedGreen()
+void Board_toggleLedGreen()
 {
-  SODAQ_ONE_V3_setLed(LED_GREEN, ledState ^ 1);
+  Board_setLed(LED_GREEN, ledState ^ 1);
 }
 
-void SODAQ_ONE_V3_toggleLedRed()
+void Board_toggleLedRed()
 {
-  SODAQ_ONE_V3_setLed(LED_RED, ledState ^ 1);
+  Board_setLed(LED_RED, ledState ^ 1);
 }
 
-void SODAQ_ONE_V3_turnOffLedBlue()
+void Board_turnOffLedBlue()
 {
-  SODAQ_ONE_V3_setLed(LED_BLUE, HIGH);
+  Board_setLed(LED_BLUE, HIGH);
 }
 
-void SODAQ_ONE_V3_turnOffLedGreen()
+void Board_turnOffLedGreen()
 {
-  SODAQ_ONE_V3_setLed(LED_GREEN, HIGH);
+  Board_setLed(LED_GREEN, HIGH);
 }
 
-void SODAQ_ONE_V3_turnOffLedRed()
+void Board_turnOffLedRed()
 {
-  SODAQ_ONE_V3_setLed(LED_RED, HIGH);
+  Board_setLed(LED_RED, HIGH);
 }
 
-void SODAQ_ONE_V3_turnOnLedBlue()
+void Board_turnOnLedBlue()
 {
-  SODAQ_ONE_V3_setLed(LED_BLUE, LOW);
+  Board_setLed(LED_BLUE, LOW);
 }
 
-void SODAQ_ONE_V3_turnOnLedGreen()
+void Board_turnOnLedGreen()
 {
-  SODAQ_ONE_V3_setLed(LED_GREEN, LOW);
+  Board_setLed(LED_GREEN, LOW);
 }
 
-void SODAQ_ONE_V3_turnOnLedRed()
+void Board_turnOnLedRed()
 {
-  SODAQ_ONE_V3_setLed(LED_RED, LOW);
+  Board_setLed(LED_RED, LOW);
 }
+#endif // USE_BOARD_LED
 
 
 /*******************************************************************************
  * Private
  ******************************************************************************/
 
-static void SODAQ_ONE_V3_logSysinfo()
-{
-  #ifdef ARDUINO
-  LOG(VS("ARDUINO: "), VUI16(ARDUINO / 10000), VC('.'), VUI16(ARDUINO / 100 % 100), VC('.'), VUI16(ARDUINO % 100));
-  #endif
-
-  #if defined(ARDUINO_ARCH_SAMD) && defined(__SAMD21G18A__)
-  LOGS("ARDUINO ARCH: ARDUINO_ARCH_SAMD, __SAMD21G18A__");
-  #endif
-
-  #ifdef __VERSION__
-  #ifdef __GNUG__
-  LOGS("COMPILER: G++ " __VERSION__);
-  #else
-  LOGS("COMPILER: GCC " __VERSION__);
-  #endif
-  #endif
-
-  #if defined(__ARM_ARCH) && defined(__ARM_ARCH_PROFILE)
-  LOG(VS("ARM ARCH: "), VUI16(__ARM_ARCH), VC(__ARM_ARCH_PROFILE));
-  #endif
-
-  #ifdef USB_MANUFACTURER
-  LOGS("USB_MANUFACTURER: " USB_MANUFACTURER);
-  #endif
-
-  #ifdef USB_PRODUCT
-  LOGS("USB_PRODUCT: " USB_PRODUCT);
-  #endif
-
-  #ifdef F_CPU
-  LOG(VS("F_CPU: "), VUI32(F_CPU));
-  #endif
-}
-
-void SODAQ_ONE_V3_setLed(uint8_t pin, uint8_t state)
+#if USE_BOARD_LED
+void Board_setLed(uint8_t pin, uint8_t state)
 {
   if (!xSemaphoreTake(ledMutex, 100)) { LOGS("resource is busy"); return; }
 
@@ -144,5 +105,6 @@ void SODAQ_ONE_V3_setLed(uint8_t pin, uint8_t state)
 
   xSemaphoreGive(ledMutex);
 }
+#endif // USE_BOARD_LED
 
-#endif
+#endif // USE_BOARD && defined(ARDUINO_SODAQ_ONE)

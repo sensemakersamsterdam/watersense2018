@@ -1,6 +1,9 @@
+#include "BMP280.h"
+
+#if USE_BMP280
+
 #include <Adafruit_BMP280.h>
 #include "../periph/I2C.h"
-#include "BMP280.h"
 
 
 /*******************************************************************************
@@ -30,11 +33,13 @@ uint8_t BMP280_setup()
     I2C_unlock();
   }
 
+  #if USE_LOGGER_BMP280
   if (b) {
     LOGS("started");
   } else {
     LOGS("failed");
   }
+  #endif
 
   return b;
 }
@@ -46,6 +51,7 @@ uint8_t BMP280_setup()
 
 void BMP280_measure()
 {
+  #if USE_LOGGER_BMP280
   LOGS("reading a measurement...");
 
   if (!I2C_lock()) { return; }
@@ -59,4 +65,7 @@ void BMP280_measure()
   LOG(VS("temperature = "), VF(t), VS(" *C"));
   LOG(VS("pressure = "),    VF(p), VS(" Pa"));
   LOG(VS("altitude = "),    VF(a), VS(" m"));
+  #endif
 }
+
+#endif // USE_BMP280

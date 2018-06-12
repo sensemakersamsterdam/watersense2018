@@ -1,6 +1,6 @@
 #include "Logger.h"
-#if DEBUG
-#include <stdarg.h>
+
+#if USE_LOGGER
 
 
 /*******************************************************************************
@@ -27,6 +27,10 @@ void Logger_setup()
   logMutex = xSemaphoreCreateMutexStatic(&logMutexBuffer);
 
   LOGS("started");
+
+  #if USE_LOGGER_SYSINFO
+  Logger_printSysinfo();
+  #endif
 }
 
 
@@ -59,7 +63,7 @@ void Logger_end()
   xSemaphoreGive(logMutex);
 }
 
-void Logger_printCH(uint8_t c)
+void Logger_printCH(BaseType_t c)
 {
   Serial.write(c);
 }
@@ -83,7 +87,7 @@ void Logger_printFL(float f)
   }
 }
 
-void Logger_printHEX02(uint8_t i)
+void Logger_printHEX02(BaseType_t i)
 {
   uint8_t a = i / 16;
   uint8_t b = i % 16;
@@ -122,4 +126,62 @@ void Logger_printUI32(uint32_t i)
   };
 }
 
-#endif
+
+/*******************************************************************************
+ * Private
+ ******************************************************************************/
+
+#if USE_LOGGER_SYSINFO
+static void Logger_printSysinfo()
+{
+  #ifdef ARDUINO
+  LOG(VS("ARDUINO: "), VUI16(ARDUINO / 10000), VC('.'), VUI16(ARDUINO / 100 % 100), VC('.'), VUI16(ARDUINO % 100));
+  #endif
+
+  #if defined(ARDUINO_ARCH_AVR) && defined(ARDUINO_AVR_MEGA2560)
+  LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR, ARDUINO_AVR_MEGA2560");
+  #endif
+
+  #if defined(ARDUINO_ARCH_SAMD) && defined(__SAMD21G18A__)
+  LOGS("ARDUINO ARCH: ARDUINO_ARCH_SAMD, __SAMD21G18A__");
+  #endif
+
+  #ifdef __VERSION__
+  #ifdef __GNUG__
+  LOGS("COMPILER: G++ " __VERSION__);
+  #else
+  LOGS("COMPILER: GCC " __VERSION__);
+  #endif
+  #endif
+
+  #ifdef __ARM_ARCH
+  #ifdef __ARM_ARCH_PROFILE
+  LOG(VS("ARM ARCH: "), VUI16(__ARM_ARCH), VC(__ARM_ARCH_PROFILE));
+  #else
+  LOG(VS("ARM ARCH: "), VUI16(__ARM_ARCH));
+  #endif
+  #endif
+
+  #ifdef __AVR_ARCH__
+  LOG(VS("AVR ARCH: "), VUI16(__AVR_ARCH__));
+  #endif
+
+  #ifdef __AVR_ATmega2560__
+  LOGS("MCU: ATmega2560");
+  #endif
+
+  #ifdef USB_MANUFACTURER
+  LOGS("USB_MANUFACTURER: " USB_MANUFACTURER);
+  #endif
+
+  #ifdef USB_PRODUCT
+  LOGS("USB_PRODUCT: " USB_PRODUCT);
+  #endif
+
+  #ifdef F_CPU
+  LOG(VS("F_CPU: "), VUI32(F_CPU));
+  #endif
+}
+#endif // USE_LOGGER_SYSINFO
+
+#endif // USE_LOGGER

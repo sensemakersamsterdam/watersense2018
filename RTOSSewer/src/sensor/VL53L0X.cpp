@@ -1,6 +1,9 @@
+#include "VL53L0X.h"
+
+#if USE_VL53L0X
+
 #include <Adafruit_VL53L0X.h>
 #include "../periph/I2C.h"
-#include "VL53L0X.h"
 
 
 /*******************************************************************************
@@ -23,11 +26,13 @@ uint8_t VL53L0X_setup()
     I2C_unlock();
   }
 
+  #if USE_LOGGER_VL53L0X
   if (b) {
     LOGS("started");
   } else {
     LOGS("failed");
   }
+  #endif
 
   return b;
 }
@@ -39,6 +44,7 @@ uint8_t VL53L0X_setup()
 
 void VL53L0X_measure()
 {
+  #if USE_LOGGER_VL53L0X
   LOGS("reading a measurement... ");
 
   VL53L0X_RangingMeasurementData_t measure;
@@ -60,4 +66,7 @@ void VL53L0X_measure()
   } else {
     LOGS("out of range");
   }
+  #endif
 }
+
+#endif // USE_VL53L0X
