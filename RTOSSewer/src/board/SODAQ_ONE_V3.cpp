@@ -1,6 +1,6 @@
 #include "SODAQ_ONE_V3.h"
 
-#if USE_BOARD && defined(ARDUINO_SODAQ_ONE)
+#if USE_BOARD_SODAQ_ONE_V3
 
 
 /*******************************************************************************
@@ -98,7 +98,12 @@ void Board_turnOnLedRed()
 #if USE_BOARD_LED
 void Board_setLed(uint8_t pin, uint8_t state)
 {
-  if (!xSemaphoreTake(ledMutex, 100)) { LOGS("resource is busy"); return; }
+  if (!xSemaphoreTake(ledMutex, 100)) {
+    #if USE_LOGGER_BOARD
+    LOGS("resource is busy");
+    #endif
+    return;
+  }
 
   ledState = state;
   digitalWrite(pin, state);
@@ -107,4 +112,4 @@ void Board_setLed(uint8_t pin, uint8_t state)
 }
 #endif // USE_BOARD_LED
 
-#endif // USE_BOARD && defined(ARDUINO_SODAQ_ONE)
+#endif // USE_BOARD_SODAQ_ONE_V3

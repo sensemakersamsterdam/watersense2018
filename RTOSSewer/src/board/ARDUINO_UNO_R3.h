@@ -1,7 +1,7 @@
 #include "../Common.h"
 
-#if USE_BOARD_ARDUINO_MEGA2560_R3 && !defined(ARDUINO_MEGA2560_R3_H)
-#define ARDUINO_MEGA2560_R3_H
+#if USE_BOARD_ARDUINO_UNO_R3 && !defined(ARDUINO_UNO_R3_H)
+#define ARDUINO_UNO_R3_H
 
 
 /*******************************************************************************
@@ -10,4 +10,4 @@
 
 void Board_setup();
 
-#endif // USE_BOARD_ARDUINO_MEGA2560_R3 && !defined(ARDUINO_MEGA2560_R3_H)
+#endif // USE_BOARD_ARDUINO_UNO_R3 && !defined(ARDUINO_UNO_R3_H)

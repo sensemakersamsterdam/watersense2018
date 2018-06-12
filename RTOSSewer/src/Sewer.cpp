@@ -19,7 +19,7 @@ void Sewer_idle()
   static unsigned long last = 0;
   unsigned long now = millis();
   if (now - last >= 1000) { LOGS("zzz..."); last = now; }
-  #endif
+  #endif // USE_LOGGER_MAIN
 }
 
 
@@ -33,9 +33,7 @@ static void Sewer_initModules()
   Logger_setup();
   #endif
 
-  #if USE_BOARD
   Board_setup();
-  #endif
 
   #if USE_I2C
   I2C_setup();

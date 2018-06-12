@@ -1,6 +1,6 @@
-#include "ARDUINO_MEGA2560_R3.h"
+#include "ARDUINO_UNO_R3.h"
 
-#if USE_BOARD_ARDUINO_MEGA2560_R3
+#if USE_BOARD_ARDUINO_UNO_R3
 
 
 /*******************************************************************************
@@ -14,4 +14,4 @@ void Board_setup()
   #endif
 }
 
-#endif // USE_BOARD_ARDUINO_MEGA2560_R3
+#endif // USE_BOARD_ARDUINO_UNO_R3

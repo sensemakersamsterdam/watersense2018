@@ -19,9 +19,11 @@
 #include "sensor/VL53L0X.h"
 #endif
 
-#if defined(ARDUINO_AVR_MEGA2560)
+#if USE_BOARD_ARDUINO_MEGA2560_R3
 #include "board/ARDUINO_MEGA2560_R3.h"
-#elif defined(ARDUINO_SODAQ_ONE)
+#elif USE_BOARD_ARDUINO_UNO_R3
+#include "board/ARDUINO_UNO_R3.h"
+#elif USE_BOARD_SODAQ_ONE_V3
 #include "board/SODAQ_ONE_V3.h"
 #endif
 

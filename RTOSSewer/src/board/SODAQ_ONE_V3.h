@@ -1,7 +1,8 @@
 #include "../Common.h"
 
-#if USE_BOARD && !defined(SODAQ_ONE_V3_H) && defined(ARDUINO_SODAQ_ONE)
+#if USE_BOARD_SODAQ_ONE_V3 && !defined(SODAQ_ONE_V3_H)
 #define SODAQ_ONE_V3_H
+
 
 /*******************************************************************************
  * Lifecycle
@@ -35,4 +36,4 @@ void Board_turnOnLedRed();
 static void Board_setLed(uint8_t pin, uint8_t state);
 #endif
 
-#endif // USE_BOARD && !defined(SODAQ_ONE_V3_H) && defined(ARDUINO_SODAQ_ONE)
+#endif // USE_BOARD_SODAQ_ONE_V3 && !defined(SODAQ_ONE_V3_H)

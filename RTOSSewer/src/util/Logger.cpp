@@ -18,7 +18,7 @@ void Logger_setup()
 {
   static StaticSemaphore_t logMutexBuffer;
 
-  #ifndef ARDUINO_SODAQ_ONE
+  #ifndef ARDUINO_ARCH_SAMD
   Serial.begin(9600);
   #endif
 
@@ -138,12 +138,22 @@ static void Logger_printSysinfo()
   LOG(VS("ARDUINO: "), VUI16(ARDUINO / 10000), VC('.'), VUI16(ARDUINO / 100 % 100), VC('.'), VUI16(ARDUINO % 100));
   #endif
 
-  #if defined(ARDUINO_ARCH_AVR) && defined(ARDUINO_AVR_MEGA2560)
+  #ifdef ARDUINO_ARCH_AVR
+  #if defined(ARDUINO_AVR_MEGA2560)
   LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR, ARDUINO_AVR_MEGA2560");
+  #elif defined(ARDUINO_AVR_UNO)
+  LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR, ARDUINO_AVR_UNO");
+  #else
+  LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR");
+  #endif
   #endif
 
-  #if defined(ARDUINO_ARCH_SAMD) && defined(__SAMD21G18A__)
+  #ifdef ARDUINO_ARCH_SAMD
+  #if defined(__SAMD21G18A__)
   LOGS("ARDUINO ARCH: ARDUINO_ARCH_SAMD, __SAMD21G18A__");
+  #else
+  LOGS("ARDUINO ARCH: ARDUINO_ARCH_SAMD");
+  #endif
   #endif
 
   #ifdef __VERSION__
@@ -152,6 +162,10 @@ static void Logger_printSysinfo()
   #else
   LOGS("COMPILER: GCC " __VERSION__);
   #endif
+  #endif
+
+  #ifdef __AVR_LIBC_VERSION_STRING__
+  LOGS("AVR LIBC: " __AVR_LIBC_VERSION_STRING__)
   #endif
 
   #ifdef __ARM_ARCH
@@ -166,8 +180,10 @@ static void Logger_printSysinfo()
   LOG(VS("AVR ARCH: "), VUI16(__AVR_ARCH__));
   #endif
 
-  #ifdef __AVR_ATmega2560__
+  #if defined(__AVR_ATmega2560__)
   LOGS("MCU: ATmega2560");
+  #elif defined(__AVR_ATmega328P__)
+  LOGS("MCU: ATmega328P");
   #endif
 
   #ifdef USB_MANUFACTURER
