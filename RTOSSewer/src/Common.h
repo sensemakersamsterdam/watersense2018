@@ -31,4 +31,4 @@
 #include "freertos/FreeRTOSv10.0.1/task.h"
 #include "util/Logger.h"
 
-#endif
+#endif // COMMON_H

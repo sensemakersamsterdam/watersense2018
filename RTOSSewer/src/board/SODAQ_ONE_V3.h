@@ -25,7 +25,7 @@ void Board_turnOffLedRed();
 void Board_turnOnLedBlue();
 void Board_turnOnLedGreen();
 void Board_turnOnLedRed();
-#endif // USE_BOARD_LED
+#endif
 
 
 /*******************************************************************************
