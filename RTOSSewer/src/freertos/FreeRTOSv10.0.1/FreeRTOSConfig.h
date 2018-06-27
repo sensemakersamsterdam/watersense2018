@@ -46,7 +46,7 @@
 #define configIDLE_TASK_NAME                    "I"
 #define configMAX_PRIORITIES                    9
 #define configMAX_TASK_NAME_LEN                 2
-#define configMINIMAL_STACK_SIZE                256
+#define configMINIMAL_STACK_SIZE                128
 #define configNUM_THREAD_LOCAL_STORAGE_POINTERS 0
 #define configQUEUE_REGISTRY_SIZE               0
 #define configTICK_RATE_HZ                      1000

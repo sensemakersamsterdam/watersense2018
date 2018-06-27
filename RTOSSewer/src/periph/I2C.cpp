@@ -40,13 +40,13 @@ void I2C_setup()
 
 BaseType_t I2C_lock()
 {
-  BaseType_t b = xSemaphoreTake(busMutex, 100);
+  if (xSemaphoreTake(busMutex, 200)) { return true; }
 
   #if USE_LOGGER_I2C
-  if (!b) { LOGS("resource is busy"); }
+  LOGS("resource is busy");
   #endif
 
-  return b;
+  return false;
 }
 
 void I2C_unlock()

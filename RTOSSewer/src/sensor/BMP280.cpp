@@ -24,9 +24,9 @@ static Adafruit_BMP280 sensor;
  * Lifecycle
  ******************************************************************************/
 
-uint8_t BMP280_setup()
+BaseType_t BMP280_setup()
 {
-  uint8_t b = false;
+  BaseType_t b = false;
 
   if (I2C_lock()) {
     b = sensor.begin(BMP280_ADDRESS);

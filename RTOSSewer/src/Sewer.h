@@ -13,7 +13,7 @@
 #endif
 
 #if USE_LORA
-#include "periph/LORA.h"
+#include "periph/LoRa.h"
 #endif
 
 #if USE_BMP280

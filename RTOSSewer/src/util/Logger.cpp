@@ -40,7 +40,7 @@ void Logger_setup()
 
 BaseType_t Logger_begin(const char *func)
 {
-  if (!xSemaphoreTake(logMutex, 100)) { return false; }
+  if (!xSemaphoreTake(logMutex, 200)) { return false; }
 
   Logger_printCH('[');
   Logger_printSTR(pcTaskGetName(NULL));

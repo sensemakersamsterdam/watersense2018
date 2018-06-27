@@ -8,7 +8,7 @@
  * Lifecycle
  ******************************************************************************/
 
-void LORA_setup();
+void LoRa_setup();
 
 
 /*******************************************************************************
@@ -16,7 +16,7 @@ void LORA_setup();
  ******************************************************************************/
 
 #if USE_LOGGER_LORA_DEVICEINFO
-static void LORA_logDeviceInfo();
+static void LoRa_logDeviceInfo();
 #endif
 
 #endif // USE_LORA && defined(LORA_H)

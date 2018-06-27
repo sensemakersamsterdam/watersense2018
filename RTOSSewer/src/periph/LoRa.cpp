@@ -1,4 +1,4 @@
-#include "LORA.h"
+#include "LoRa.h"
 
 #if USE_LORA
 
@@ -16,7 +16,7 @@ static TheThingsNetwork ttn(Serial1, SerialUSB, TTN_FP_EU868);
  * Lifecycle
  ******************************************************************************/
 
-void LORA_setup()
+void LoRa_setup()
 {
   Serial1.begin(57600);
 
@@ -25,7 +25,7 @@ void LORA_setup()
   #endif
 
   #if USE_LOGGER_LORA_DEVICEINFO
-  LORA_logDeviceInfo();
+  LoRa_logDeviceInfo();
   #endif
 }
 
@@ -35,7 +35,7 @@ void LORA_setup()
  ******************************************************************************/
 
 #if USE_LOGGER_LORA_DEVICEINFO
-static void LORA_logDeviceInfo()
+static void LoRa_logDeviceInfo()
 {
   LOGS("receiving...");
   ttn.showStatus();

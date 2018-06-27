@@ -1,15 +1,24 @@
 #include "Sewer.h"
 
 /*******************************************************************************
+ * Definitions
+ ******************************************************************************/
+
+#define T0_STACK_SIZE 256
+#define T1_STACK_SIZE 256
+#define T2_STACK_SIZE 256
+
+
+/*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
 void Sewer_setup()
 {
   static StaticTask_t xT0TaskBuffer;
-  static StackType_t  xT0Stack[configMINIMAL_STACK_SIZE];
+  static StackType_t  xT0Stack[T0_STACK_SIZE];
 
-  xTaskCreateStatic(Sewer_T0, "M", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT0Stack, &xT0TaskBuffer);
+  xTaskCreateStatic(Sewer_T0, "M", T0_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT0Stack, &xT0TaskBuffer);
   vTaskStartScheduler();
 }
 
@@ -40,22 +49,22 @@ static void Sewer_initModules()
   #endif
 
   #if USE_LORA
-  LORA_setup();
+  LoRa_setup();
   #endif
 
   #if USE_BMP280
   static StaticTask_t xT1TaskBuffer;
-  static StackType_t  xT1Stack[configMINIMAL_STACK_SIZE];
+  static StackType_t  xT1Stack[T1_STACK_SIZE];
   if (BMP280_setup()) {
-    xTaskCreateStatic(Sewer_T1, "1", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
+    xTaskCreateStatic(Sewer_T1, "1", T1_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
   }
   #endif // USE_BMP280
 
   #if USE_VL53L0X
   static StaticTask_t xT2TaskBuffer;
-  static StackType_t  xT2Stack[configMINIMAL_STACK_SIZE];
+  static StackType_t  xT2Stack[T2_STACK_SIZE];
   if (VL53L0X_setup()) {
-    xTaskCreateStatic(Sewer_T2, "2", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
+    xTaskCreateStatic(Sewer_T2, "2", T2_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
   }
   #endif // USE_VL53L0X
 }
@@ -75,7 +84,7 @@ static void Sewer_T0(void* pvParameters)
 #if USE_BMP280
 static void Sewer_T1(void* pvParameters)
 {
-  vTaskDelay(pdMS_TO_TICKS(1000));
+  vTaskDelay(pdMS_TO_TICKS(1200));
 
   while (true) {
     BMP280_measure();

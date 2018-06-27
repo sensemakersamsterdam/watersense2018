@@ -10,6 +10,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 - Board [ARDUINO UNO REV3](https://store.arduino.cc/arduino-uno-rev3)
 - Board ELEGOO MEGA 2560 R3 - compatible with [ARDUINO MEGA 2560 REV3](https://store.arduino.cc/arduino-mega-2560-rev3)) ([shop](https://www.elegoo.com/product/elegoo-mega-2560-r3-board-blue-atmega2560-atmega16u2-usb-cable/))
 - Sensor [BMP280](https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout/) ([shop](https://www.adafruit.com/product/2651))
+- Sensor [VL53L0X](https://learn.adafruit.com/adafruit-vl53l0x-micro-lidar-distance-sensor-breakout/) ([shop](https://www.adafruit.com/product/3317))
 
 
 ## Used open source software:
@@ -30,20 +31,23 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources, https://github.com/adafruit/Adafruit_Sensor*
 
 
-### Adafruit VL53L0X Library 1.0.3
-
-> *Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!*  
-> *Written by Limor Fried/Ladyada for Adafruit Industries. MIT license, all text above must be included in any redistribution*
-
-*See: sources, https://github.com/adafruit/Adafruit_VL53L0X*
-
-
 ### FreeRTOS 10.0.1
 
 > *Both the FreeRTOS kernel and Amazon FreeRTOS are provided under the following MIT open source license.*  
 > *Copyright (C) 2017 Amazon.com, Inc. or its affiliates.*
 
 *See: sources, https://www.freertos.org/a00114.html*
+
+
+### Pololu VL53L0X library 1.0.2
+
+> *Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do [...]*  
+> *Copyright (c) 2017 Pololu Corporation.*
+
+> *Most of the functionality of this library is based on the VL53L0X API provided by ST (STSW-IMG005), and some of the explanatory comments are quoted or paraphrased from the API source code, API user manual (UM2039), and the VL53L0X datasheet. [...]*  
+> *Copyright © 2016, STMicroelectronics International N.V. All rights reserved.*  
+
+*See: sources, https://github.com/pololu/vl53l0x-arduino*
 
 
 ### TheThingsNetwork 2.5.7
