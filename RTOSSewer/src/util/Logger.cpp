@@ -123,7 +123,7 @@ void Logger_printUI32(uint32_t i)
     Logger_printCH(i / j + '0');
     if (j == 1) { break; }
     i %= j;
-  };
+  }
 }
 
 
