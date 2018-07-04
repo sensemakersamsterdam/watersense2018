@@ -10,7 +10,8 @@
  * Definitions
  ******************************************************************************/
 
-#define BMP280_ADDRESS 0x77
+#define BMP280_ADDRESS_CLONE    0x76
+#define BMP280_ADDRESS_ORIGINAL 0x77
 
 
 /*******************************************************************************
@@ -29,7 +30,10 @@ BaseType_t BMP280_setup()
   BaseType_t b = false;
 
   if (I2C_lock()) {
-    b = sensor.begin(BMP280_ADDRESS);
+    Wire.beginTransmission(BMP280_ADDRESS_CLONE);
+    int32_t error = Wire.endTransmission();
+
+    b = sensor.begin(error == 0 ? BMP280_ADDRESS_CLONE : BMP280_ADDRESS_ORIGINAL);
     I2C_unlock();
   }
 
