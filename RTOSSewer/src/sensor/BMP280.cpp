@@ -10,8 +10,9 @@
  * Definitions
  ******************************************************************************/
 
-#define BMP280_ADDRESS_CLONE    0x76
-#define BMP280_ADDRESS_ORIGINAL 0x77
+#define LOCAL_BAROMETRIC_PRESSURE 1013.25
+#define BMP280_ADDRESS_CLONE      0x76
+#define BMP280_ADDRESS_ORIGINAL   0x77
 
 
 /*******************************************************************************
@@ -25,9 +26,9 @@ static Adafruit_BMP280 sensor;
  * Lifecycle
  ******************************************************************************/
 
-BaseType_t BMP280_setup()
+bool BMP280_setup()
 {
-  BaseType_t b = false;
+  bool b = false;
 
   if (I2C_lock()) {
     Wire.beginTransmission(BMP280_ADDRESS_CLONE);
@@ -62,7 +63,7 @@ void BMP280_measure()
 
   float t = sensor.readTemperature();
   float p = sensor.readPressure();
-  float a = sensor.readAltitude(1013.25); // this should be adjusted to your local forcase
+  float a = sensor.readAltitude(LOCAL_BAROMETRIC_PRESSURE);
 
   I2C_unlock();
 

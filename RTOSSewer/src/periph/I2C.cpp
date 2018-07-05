@@ -81,9 +81,9 @@ static void I2C_logDevices()
 
     if (error == 0) {
       b = true;
-      LOG(VS("device found at address 0x"), VH02(address));
+      LOG(VS("device found at address 0x"), VUI8H02(address));
     } else if (error == 4) {
-      LOG(VS("unknow error at address 0x"), VH02(address));
+      LOG(VS("unknow error at address 0x"), VUI8H02(address));
     }
   }
 

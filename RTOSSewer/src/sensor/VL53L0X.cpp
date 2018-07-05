@@ -17,9 +17,9 @@ static VL53L0X sensor;
  * Lifecycle
  ******************************************************************************/
 
-BaseType_t VL53L0X_setup()
+bool VL53L0X_setup()
 {
-  BaseType_t b = false;
+  bool b = false;
 
   if (I2C_lock()) {
     b = sensor.init() && sensor.last_status == 0;

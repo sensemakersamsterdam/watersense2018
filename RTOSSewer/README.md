@@ -50,14 +50,6 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources, https://github.com/pololu/vl53l0x-arduino*
 
 
-### TheThingsNetwork 2.5.7
-
-> *The MIT License (MIT)*  
-> *Copyright (c) 2016 The Things Network*
-
-*See: sources, https://github.com/TheThingsNetwork/arduino-device-lib*
-
-
 ### Arduino software for Arduino AVR 1.6.21
 
 > *Arduino is an open-source project founded by Massimo Banzi, David Cuartielles, Tom Igoe, Gianluca Martino, and David Mellis. It builds on the work of many people, projects, and institutions.*
@@ -70,7 +62,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources*
 
 
-### SODAQ software for Arduino SAMD 1.6.17
+### SODAQ software for Arduino SAMD 1.6.18
 
 > *This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.*  
 > *Copyright (c) 2016 SODAQ. All right reserved.*

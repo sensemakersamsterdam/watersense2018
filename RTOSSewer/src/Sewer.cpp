@@ -28,7 +28,7 @@ void Sewer_idle()
   static unsigned long last = 0;
   unsigned long now = millis();
   if (now - last >= 1000) { LOGS("zzz..."); last = now; }
-  #endif // USE_LOGGER_MAIN
+  #endif
 }
 
 
@@ -48,17 +48,13 @@ static void Sewer_initModules()
   I2C_setup();
   #endif
 
-  #if USE_LORA
-  LoRa_setup();
-  #endif
-
   #if USE_BMP280
   static StaticTask_t xT1TaskBuffer;
   static StackType_t  xT1Stack[T1_STACK_SIZE];
   if (BMP280_setup()) {
     xTaskCreateStatic(Sewer_T1, "1", T1_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT1Stack, &xT1TaskBuffer);
   }
-  #endif // USE_BMP280
+  #endif
 
   #if USE_VL53L0X
   static StaticTask_t xT2TaskBuffer;
@@ -66,12 +62,16 @@ static void Sewer_initModules()
   if (VL53L0X_setup()) {
     xTaskCreateStatic(Sewer_T2, "2", T2_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
   }
-  #endif // USE_VL53L0X
+  #endif
 }
 
 static void Sewer_T0(void* pvParameters)
 {
   Sewer_initModules();
+
+  #if USE_LORA
+  LoRa_setup();
+  #endif
 
   while (true) {
     #if USE_LOGGER_MAIN

@@ -87,14 +87,6 @@ void Logger_printFL(float f)
   }
 }
 
-void Logger_printHEX02(BaseType_t i)
-{
-  uint8_t a = i / 16;
-  uint8_t b = i % 16;
-  Logger_printCH(a < 10 ? a + '0' : a + 'A' - 10);
-  Logger_printCH(b < 10 ? b + '0' : b + 'A' - 10);
-}
-
 void Logger_printPSTR(const char *s)
 {
   while (true) {
@@ -125,6 +117,22 @@ void Logger_printUI32(uint32_t i)
     i %= j;
   }
 }
+
+void Logger_printUI8AH02(const uint8_t *ia, uint8_t size)
+{
+  for (BaseType_t i = 0; i < size; i++) {
+    Logger_printUI8H02(ia[i]);
+  }
+}
+
+void Logger_printUI8H02(uint8_t i)
+{
+  uint8_t a = i / 16;
+  uint8_t b = i % 16;
+  Logger_printCH(a < 10 ? a + '0' : a + 'A' - 10);
+  Logger_printCH(b < 10 ? b + '0' : b + 'A' - 10);
+}
+
 
 
 /*******************************************************************************
