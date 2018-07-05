@@ -14,7 +14,6 @@
 static const uint8_t APP_EUI[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 static const uint8_t APP_KEY[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-static const uint8_t DEV_EUI[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 */
 
 
@@ -22,7 +21,8 @@ static const uint8_t DEV_EUI[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0
  * Definitions
  ******************************************************************************/
 
-#define SERIAL_LORA Serial1
+#define SERIAL_DEBUG SerialUSB
+#define SERIAL_LORA  Serial1
 
 
 /*******************************************************************************
@@ -35,9 +35,7 @@ void LoRa_setup()
   LOGS("starting...");
   #endif
 
-  SERIAL_LORA.begin(LoRaBee.getDefaultBaudRate());
-
-  bool b = LoRaBee.initOTA(SERIAL_LORA, DEV_EUI, APP_EUI, APP_KEY, false);
+  bool b = LoRa_initOTA();
 
   #if USE_LOGGER_LORA
   if (b) {
@@ -45,10 +43,6 @@ void LoRa_setup()
   } else {
     LOGS("failed");
   }
-  #endif
-
-  #if USE_LOGGER_LORA_DEVICEINFO
-  LoRa_logDeviceInfo();
   #endif
 
   LoRa_sendTest();
@@ -113,29 +107,66 @@ void LoRa_sendTest()
  * Private
  ******************************************************************************/
 
+static bool LoRa_initOTA()
+{
+  // pinMode(ENABLE_PIN_IO, OUTPUT);
+  // digitalWrite(ENABLE_PIN_IO, HIGH);
+
+  // pinMode(LORA_RESET, OUTPUT);
+  // digitalWrite(LORA_RESET, LOW);
+  // delay(100);
+  // digitalWrite(LORA_RESET, HIGH);
+  // delay(100);
+  // LOGS("initOTA...");
+
+  SERIAL_LORA.begin(LoRaBee.getDefaultBaudRate());
+
+  #if USE_LOGGER_LORA
+  LoRaBee.setDiag(SERIAL_DEBUG);
+  #endif
+
+  if (!LoRaBee.init(SERIAL_LORA, LORA_RESET)) { return false; }
+
+  LOGS("init: OK");
+
+  uint8_t eui[8];
+
+  if (LoRaBee.getHWEUI(eui, sizeof(eui)) != 8) { return false; }
+
+  LOGS("getHWEUI: OK");
+
+  #if USE_LOGGER_LORA_DEVICEINFO
+  LoRa_logDeviceInfo();
+  #endif
+
+  if (!LoRaBee.initOTA(eui, APP_EUI, APP_KEY, false)) { return false; }
+
+  LOGS("initOTA: OK");
+
+  return true;
+}
+
 #if USE_LOGGER_LORA_DEVICEINFO
 static void LoRa_logDeviceInfo()
 {
-  char    version[32];
-  uint8_t eui[8];
+  union {
+    char    version[32];
+    uint8_t eui[8];
+  } u;
 
-  LOGS("receiving...");
-
-  BaseType_t i = LoRaBee.getVersion(version, sizeof(version));
+  BaseType_t i = LoRaBee.getVersion(u.version, sizeof(u.version));
   if (i > 1) {
-    LOG(VS("version: "), VSZ(version));
+    LOG(VS("version: "), VSZ(u.version));
   } else {
     LOGS("version: N/A");
   }
 
-  i = LoRaBee.getHWEUI(eui, sizeof(eui));
+  i = LoRaBee.getHWEUI(u.eui, sizeof(u.eui));
   if (i > 0) {
-    LOG(VS("device EUI: "), VUI8AH02(eui, i));
+    LOG(VS("device EUI: "), VUI8AH02(u.eui, i));
   } else {
     LOGS("device EUI: N/A");
   }
-
-  LOGS("done");
 }
 #endif
 

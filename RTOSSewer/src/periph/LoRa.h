@@ -22,6 +22,8 @@ void LoRa_sendTest();
  * Private
  ******************************************************************************/
 
+static bool LoRa_initOTA();
+
 #if USE_LOGGER_LORA_DEVICEINFO
 static void LoRa_logDeviceInfo();
 #endif
