@@ -32,7 +32,7 @@ bool BMP280_setup()
 
   if (I2C_lock()) {
     Wire.beginTransmission(BMP280_ADDRESS_CLONE);
-    int32_t error = Wire.endTransmission();
+    uint8_t error = Wire.endTransmission();
 
     b = sensor.begin(error == 0 ? BMP280_ADDRESS_CLONE : BMP280_ADDRESS_ORIGINAL);
     I2C_unlock();

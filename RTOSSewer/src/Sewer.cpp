@@ -7,6 +7,7 @@
 #define T0_STACK_SIZE 256
 #define T1_STACK_SIZE 256
 #define T2_STACK_SIZE 256
+#define T3_STACK_SIZE 256
 
 
 /*******************************************************************************
@@ -56,11 +57,19 @@ static void Sewer_initModules()
   }
   #endif
 
-  #if USE_VL53L0X
+  #if USE_FDC1004
   static StaticTask_t xT2TaskBuffer;
   static StackType_t  xT2Stack[T2_STACK_SIZE];
-  if (VL53L0X_setup()) {
+  if (FDC1004_setup()) {
     xTaskCreateStatic(Sewer_T2, "2", T2_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT2Stack, &xT2TaskBuffer);
+  }
+  #endif
+
+  #if USE_VL53L0X
+  static StaticTask_t xT3TaskBuffer;
+  static StackType_t  xT3Stack[T3_STACK_SIZE];
+  if (VL53L0X_setup()) {
+    xTaskCreateStatic(Sewer_T3, "3", T3_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, xT3Stack, &xT3TaskBuffer);
   }
   #endif
 }
@@ -91,10 +100,20 @@ static void Sewer_T1(void* pvParameters)
     vTaskDelay(pdMS_TO_TICKS(5000));
   }
 }
-#endif // USE_BMP280
+#endif
+
+#if USE_FDC1004
+static void Sewer_T2(void* pvParameters)
+{
+  while (true) {
+    FDC1004_measure();
+    vTaskDelay(pdMS_TO_TICKS(1000));
+  }
+}
+#endif // USE_VL53L0X
 
 #if USE_VL53L0X
-static void Sewer_T2(void* pvParameters)
+static void Sewer_T3(void* pvParameters)
 {
   while (true) {
     VL53L0X_measure();

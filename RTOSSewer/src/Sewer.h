@@ -20,6 +20,10 @@
 #include "sensor/BMP280.h"
 #endif
 
+#if USE_FDC1004
+#include "sensor/FDC1004.h"
+#endif
+
 #if USE_VL53L0X
 #include "sensor/VL53L0X.h"
 #endif
@@ -44,8 +48,12 @@ static void Sewer_T0(void* pvParameters);
 static void Sewer_T1(void* pvParameters);
 #endif
 
-#if USE_VL53L0X
+#if USE_FDC1004
 static void Sewer_T2(void* pvParameters);
+#endif
+
+#if USE_VL53L0X
+static void Sewer_T3(void* pvParameters);
 #endif
 
 #endif // SEWER_H

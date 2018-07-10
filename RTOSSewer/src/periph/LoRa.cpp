@@ -10,10 +10,12 @@
  ******************************************************************************/
 
 #include "../LoRaConfig.h"
+
 /*
-static const uint8_t APP_EUI[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-static const uint8_t APP_KEY[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+static const uint8_t APP_EUI[]  = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+static const uint8_t APP_KEY[]  = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+static const uint8_t DEV_EUI[8] = { 0x00, 0x04, 0xA3, 0x0B, 0x00, 0x20, 0x4A, 0xAA };
 */
 
 
@@ -45,7 +47,7 @@ void LoRa_setup()
   }
   #endif
 
-  LoRa_sendTest();
+  //LoRa_sendTest();
 }
 
 
@@ -112,34 +114,48 @@ static bool LoRa_initOTA()
   // pinMode(ENABLE_PIN_IO, OUTPUT);
   // digitalWrite(ENABLE_PIN_IO, HIGH);
 
+  SERIAL_LORA.begin(LoRaBee.getDefaultBaudRate());
+
   // pinMode(LORA_RESET, OUTPUT);
+  // digitalWrite(LORA_RESET, HIGH);
+  // delay(100);
   // digitalWrite(LORA_RESET, LOW);
   // delay(100);
   // digitalWrite(LORA_RESET, HIGH);
-  // delay(100);
+  // delay(1000);
+  // SERIAL_LORA.end();
+  // SERIAL_LORA.begin(LoRaBee.getDefaultBaudRate());
   // LOGS("initOTA...");
-
-  SERIAL_LORA.begin(LoRaBee.getDefaultBaudRate());
 
   #if USE_LOGGER_LORA
   LoRaBee.setDiag(SERIAL_DEBUG);
   #endif
 
-  if (!LoRaBee.init(SERIAL_LORA, LORA_RESET)) { return false; }
+  // if (!LoRaBee.init(SERIAL_LORA, LORA_RESET)) { return false; }
+  //
+  // LOGS("init: OK");
+  //
+  // uint8_t eui[8];
+  //
+  // if (LoRaBee.getHWEUI(eui, sizeof(eui)) != 8) { return false; }
+  //
+  // LOGS("getHWEUI: OK");
+  //
+  // #if USE_LOGGER_LORA_DEVICEINFO
+  // LoRa_logDeviceInfo();
+  // #endif
 
-  LOGS("init: OK");
+// LOG(VS("DEV_EUI: "), VUI8AH02(eui, sizeof(eui)));
+// LOG(VS("APP_EUI: "), VUI8AH02(APP_EUI, sizeof(APP_EUI)));
+// LOG(VS("APP_KEY: "), VUI8AH02(APP_KEY, sizeof(APP_KEY)));
 
-  uint8_t eui[8];
+  //LoRaBee.setSpreadingFactor(10);
+  //LoRaBee.setFsbChannels(0);
 
-  if (LoRaBee.getHWEUI(eui, sizeof(eui)) != 8) { return false; }
-
-  LOGS("getHWEUI: OK");
-
-  #if USE_LOGGER_LORA_DEVICEINFO
-  LoRa_logDeviceInfo();
-  #endif
-
-  if (!LoRaBee.initOTA(eui, APP_EUI, APP_KEY, false)) { return false; }
+  //if (!LoRaBee.initOTA(eui, APP_EUI, APP_KEY, false)) { return false; }
+  //if (!LoRaBee.initOTA(eui, APP_EUI, APP_KEY, true)) { return false; }
+  if (!LoRaBee.initOTA(DEV_EUI, APP_EUI, APP_KEY, false)) { return false; }
+  // if (!LoRaBee.initOTA(SERIAL_LORA, DEV_EUI, APP_EUI, APP_KEY, false)) { return false; }
 
   LOGS("initOTA: OK");
 

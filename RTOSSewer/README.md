@@ -10,6 +10,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 - Board [ARDUINO UNO REV3](https://store.arduino.cc/arduino-uno-rev3)
 - Board ELEGOO MEGA 2560 R3 - compatible with [ARDUINO MEGA 2560 REV3](https://store.arduino.cc/arduino-mega-2560-rev3)) ([shop](https://www.elegoo.com/product/elegoo-mega-2560-r3-board-blue-atmega2560-atmega16u2-usb-cable/))
 - Sensor [BMP280](https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout/) ([shop](https://www.adafruit.com/product/2651))
+- Sensor [FDC1004](https://github.com/Protocentral/ProtoCentral_fdc1004_breakout) ([shop](https://www.protocentral.com/gasliquid/1082-fdc1004-capacitance-converter-breakout-board-0642078949616.html))
 - Sensor [VL53L0X](https://learn.adafruit.com/adafruit-vl53l0x-micro-lidar-distance-sensor-breakout/) ([shop](https://www.adafruit.com/product/3317))
 
 
@@ -20,7 +21,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 > *Adafruit invests time and resources providing this open source code, please support Adafruit andopen-source hardware by purchasing products from Adafruit!*  
 > *Written by Kevin Townsend for Adafruit Industries. BSD license, all text above must be included in any redistribution*
 
-*See: sources, https://github.com/adafruit/Adafruit_BMP280_Library*
+*See: sources, <https://github.com/adafruit/Adafruit_BMP280_Library>*
 
 
 ### Adafruit Unified Sensor library 1.0.2
@@ -30,7 +31,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 
 *Note: this library used in Adafruit BMP280 Library 1.0.2*
 
-*See: sources, https://github.com/adafruit/Adafruit_Sensor*
+*See: sources, <https://github.com/adafruit/Adafruit_Sensor>*
 
 
 ### FreeRTOS 10.0.1
@@ -38,7 +39,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 > *Both the FreeRTOS kernel and Amazon FreeRTOS are provided under the following MIT open source license.*  
 > *Copyright (C) 2017 Amazon.com, Inc. or its affiliates.*
 
-*See: sources, https://www.freertos.org/a00114.html*
+*See: sources, <https://www.freertos.org/a00114.html>*
 
 
 ### Pololu VL53L0X library 1.0.2
@@ -49,7 +50,15 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 > *Most of the functionality of this library is based on the VL53L0X API provided by ST (STSW-IMG005), and some of the explanatory comments are quoted or paraphrased from the API source code, API user manual (UM2039), and the VL53L0X datasheet. [...]*  
 > *Copyright © 2016, STMicroelectronics International N.V. All rights reserved.*  
 
-*See: sources, https://github.com/pololu/vl53l0x-arduino*
+*See: sources, <https://github.com/pololu/vl53l0x-arduino>*
+
+
+### ProtoCentral FDC1004 Capacitive Sensor Library 1.0.2
+
+> *All software is released under the [MIT License](http://opensource.org/licenses/MIT).*  
+> *Copyright (c) 2015 ProtoCentral.*
+
+*See: sources, <https://github.com/Protocentral/ProtoCentral_fdc1004_breakout>*
 
 
 ### Sodaq RN2483 library 1.0.11
@@ -57,21 +66,21 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 > *Sodaq_RN2483 is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.*  
 > *Copyright (c) 2015 SODAQ. All rights reserved.*
 
-*See: sources, https://github.com/SodaqMoja/Sodaq_RN2483*
+*See: sources, <https://github.com/SodaqMoja/Sodaq_RN2483>*
 
 
 ### Sodaq WDT library 1.0.1
 
 *Note: this library used in Sodaq RN2483 library 1.0.11*
 
-*See: https://github.com/SodaqMoja/Sodaq_wdt*
+*See: <https://github.com/SodaqMoja/Sodaq_wdt>*
 
 
 ### Arduino software for Arduino AVR 1.6.21
 
 > *Arduino is an open-source project founded by Massimo Banzi, David Cuartielles, Tom Igoe, Gianluca Martino, and David Mellis. It builds on the work of many people, projects, and institutions.*
 
-*See: https://www.arduino.cc/en/Main/Credits*
+*See: <https://www.arduino.cc/en/Main/Credits>*
 
 > *This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.*  
 > *Copyright (c) 2005-2013 Arduino Team. All right reserved.*
@@ -93,7 +102,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 
 > *The source code for the Java environment is released under the GPL and the C/C++ microcontroller libraries are under the LGPL*
 
-*See: https://www.arduino.cc/en/Main/FAQ*
+*See: <https://www.arduino.cc/en/Main/FAQ>*
 
 
 ### ARM EABI GCC 4.8.3
@@ -120,7 +129,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 > *AVRDUDE is software for programming Atmel AVR Microcontrollers.*  
 > *License: GNU General Public License v2 or later*
 
-*See: http://savannah.nongnu.org/projects/avrdude/*
+*See: <http://savannah.nongnu.org/projects/avrdude/>*
 
 
 ### BOSSA 1.7.0
