@@ -15,6 +15,7 @@ void LoRa_setup();
  * Public
  ******************************************************************************/
 
+bool LoRa_send(const uint8_t *buffer, uint8_t size);
 void LoRa_sendTest();
 
 
