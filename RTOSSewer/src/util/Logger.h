@@ -17,6 +17,7 @@
 #define VC(c)              Logger_printCH(c)
 #define VSZ(s)             Logger_printSTR(s)
 #define VF(f)              Logger_printFL(f)
+#define VUI8(i)            Logger_printUI32(i)
 #define VUI16(i)           Logger_printUI32(i)
 #define VUI32(i)           Logger_printUI32(i)
 #define VUI8AH02(ia, size) Logger_printUI8AH02(ia, size)
