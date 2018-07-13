@@ -12,8 +12,8 @@
 #include "periph/I2C.h"
 #endif
 
-#if USE_LORA
-#include "periph/LoRa.h"
+#if USE_LORA_SODAQ
+#include "periph/LoRaSodaq.h"
 #endif
 
 #if USE_BMP280

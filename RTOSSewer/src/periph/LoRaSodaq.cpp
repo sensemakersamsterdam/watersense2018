@@ -1,6 +1,6 @@
-#include "LoRa.h"
+#include "LoRaSodaq.h"
 
-#if USE_LORA
+#if USE_LORA_SODAQ
 
 #include <Sodaq_RN2483.h>
 
@@ -22,8 +22,8 @@ static const uint8_t APP_KEY[]  = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x
  * Definitions
  ******************************************************************************/
 
-#define JOINNETWORK_MAX_RETRIES 5
-#define SEND_MAX_RETRIES        5
+#define JOINNETWORK_MAX_RETRIES 3
+#define SEND_MAX_RETRIES        3
 
 #define SERIAL_DEBUG SerialUSB
 #define SERIAL_LORA  Serial1
@@ -49,7 +49,16 @@ void LoRa_setup()
   }
   #endif
 
-  if (b) { LoRa_sendTest(); }
+  // TODO: following is for debug only(!), it will be removed later
+  if (b) {
+    #if USE_LOGGER_LORA
+    LOGS("sending test...");
+    #endif
+
+    static uint8_t testPayload[] = { 0x01, 0x10, 0x02, 0x22 };
+
+    LoRa_send(testPayload, sizeof(testPayload));
+  }
 }
 
 
@@ -72,18 +81,13 @@ bool LoRa_send(const uint8_t *buffer, uint8_t size)
 
     if (result == NoError) { return true; }
 
+    if (result == Busy || result == Timeout) {
+      vTaskDelay(pdMS_TO_TICKS(10000));
+      continue;
+    }
+
     if (result == NoResponse || result == InternalError || result == NetworkFatalError || result == NotConnected) {
       if (!LoRa_initOTA()) { return false; }
-      continue;
-    }
-
-    if (result == Timeout) {
-      vTaskDelay(pdMS_TO_TICKS(20000));
-      continue;
-    }
-
-    if (result == Busy) {
-      vTaskDelay(pdMS_TO_TICKS(10000));
       continue;
     }
 
@@ -91,17 +95,6 @@ bool LoRa_send(const uint8_t *buffer, uint8_t size)
   }
 
   return false;
-}
-
-void LoRa_sendTest()
-{
-  static uint8_t testPayload[] = { 0x01, 0x10, 0x02, 0x22 };
-
-  #if USE_LOGGER_LORA
-  LOGS("sending test...");
-  #endif
-
-  LoRa_send(testPayload, sizeof(testPayload));
 }
 
 
@@ -139,6 +132,8 @@ static bool LoRa_initOTA()
     #if USE_LOGGER_LORA
     LOG(VS("initOTA (attempt "), VUI8(i), VS(")..."));
     #endif
+
+    //TODO: LoRaBee.setSpreadingFactor(7);
 
     if (LoRaBee.initOTA(eui, APP_EUI, APP_KEY, false)) { return true; }
   }

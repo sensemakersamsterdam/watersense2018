@@ -1,7 +1,7 @@
 #include "../Common.h"
 
-#if USE_LORA && !defined(LORA_H)
-#define LORA_H
+#if USE_LORA_SODAQ && !defined(LORA_SODAQ_H)
+#define LORA_SODAQ_H
 
 
 /*******************************************************************************
@@ -16,7 +16,6 @@ void LoRa_setup();
  ******************************************************************************/
 
 bool LoRa_send(const uint8_t *buffer, uint8_t size);
-void LoRa_sendTest();
 
 
 /*******************************************************************************
@@ -33,4 +32,4 @@ static void LoRa_logDeviceInfo();
 static void LoRa_logTransmissionResult(uint8_t result);
 #endif
 
-#endif // USE_LORA && defined(LORA_H)
+#endif // USE_SODAQ_LORA && defined(LORA_SODAQ_H)

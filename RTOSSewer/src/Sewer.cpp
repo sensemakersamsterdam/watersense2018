@@ -78,7 +78,7 @@ static void Sewer_T0(void* pvParameters)
 {
   Sewer_initModules();
 
-  #if USE_LORA
+  #if USE_LORA_SODAQ
   LoRa_setup();
   #endif
 
