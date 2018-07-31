@@ -8,6 +8,9 @@
  * Definitions
  ******************************************************************************/
 
+#define STR(s) XSTR(s)
+#define XSTR(s) #s
+
 #ifdef ARDUINO_ARCH_SAMD
 #define VS(s) Logger_printSTR(s)
 #else

@@ -166,6 +166,26 @@ static void Logger_printSysinfo()
   #endif
   #endif
 
+  #ifdef __ARM_ARCH
+  #ifdef __ARM_ARCH_PROFILE
+  LOG(VS("ARM ARCH: " STR(__ARM_ARCH)), VC(__ARM_ARCH_PROFILE));
+  #else
+  LOGS("ARM ARCH: " STR(__ARM_ARCH));
+  #endif
+  #endif
+
+  #ifdef __AVR_ARCH__
+  LOGS("AVR ARCH: " STR(__AVR_ARCH__));
+  #endif
+
+  #ifdef __AVR_DEVICE_NAME__
+  LOGS("AVR DEVICE: " STR(__AVR_DEVICE_NAME__));
+  #endif
+
+  #ifdef __AVR_LIBC_VERSION_STRING__
+  LOGS("AVR LIBC: " __AVR_LIBC_VERSION_STRING__)
+  #endif
+
   #ifdef __VERSION__
   #ifdef __GNUG__
   LOGS("COMPILER: G++ " __VERSION__);
@@ -174,30 +194,8 @@ static void Logger_printSysinfo()
   #endif
   #endif
 
-  #ifdef __AVR_LIBC_VERSION_STRING__
-  LOGS("AVR LIBC: " __AVR_LIBC_VERSION_STRING__)
-  #endif
-
   #ifdef _NEWLIB_VERSION
   LOGS("NEWLIB: " _NEWLIB_VERSION)
-  #endif
-
-  #ifdef __ARM_ARCH
-  #ifdef __ARM_ARCH_PROFILE
-  LOG(VS("ARM ARCH: "), VUI16(__ARM_ARCH), VC(__ARM_ARCH_PROFILE));
-  #else
-  LOG(VS("ARM ARCH: "), VUI16(__ARM_ARCH));
-  #endif
-  #endif
-
-  #ifdef __AVR_ARCH__
-  LOG(VS("AVR ARCH: "), VUI16(__AVR_ARCH__));
-  #endif
-
-  #if defined(__AVR_ATmega2560__)
-  LOGS("MCU: ATmega2560");
-  #elif defined(__AVR_ATmega328P__)
-  LOGS("MCU: ATmega328P");
   #endif
 
   #ifdef USB_MANUFACTURER
