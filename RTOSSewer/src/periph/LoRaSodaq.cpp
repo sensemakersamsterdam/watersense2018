@@ -33,6 +33,9 @@ static const uint8_t APP_KEY[]  = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x
  * Lifecycle
  ******************************************************************************/
 
+// TODO - LoRaBee.sleep()
+// TODO - LoRaBee.awake()
+
 void LoRa_setup()
 {
   #if USE_LOGGER_LORA
@@ -50,6 +53,7 @@ void LoRa_setup()
   #endif
 
   // TODO: following is for debug only(!), it will be removed later
+  // TODO: instead of this => send data from sensors every 5 minutes
   if (b) {
     #if USE_LOGGER_LORA
     LOGS("sending test...");
@@ -133,7 +137,8 @@ static bool LoRa_initOTA()
     LOG(VS("initOTA (attempt "), VUI8(i), VS(")..."));
     #endif
 
-    //TODO: LoRaBee.setSpreadingFactor(7);
+    //LoRaBee.setFsbChannels(1);
+    //LoRaBee.setSpreadingFactor(7);
 
     if (LoRaBee.initOTA(eui, APP_EUI, APP_KEY, false)) { return true; }
   }

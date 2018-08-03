@@ -42,6 +42,7 @@
 
 #define configCPU_CLOCK_HZ                      F_CPU
 #define configENABLE_BACKWARD_COMPATIBILITY     0
+#define configEXPECTED_IDLE_TIME_BEFORE_SLEEP   7
 #define configIDLE_SHOULD_YIELD                 1
 #define configIDLE_TASK_NAME                    "I"
 #define configMAX_PRIORITIES                    9
@@ -61,7 +62,7 @@
 #define configUSE_QUEUE_SETS                    0
 #define configUSE_RECURSIVE_MUTEXES             0
 #define configUSE_TASK_NOTIFICATIONS            1
-#define configUSE_TICKLESS_IDLE                 0
+#define configUSE_TICKLESS_IDLE                 2
 
 /* Memory allocation related definitions. */
 
@@ -74,7 +75,7 @@
 
 #define configCHECK_FOR_STACK_OVERFLOW          0
 #define configUSE_DAEMON_TASK_STARTUP_HOOK      0
-#define configUSE_IDLE_HOOK                     1
+#define configUSE_IDLE_HOOK                     0
 #define configUSE_MALLOC_FAILED_HOOK            0
 #define configUSE_TICK_HOOK                     0
 
@@ -96,17 +97,16 @@
 #define configTIMER_TASK_PRIORITY               4
 #define configTIMER_TASK_STACK_DEPTH            configMINIMAL_STACK_SIZE
 
-/* Set the following definitions to 1 to include the API function, or zero
-to exclude the API function. */
+/* Set the following definitions to 1 to include the API function, or zero to exclude the API function. */
 
 #define INCLUDE_eTaskGetState                   0
 #define INCLUDE_uxTaskGetStackHighWaterMark     0
 #define INCLUDE_uxTaskPriorityGet               0
 #define INCLUDE_vTaskDelay                      1
-#define INCLUDE_vTaskDelayUntil                 0
+#define INCLUDE_vTaskDelayUntil                 1
 #define INCLUDE_vTaskDelete                     0
 #define INCLUDE_vTaskPrioritySet                0
-#define INCLUDE_vTaskSuspend                    0
+#define INCLUDE_vTaskSuspend                    1
 #define INCLUDE_xQueueGetMutexHolder            0
 #define INCLUDE_xSemaphoreGetMutexHolder        0
 #define INCLUDE_xTaskAbortDelay                 0
@@ -117,14 +117,17 @@ to exclude the API function. */
 #define INCLUDE_xTaskResumeFromISR              0
 #define INCLUDE_xTimerPendFunctionCall          0
 
-/* Normal assert() semantics without relying on the provision of an assert.h
-header file. */
+/* Normal assert() semantics without relying on the provision of an assert.h header file. */
 
 //#define configASSERT(x) if((x) == 0) { vAssertCalled(); }
 
-/* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
-standard names. */
+/* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
 
 #define xPortPendSVHandler PendSV_Handler
+
+/* First define the portSUPPRESS_TICKS_AND_SLEEP() macro.  The parameter is the
+time, in ticks, until the kernel next needs to execute. */
+
+#define portSUPPRESS_TICKS_AND_SLEEP(xTime) void vApplicationSleep(TickType_t xTime);vApplicationSleep(xTime)
 
 #endif /* FREERTOS_CONFIG_H */

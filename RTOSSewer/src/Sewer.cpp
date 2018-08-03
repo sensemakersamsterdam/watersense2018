@@ -9,6 +9,12 @@
 #define T2_STACK_SIZE 256
 #define T3_STACK_SIZE 256
 
+#define T0_DELAYL 10000
+#define T1_DELAY0 1200
+#define T1_DELAYL 5000
+#define T2_DELAYL 5000
+#define T3_DELAYL 5000
+
 
 /*******************************************************************************
  * Lifecycle
@@ -21,15 +27,6 @@ void Sewer_setup()
 
   xTaskCreateStatic(Sewer_T0, "M", T0_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT0Stack, &xT0TaskBuffer);
   vTaskStartScheduler();
-}
-
-void Sewer_idle()
-{
-  #if USE_LOGGER_MAIN
-  static unsigned long last = 0;
-  unsigned long now = millis();
-  if (now - last >= 1000) { LOGS("zzz..."); last = now; }
-  #endif
 }
 
 
@@ -82,32 +79,47 @@ static void Sewer_T0(void* pvParameters)
   LoRa_setup();
   #endif
 
-  while (true) {
+  TickType_t x = xTaskGetTickCount();
+
+  for (;;) {
     #if USE_LOGGER_MAIN
-    LOGS("zzz...");
+    LOG(VS("need sleep "), VUI32(T0_DELAYL), VS(" ms"));
     #endif
-    vTaskDelay(pdMS_TO_TICKS(10000));
+    vTaskDelayUntil(&x, T0_DELAYL);
   }
 }
 
 #if USE_BMP280
 static void Sewer_T1(void* pvParameters)
 {
-  vTaskDelay(pdMS_TO_TICKS(1200));
+  #if USE_LOGGER_MAIN
+  LOG(VS("need sleep "), VUI32(T1_DELAY0), VS(" ms"));
+  #endif
+  vTaskDelay(T1_DELAY0);
 
-  while (true) {
+  TickType_t x = xTaskGetTickCount();
+
+  for (;;) {
     BMP280_measure();
-    vTaskDelay(pdMS_TO_TICKS(5000));
+    #if USE_LOGGER_MAIN
+    LOG(VS("need sleep "), VUI32(T1_DELAYL), VS(" ms"));
+    #endif
+    vTaskDelayUntil(&x, pdMS_TO_TICKS(T1_DELAYL));
   }
 }
-#endif
+#endif // USE_BMP280
 
 #if USE_FDC1004
 static void Sewer_T2(void* pvParameters)
 {
-  while (true) {
+  TickType_t x = xTaskGetTickCount();
+
+  for (;;) {
     FDC1004_measure();
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    #if USE_LOGGER_MAIN
+    LOG(VS("need sleep "), VUI32(T2_DELAYL), VS(" ms"));
+    #endif
+    vTaskDelayUntil(&x, pdMS_TO_TICKS(T2_DELAYL));
   }
 }
 #endif // USE_VL53L0X
@@ -115,9 +127,14 @@ static void Sewer_T2(void* pvParameters)
 #if USE_VL53L0X
 static void Sewer_T3(void* pvParameters)
 {
-  while (true) {
+  TickType_t x = xTaskGetTickCount();
+
+  for (;;) {
     VL53L0X_measure();
-    vTaskDelay(pdMS_TO_TICKS(5000));
+    #if USE_LOGGER_MAIN
+    LOG(VS("need sleep "), VUI32(T3_DELAYL), VS(" ms"));
+    #endif
+    vTaskDelayUntil(&x, pdMS_TO_TICKS(T3_DELAYL));
   }
 }
 #endif // USE_VL53L0X

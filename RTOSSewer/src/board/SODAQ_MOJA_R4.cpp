@@ -40,6 +40,9 @@ void Board_setup()
   #endif
 }
 
+// TODO: implement Board_sleep
+uint32_t Board_sleep(uint32_t ms) { return 0; }
+
 
 /*******************************************************************************
  * Public

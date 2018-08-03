@@ -10,21 +10,15 @@
 
 void Board_setup();
 
+extern "C" uint32_t Board_sleep(uint32_t ms);
+
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
 
 #if USE_BOARD_LED
-void Board_toggleLedBlue();
-void Board_toggleLedGreen();
-void Board_toggleLedRed();
-void Board_turnOffLedBlue();
-void Board_turnOffLedGreen();
-void Board_turnOffLedRed();
-void Board_turnOnLedBlue();
-void Board_turnOnLedGreen();
-void Board_turnOnLedRed();
+void Board_setLed(uint8_t rgb);
 #endif
 
 
@@ -32,8 +26,6 @@ void Board_turnOnLedRed();
  * Private
  ******************************************************************************/
 
-#if USE_BOARD_LED
-static void Board_setLed(uint8_t pin, uint8_t state);
-#endif
+static uint32_t Board_wdt_enable(uint32_t ms);
 
 #endif // USE_BOARD_SODAQ_ONE_V3 && !defined(SODAQ_ONE_V3_H)

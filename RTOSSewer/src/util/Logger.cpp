@@ -46,7 +46,7 @@ BaseType_t Logger_begin(const char *func)
   Logger_printSTR(pcTaskGetName(NULL));
   Logger_printCH(']');
   Logger_printCH('[');
-  Logger_printUI32(millis());
+  Logger_printUI32(xTaskGetTickCount());
   Logger_printCH(']');
   Logger_printCH('[');
   Logger_printSTR(func);

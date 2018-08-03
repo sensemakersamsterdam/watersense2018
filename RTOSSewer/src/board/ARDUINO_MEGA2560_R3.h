@@ -10,6 +10,8 @@
 
 void Board_setup();
 
+extern "C" uint32_t Board_sleep(uint32_t ms);
+
 
 /*******************************************************************************
  * Public
