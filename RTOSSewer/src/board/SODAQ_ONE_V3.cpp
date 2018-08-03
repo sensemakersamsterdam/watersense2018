@@ -2,7 +2,9 @@
 
 #if USE_BOARD_SODAQ_ONE_V3
 
+#if USE_WDT_SLEEP
 #include <Sodaq_wdt.h>
+#endif
 
 
 /*******************************************************************************
