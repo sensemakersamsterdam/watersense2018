@@ -39,11 +39,7 @@ bool BMP280_setup()
   }
 
   #if USE_LOGGER_BMP280
-  if (b) {
-    LOGS("started");
-  } else {
-    LOGS("failed");
-  }
+  if (b) { LOGS("started"); } else { LOGS("failed"); }
   #endif
 
   return b;

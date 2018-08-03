@@ -10,12 +10,12 @@
 
 void Board_setup();
 
-extern "C" uint32_t Board_sleep(uint32_t ms);
-
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
+
+extern "C" uint32_t Board_sleep(uint32_t ms);
 
 #if USE_BOARD_LED
 void Board_toggleLed();

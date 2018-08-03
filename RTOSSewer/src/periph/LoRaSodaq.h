@@ -8,21 +8,22 @@
  * Lifecycle
  ******************************************************************************/
 
-void LoRa_setup();
+bool LoRa_setup();
 
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
 
+bool LoRa_initOTAA();
 bool LoRa_send(const uint8_t *buffer, uint8_t size);
+void LoRa_sleep();
+void LoRa_wakeUp();
 
 
 /*******************************************************************************
  * Private
  ******************************************************************************/
-
-static bool LoRa_initOTA();
 
 #if USE_LOGGER_LORA_DEVICEINFO
 static void LoRa_logDeviceInfo();

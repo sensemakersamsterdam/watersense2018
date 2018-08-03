@@ -76,7 +76,11 @@ static void Sewer_T0(void* pvParameters)
   Sewer_initModules();
 
   #if USE_LORA_SODAQ
-  LoRa_setup();
+  if (!LoRa_setup()) { Board_fatalShutdown(); }
+
+  LoRa_wakeUp();
+  LoRa_initOTAA();
+  LoRa_sleep();
   #endif
 
   TickType_t x = xTaskGetTickCount();

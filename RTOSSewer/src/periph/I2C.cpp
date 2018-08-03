@@ -87,11 +87,7 @@ static void I2C_logDevices()
     }
   }
 
-  if (b) {
-    LOGS("scanning done");
-  } else {
-    LOGS("no devices found");
-  }
+  if (b) { LOGS("scanning done"); } else { LOGS("no devices found"); }
 }
 #endif // USE_LOGGER_I2C_DEVICES
 

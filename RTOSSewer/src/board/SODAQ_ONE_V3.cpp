@@ -41,7 +41,6 @@ void Board_setup()
   #if USE_BOARD_LED
   static StaticSemaphore_t ledMutexBuffer;
   ledMutex = xSemaphoreCreateMutexStatic(&ledMutexBuffer);
-  Board_setLed(0b001);
   #endif
 
   // enable deepsleep
@@ -55,40 +54,32 @@ void Board_setup()
   #endif
 }
 
-#if USE_WDT_SLEEP
-uint32_t Board_sleep(uint32_t ms)
-{
-  #if USE_LOGGER
-  USBDevice.standby();
-  #endif
-
-  #if USE_BOARD_LED
-  if (ms > 200) { Board_setLed(0b010); }
-  #endif
-
-  uint32_t ms1 = Board_wdt_enable(ms);
-  __DSB();
-  __WFI();
-  sodaq_wdt_disable();
-
-  #if USE_BOARD_LED
-  if (ms > 200) Board_setLed(0b001);
-  #endif
-
-  #if USE_LOGGER_WDT_SLEEP
-  LOG(VS("need sleep: "), VUI32(ms), VS(", actual sleep: "), VUI32(ms1), VS(" ms"));
-  #endif
-
-  return ms1;
-}
-#else
-uint32_t Board_sleep(uint32_t ms) { return 0; }
-#endif
-
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
+
+void Board_fatalShutdown()
+{
+  #if USE_LOGGER
+  LOGS("FATAL ERROR! SHUTDOWN");
+  #endif
+
+  taskDISABLE_INTERRUPTS();
+
+  #if USE_BOARD_LED
+  for (;;) {
+    Board_setLed(0b100);
+    vTaskDelay(1000);
+    Board_setLed(0b000);
+    vTaskDelay(1000);
+  }
+  #else
+  SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+  __DSB();
+  __WFI();
+  #endif
+}
 
 #if USE_BOARD_LED
 void Board_setLed(uint8_t rgb)
@@ -107,6 +98,36 @@ void Board_setLed(uint8_t rgb)
   xSemaphoreGive(ledMutex);
 }
 #endif // USE_BOARD_LED
+
+#if USE_WDT_SLEEP
+uint32_t Board_sleep(uint32_t ms)
+{
+  #if USE_LOGGER
+  USBDevice.standby();
+  #endif
+
+  #if USE_BOARD_LED
+  if (ms > 200) { Board_setLed(0b010); }
+  #endif
+
+  uint32_t ms1 = Board_wdt_enable(ms);
+  __DSB();
+  __WFI();
+  sodaq_wdt_disable();
+
+  #if USE_BOARD_LED
+  if (ms > 200) Board_setLed(0b000);
+  #endif
+
+  #if USE_LOGGER_WDT_SLEEP
+  LOG(VS("need sleep: "), VUI32(ms), VS(", actual sleep: "), VUI32(ms1), VS(" ms"));
+  #endif
+
+  return ms1;
+}
+#else
+uint32_t Board_sleep(uint32_t ms) { return 0; }
+#endif
 
 
 /*******************************************************************************

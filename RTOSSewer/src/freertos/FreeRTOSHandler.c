@@ -3,6 +3,7 @@
 
 void loop();
 void xPortSysTickHandler();
+void Board_fatalShutdown();
 uint32_t Board_sleep(uint32_t ms);
 
 /* SysTick handler used in real-time kernel. */
@@ -66,11 +67,7 @@ void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName)
 /* See https://www.freertos.org/a00110.html#configASSERT */
 
 #if configASSERT_DEFINED == 1
-void vAssertCalled(const char *func)
-{
-  taskDISABLE_INTERRUPTS();
-  for(;;);
-}
+void vAssertCalled(const char *func) { Board_fatalShutdown(); }
 #endif
 
 /* Define the function that is called by portSUPPRESS_TICKS_AND_SLEEP(). */

@@ -44,11 +44,7 @@ bool FDC1004_setup()
   }
 
   #if USE_LOGGER_FDC1004
-  if (b) {
-    LOGS("started");
-  } else {
-    LOGS("failed");
-  }
+  if (b) { LOGS("started"); } else { LOGS("failed"); }
   #endif
 
   return b;

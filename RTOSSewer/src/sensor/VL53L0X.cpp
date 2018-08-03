@@ -32,11 +32,7 @@ bool VL53L0X_setup()
   }
 
   #if USE_LOGGER_VL53L0X
-  if (b) {
-    LOGS("started");
-  } else {
-    LOGS("failed");
-  }
+  if (b) { LOGS("started"); } else { LOGS("failed"); }
   #endif
 
   return b;
