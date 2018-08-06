@@ -2,8 +2,12 @@
 
 #if USE_BOARD_SODAQ_ONE_V3
 
-#if USE_WDT_SLEEP
-#include <Sodaq_wdt.h>
+#if USE_DEEPSLEEP && USE_RTC
+#include "../periph/RTC.h"
+#endif
+
+#if USE_DEEPSLEEP && USE_WDT
+#include "../periph/WDT.h"
 #endif
 
 
@@ -44,7 +48,7 @@ void Board_setup()
   #endif
 
   // enable deepsleep
-  #if USE_WDT_SLEEP
+  #if USE_DEEPSLEEP
   SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
   #endif
 
@@ -99,84 +103,78 @@ void Board_setLed(uint8_t rgb)
 }
 #endif // USE_BOARD_LED
 
-#if USE_WDT_SLEEP
+#if USE_DEEPSLEEP
 uint32_t Board_sleep(uint32_t ms)
 {
-  #if USE_LOGGER
-  USBDevice.standby();
-  #endif
-
   #if USE_BOARD_LED
   if (ms > 200) { Board_setLed(0b010); }
   #endif
 
-  uint32_t ms1 = Board_wdt_enable(ms);
-  __DSB();
-  __WFI();
-  sodaq_wdt_disable();
+  uint32_t ms1 = 0;
+
+  #if USE_RTC
+  if (ms > 1000) { ms1 = Board_sleep_RTC(ms); } else {
+  #endif
+  #if USE_WDT
+    if (ms >= 8) { ms1 = Board_sleep_WDT(ms); }
+  #endif
+  #if USE_RTC
+  }
+  #endif
 
   #if USE_BOARD_LED
   if (ms > 200) Board_setLed(0b000);
-  #endif
-
-  #if USE_LOGGER_WDT_SLEEP
-  LOG(VS("need sleep: "), VUI32(ms), VS(", actual sleep: "), VUI32(ms1), VS(" ms"));
   #endif
 
   return ms1;
 }
 #else
 uint32_t Board_sleep(uint32_t ms) { return 0; }
-#endif
+#endif // USE_DEEPSLEEP
 
 
 /*******************************************************************************
  * Private
  ******************************************************************************/
 
-#if USE_WDT_SLEEP
-static uint32_t Board_wdt_enable(uint32_t ms)
+#if USE_DEEPSLEEP && USE_RTC
+uint32_t Board_sleep_RTC(uint32_t ms)
 {
-  uint8_t pr;
+  uint32_t ms1 = RTC_setAlarm(ms);
 
-  if (ms >= 8000) {
-    ms = 8000;
-    pr = 0xA;
-  } else if (ms >= 4000) {
-    ms = 4000;
-    pr = 0x09;
-  } else if (ms >= 2000) {
-    ms = 2000;
-    pr = 0x08;
-  } else if (ms >= 1000) {
-    ms = 1000;
-    pr = 0x07;
-  } else if (ms >= 500) {
-    ms = 500;
-    pr = 0x06;
-  } else if (ms >= 250) {
-    ms = 250;
-    pr = 0x05;
-  } else if (ms >= 125) {
-    ms = 125;
-    pr = 0x04;
-  } else if (ms >= 63) {
-    ms = 63;
-    pr = 0x03;
-  } else if (ms >= 31) {
-    ms = 31;
-    pr = 0x02;
-  } else if (ms >= 16) {
-    ms = 16;
-    pr = 0x01;
-  } else {
-    ms = 8;
-    pr = 0x00;
-  }
+  #if USE_LOGGER_DEEPSLEEP
+  LOG(VS("need sleep: "), VUI32(ms), VS(" ms, will sleep: "), VUI32(ms1), VS(" ms"));
+  #endif
 
-  sodaq_wdt_enable((wdt_period)pr);
+  #if USE_LOGGER
+  USBDevice.standby();
+  #endif
 
-  return ms;
+  __DSB();
+  __WFI();
+
+  return ms1;
+}
+#endif
+
+#if USE_DEEPSLEEP && USE_WDT
+uint32_t Board_sleep_WDT(uint32_t ms)
+{
+  uint32_t ms1 = WDT_enable(ms);
+
+  #if USE_LOGGER_DEEPSLEEP
+  LOG(VS("need sleep: "), VUI32(ms), VS(" ms, will sleep: "), VUI32(ms1), VS(" ms"));
+  #endif
+
+  #if USE_LOGGER
+  USBDevice.standby();
+  #endif
+
+  __DSB();
+  __WFI();
+  WDT_disable();
+
+  return ms1;
 }
 #endif
 

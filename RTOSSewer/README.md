@@ -61,6 +61,14 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources, <https://github.com/Protocentral/ProtoCentral_fdc1004_breakout>*
 
 
+### RTCZero 1.5.2
+
+> *This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.*  
+> *Copyright (c) Arduino LLC. All right reserved.*
+
+*See: sources*
+
+
 ### Sodaq RN2483 library 1.0.11
 
 > *Sodaq_RN2483 is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.*  

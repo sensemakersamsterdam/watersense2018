@@ -28,6 +28,7 @@ extern "C" uint32_t Board_sleep(uint32_t ms);
  * Private
  ******************************************************************************/
 
-static uint32_t Board_wdt_enable(uint32_t ms);
+uint32_t Board_sleep_RTC(uint32_t ms);
+uint32_t Board_sleep_WDT(uint32_t ms);
 
 #endif // USE_BOARD_SODAQ_ONE_V3 && !defined(SODAQ_ONE_V3_H)

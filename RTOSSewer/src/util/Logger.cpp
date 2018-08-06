@@ -60,6 +60,7 @@ void Logger_end()
 {
   Logger_printCH('\r');
   Logger_printCH('\n');
+
   xSemaphoreGive(logMutex);
 }
 
@@ -107,7 +108,7 @@ void Logger_printSTR(const char *s)
 
 void Logger_printUI32(uint32_t i)
 {
-  uint32_t j = 10;
+  uint64_t j = 10;
   while (i / j > 0) { j *= 10; }
 
   while (true) {
