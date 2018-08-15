@@ -34,18 +34,11 @@ static uint8_t capdac = 0;
 
 bool FDC1004_setup()
 {
-  bool b = false;
+  Wire.beginTransmission(FDC1004_ADDRESS);
 
-  if (I2C_lock()) {
-    Wire.beginTransmission(FDC1004_ADDRESS);
-    b = Wire.endTransmission() == 0;
+  bool b = Wire.endTransmission() == 0;
 
-    I2C_unlock();
-  }
-
-  #if USE_LOGGER_FDC1004
-  if (b) { LOGS("started"); } else { LOGS("failed"); }
-  #endif
+  LOG_SHOW_SETUP_RESULT(b);
 
   return b;
 }
@@ -57,30 +50,22 @@ bool FDC1004_setup()
 
 void FDC1004_measure()
 {
-  #if USE_LOGGER_FDC1004
+  #if USE_LOGGER
   LOGS("reading a measurement...");
-
-  if (!I2C_lock()) { return; }
 
   uint8_t result = FDC.configureMeasurementSingle(MEASURMENT, CHANNEL, capdac);
   FDC.triggerSingleMeasurement(MEASURMENT, FDC1004_100HZ);
-
-  I2C_unlock();
 
   if (result != 0) {
     LOGS("error: configureMeasurementSingle");
     return;
   }
 
-  vTaskDelay(pdMS_TO_TICKS(15));
-
-  if (!I2C_lock()) { return; }
+  RTOS_delay(pdMS_TO_TICKS(15));
 
   uint16_t value[2];
 
   result = FDC.readMeasurement(MEASURMENT, value);
-
-  I2C_unlock();
 
   if (result != 0) {
     LOGS("error: readMeasurement");

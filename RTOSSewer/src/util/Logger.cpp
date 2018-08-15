@@ -26,11 +26,9 @@ void Logger_setup()
 
   logMutex = xSemaphoreCreateMutexStatic(&logMutexBuffer);
 
-  LOGS("started");
+  LOG_SHOW_SETUP_RESULT(true);
 
-  #if USE_LOGGER_SYSINFO
   Logger_printSysinfo();
-  #endif
 }
 
 
@@ -140,7 +138,6 @@ void Logger_printUI8H02(uint8_t i)
  * Private
  ******************************************************************************/
 
-#if USE_LOGGER_SYSINFO
 static void Logger_printSysinfo()
 {
   #ifdef ARDUINO
@@ -211,6 +208,5 @@ static void Logger_printSysinfo()
   LOG(VS("F_CPU: "), VUI32(F_CPU));
   #endif
 }
-#endif // USE_LOGGER_SYSINFO
 
 #endif // USE_LOGGER

@@ -28,19 +28,12 @@ static Adafruit_BMP280 sensor;
 
 bool BMP280_setup()
 {
-  bool b = false;
+  Wire.beginTransmission(BMP280_ADDRESS_CLONE);
+  uint8_t error = Wire.endTransmission();
 
-  if (I2C_lock()) {
-    Wire.beginTransmission(BMP280_ADDRESS_CLONE);
-    uint8_t error = Wire.endTransmission();
+  bool b = sensor.begin(error == 0 ? BMP280_ADDRESS_CLONE : BMP280_ADDRESS_ORIGINAL);
 
-    b = sensor.begin(error == 0 ? BMP280_ADDRESS_CLONE : BMP280_ADDRESS_ORIGINAL);
-    I2C_unlock();
-  }
-
-  #if USE_LOGGER_BMP280
-  if (b) { LOGS("started"); } else { LOGS("failed"); }
-  #endif
+  LOG_SHOW_SETUP_RESULT(b);
 
   return b;
 }
@@ -52,16 +45,12 @@ bool BMP280_setup()
 
 void BMP280_measure()
 {
-  #if USE_LOGGER_BMP280
+  #if USE_LOGGER
   LOGS("reading a measurement...");
-
-  if (!I2C_lock()) { return; }
 
   float t = sensor.readTemperature();
   float p = sensor.readPressure();
   float a = sensor.readAltitude(LOCAL_BAROMETRIC_PRESSURE);
-
-  I2C_unlock();
 
   LOG(VS("temperature = "), VF(t), VS(" *C"));
   LOG(VS("pressure = "),    VF(p), VS(" Pa"));

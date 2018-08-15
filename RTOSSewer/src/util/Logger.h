@@ -1,6 +1,6 @@
 #include "../Common.h"
 
-#if USE_LOGGER && !defined(LOGGER_H)
+#ifndef LOGGER_H
 #define LOGGER_H
 
 
@@ -11,11 +11,7 @@
 #define STR(s) XSTR(s)
 #define XSTR(s) #s
 
-#ifdef ARDUINO_ARCH_SAMD
-#define VS(s) Logger_printSTR(s)
-#else
-#define VS(s) Logger_printPSTR(PSTR(s))
-#endif
+#if USE_LOGGER
 
 #define VC(c)              Logger_printCH(c)
 #define VSZ(s)             Logger_printSTR(s)
@@ -26,8 +22,32 @@
 #define VUI8AH02(ia, size) Logger_printUI8AH02(ia, size)
 #define VUI8H02(i)         Logger_printUI8H02(i)
 
+#ifdef ARDUINO_ARCH_SAMD
+#define VS(s) Logger_printSTR(s)
+#else
+#define VS(s) Logger_printPSTR(PSTR(s))
+#endif
+
 #define LOG(...) { if (Logger_begin(__FUNCTION__)) { __VA_ARGS__; Logger_end(); } }
 #define LOGS(s) LOG(VS(s))
+#define LOG_SHOW_SETUP_RESULT(b) LOG(b ? VS("started") : VS("failed"))
+
+#else
+
+#define VC(c)
+#define VSZ(s)
+#define VF(f)
+#define VUI8(i)
+#define VUI16(i)
+#define VUI32(i)
+#define VUI8AH02(ia, size)
+#define VUI8H02(i)
+#define VS(s)
+#define LOG(...)
+#define LOGS(s)
+#define LOG_SHOW_SETUP_RESULT(b)
+
+#endif // USE_LOGGER
 
 
 /*******************************************************************************
@@ -56,8 +76,6 @@ void Logger_printUI32(uint32_t i);
  * Private
  ******************************************************************************/
 
-#if USE_LOGGER_SYSINFO
 static void Logger_printSysinfo();
-#endif
 
-#endif // USE_LOGGER && !defined(LOGGER_H)
+#endif // LOGGER_H

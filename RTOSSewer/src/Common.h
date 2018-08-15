@@ -9,27 +9,14 @@
 #define USE_BOARD_LED                 1
 #define USE_LORA_SODAQ                1 && USE_BOARD_SODAQ_ONE_V3
 
-#define USE_RTC                       1
+#define USE_BMP280                    1
+#define USE_FDC1004                   1
+#define USE_VL53L0X                   1
+
+#define USE_RTC                       1 && USE_BOARD_SODAQ_ONE_V3
 #define USE_WDT                       1
 #define USE_DEEPSLEEP                 0 && (USE_RTC || USE_WDT)
-
-#define USE_I2C                       1
-#define USE_BMP280                    1 && USE_I2C
-#define USE_FDC1004                   1 && USE_I2C
-#define USE_VL53L0X                   1 && USE_I2C
-
 #define USE_LOGGER                    1
-#define USE_LOGGER_BMP280             1 && USE_LOGGER && USE_BMP280
-#define USE_LOGGER_BOARD              1 && USE_LOGGER
-#define USE_LOGGER_FDC1004            1 && USE_LOGGER && USE_FDC1004
-#define USE_LOGGER_I2C                1 && USE_LOGGER && USE_I2C
-#define USE_LOGGER_I2C_DEVICES        1 && USE_LOGGER && USE_I2C
-#define USE_LOGGER_LORA               1 && USE_LOGGER && USE_LORA_SODAQ
-#define USE_LOGGER_LORA_DEVICEINFO    1 && USE_LOGGER && USE_LORA_SODAQ
-#define USE_LOGGER_MAIN               1 && USE_LOGGER
-#define USE_LOGGER_SYSINFO            1 && USE_LOGGER
-#define USE_LOGGER_VL53L0X            1 && USE_LOGGER && USE_VL53L0X
-#define USE_LOGGER_DEEPSLEEP          1 && USE_LOGGER && USE_DEEPSLEEP
 
 #include <Arduino.h>
 
@@ -41,6 +28,7 @@
 #include "freertos/FreeRTOSv10.0.1/semphr.h"
 #include "freertos/FreeRTOSv10.0.1/task.h"
 #include "util/Logger.h"
+#include "util/RTOS.h"
 
 #if USE_BOARD_ARDUINO_MEGA2560_R3
 #include "board/ARDUINO_MEGA2560_R3.h"

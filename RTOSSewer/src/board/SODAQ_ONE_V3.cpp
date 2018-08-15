@@ -12,15 +12,6 @@
 
 
 /*******************************************************************************
- * State
- ******************************************************************************/
-
-#if USE_BOARD_LED
-static SemaphoreHandle_t ledMutex;
-#endif
-
-
-/*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
@@ -41,21 +32,12 @@ void Board_setup()
   digitalWrite(PIN_LED_GREEN, HIGH);
   digitalWrite(PIN_LED_RED,   HIGH);
 
-  // init board LEDs handler if necessary
-  #if USE_BOARD_LED
-  static StaticSemaphore_t ledMutexBuffer;
-  ledMutex = xSemaphoreCreateMutexStatic(&ledMutexBuffer);
-  #endif
-
   // enable deepsleep
   #if USE_DEEPSLEEP
   SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
   #endif
 
-  // done
-  #if USE_LOGGER_BOARD
   LOGS("SODAQ_ONE_V3 started");
-  #endif
 }
 
 
@@ -65,18 +47,16 @@ void Board_setup()
 
 void Board_fatalShutdown()
 {
-  #if USE_LOGGER
   LOGS("FATAL ERROR! SHUTDOWN");
-  #endif
 
   taskDISABLE_INTERRUPTS();
 
   #if USE_BOARD_LED
   for (;;) {
     Board_setLed(0b100);
-    vTaskDelay(1000);
+    RTOS_delay(pdMS_TO_TICKS(1000));
     Board_setLed(0b000);
-    vTaskDelay(1000);
+    RTOS_delay(pdMS_TO_TICKS(1000));
   }
   #else
   SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
@@ -85,23 +65,12 @@ void Board_fatalShutdown()
   #endif
 }
 
-#if USE_BOARD_LED
 void Board_setLed(uint8_t rgb)
 {
-  if (!xSemaphoreTake(ledMutex, 100)) {
-    #if USE_LOGGER_BOARD
-    LOGS("resource is busy");
-    #endif
-    return;
-  }
-
   digitalWrite(PIN_LED_RED  , !(rgb & 0b100));
   digitalWrite(PIN_LED_GREEN, !(rgb & 0b010));
   digitalWrite(PIN_LED_BLUE , !(rgb & 0b001));
-
-  xSemaphoreGive(ledMutex);
 }
-#endif // USE_BOARD_LED
 
 #if USE_DEEPSLEEP
 uint32_t Board_sleep(uint32_t ms)
@@ -142,9 +111,7 @@ uint32_t Board_sleep_RTC(uint32_t ms)
 {
   uint32_t ms1 = RTC_setAlarm(ms);
 
-  #if USE_LOGGER_DEEPSLEEP
   LOG(VS("need sleep: "), VUI32(ms), VS(" ms, will sleep: "), VUI32(ms1), VS(" ms"));
-  #endif
 
   #if USE_LOGGER
   USBDevice.standby();
@@ -162,9 +129,7 @@ uint32_t Board_sleep_WDT(uint32_t ms)
 {
   uint32_t ms1 = WDT_enable(ms);
 
-  #if USE_LOGGER_DEEPSLEEP
   LOG(VS("need sleep: "), VUI32(ms), VS(" ms, will sleep: "), VUI32(ms1), VS(" ms"));
-  #endif
 
   #if USE_LOGGER
   USBDevice.standby();

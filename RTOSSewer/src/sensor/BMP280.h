@@ -1,6 +1,6 @@
 #include "../Common.h"
 
-#if USE_BMP280 && !defined(BMP280_H)
+#ifndef BMP280_H
 #define BMP280_H
 
 
@@ -17,4 +17,4 @@ bool BMP280_setup();
 
 void BMP280_measure();
 
-#endif // USE_BMP280 && !defined(BMP280_H)
+#endif // BMP280_H

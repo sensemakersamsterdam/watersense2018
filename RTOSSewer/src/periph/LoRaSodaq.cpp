@@ -39,29 +39,25 @@ bool LoRa_setup()
   Board_setLed(0b001);
   #endif
 
-  #if USE_LOGGER_LORA
   LOGS("starting...");
-  #endif
 
   SERIAL_LORA.begin(LoRaBee.getDefaultBaudRate());
 
-  #if USE_LOGGER_LORA
+  #if USE_LOGGER
   LoRaBee.setDiag(SERIAL_DEBUG);
   #endif
 
   bool b = LoRaBee.init(SERIAL_LORA, LORA_RESET);
 
   if (b) {
-    #if USE_LOGGER_LORA_DEVICEINFO
+    #if USE_LOGGER
     LoRa_logDeviceInfo();
     #endif
 
     LoRa_sleep();
   }
 
-  #if USE_LOGGER_LORA
-  if (b) { LOGS("started"); } else { LOGS("failed"); }
-  #endif
+  LOG_SHOW_SETUP_RESULT(b);
 
   return b;
 }
@@ -73,39 +69,29 @@ bool LoRa_setup()
 
 bool LoRa_initOTAA()
 {
-  #if USE_LOGGER_LORA
   LOGS("init OTAA...");
-  #endif
 
   uint8_t eui[8];
 
   if (LoRaBee.getHWEUI(eui, sizeof(eui)) != 8) {
-    #if USE_LOGGER_LORA
     LOGS("LoRa is down");
-    #endif
     return false;
   }
 
   bool b = false;
 
   for (uint8_t i = 0; i < JOINNETWORK_MAX_RETRIES; i++) {
-    #if USE_LOGGER_LORA
     LOG(VS("initOTA (attempt "), VUI8(i), VS(")..."));
-    #endif
 
     if (LoRaBee.initOTA(eui, APP_EUI, APP_KEY, false)) { b = true; break; }
   }
 
-  #if USE_LOGGER_LORA
   if (b) { LOGS("accepted"); } else { LOGS("denied"); }
-  #endif
 
   // TODO: following is for debug only(!), it will be removed later
   // TODO: instead of this => send data from sensors every 5 minutes
   // if (b) {
-  //   #if USE_LOGGER_LORA
   //   LOGS("sending test...");
-  //   #endif
   //
   //   static uint8_t testPayload[] = { 0x01, 0x10, 0x02, 0x22 };
   //
@@ -118,20 +104,18 @@ bool LoRa_initOTAA()
 // bool LoRa_send(const uint8_t *buffer, uint8_t size)
 // {
 //   for (uint8_t i = 0; i < SEND_MAX_RETRIES; i++) {
-//     #if USE_LOGGER_LORA
 //     LOG(VS("send (attempt "), VUI8(i), VS(")..."));
-//     #endif
 //
 //     uint8_t result = LoRaBee.send(1, buffer, size);
 //
-//     #if USE_LOGGER_LORA
+//     #if USE_LOGGER
 //     LoRa_logTransmissionResult(result);
 //     #endif
 //
 //     if (result == NoError) { return true; }
 //
 //     if (result == Busy || result == Timeout) {
-//       vTaskDelay(pdMS_TO_TICKS(10000));
+//       RTOS_delay(pdMS_TO_TICKS(10000));
 //       continue;
 //     }
 //
@@ -150,9 +134,7 @@ void LoRa_sleep()
 {
   LoRaBee.sleep();
 
-  #if USE_LOGGER_LORA
   LOGS("sleep mode on");
-  #endif
 
   #if USE_BOARD_LED
   Board_setLed(0b000);
@@ -163,9 +145,7 @@ void LoRa_wakeUp()
 {
   LoRaBee.wakeUp();
 
-  #if USE_LOGGER_LORA
   LOGS("active mode on");
-  #endif
 
   #if USE_BOARD_LED
   Board_setLed(0b001);
@@ -177,7 +157,6 @@ void LoRa_wakeUp()
  * Private
  ******************************************************************************/
 
-#if USE_LOGGER_LORA_DEVICEINFO
 static void LoRa_logDeviceInfo()
 {
   union {
@@ -191,9 +170,7 @@ static void LoRa_logDeviceInfo()
   i = LoRaBee.getHWEUI(u.eui, sizeof(u.eui));
   if (i > 0) { LOG(VS("device EUI: "), VUI8AH02(u.eui, i)); } else { LOGS("device EUI: N/A"); }
 }
-#endif
 
-#if USE_LOGGER_LORA
 static void LoRa_logTransmissionResult(uint8_t result)
 {
   switch (result)
@@ -210,6 +187,5 @@ static void LoRa_logTransmissionResult(uint8_t result)
     default:                LOGS("Unknown");           break; // should be impossible
   }
 }
-#endif
 
 #endif // USE_LORA

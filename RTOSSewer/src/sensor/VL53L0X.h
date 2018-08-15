@@ -1,6 +1,6 @@
 #include "../Common.h"
 
-#if USE_VL53L0X && !defined(VL53L0X_H)
+#ifndef VL53L0X_H
 #define VL53L0X_H
 
 
@@ -17,4 +17,4 @@ bool VL53L0X_setup();
 
 void VL53L0X_measure();
 
-#endif // USE_VL53L0X && !defined(VL53L0X_H)
+#endif // VL53L0X_H

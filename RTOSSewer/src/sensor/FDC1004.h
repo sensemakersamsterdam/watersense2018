@@ -1,6 +1,6 @@
 #include "../Common.h"
 
-#if USE_FDC1004 && !defined(FDC1004_H)
+#ifndef FDC1004_H
 #define FDC1004_H
 
 
@@ -17,4 +17,4 @@ bool FDC1004_setup();
 
 void FDC1004_measure();
 
-#endif // USE_FDC1004 && !defined(FDC1004_H)
+#endif // FDC1004_H
