@@ -42,7 +42,7 @@
 
 #define configCPU_CLOCK_HZ                      F_CPU
 #define configENABLE_BACKWARD_COMPATIBILITY     0
-#define configEXPECTED_IDLE_TIME_BEFORE_SLEEP   7
+#define configEXPECTED_IDLE_TIME_BEFORE_SLEEP   2
 #define configIDLE_SHOULD_YIELD                 1
 #define configIDLE_TASK_NAME                    "I"
 #define configMAX_PRIORITIES                    9

@@ -152,6 +152,10 @@ void Logger_printUI8H02(uint8_t i)
 
 static void Logger_printSysinfo()
 {
+  #if defined(PROJECT_NAME) && defined(PROJECT_VERSION)
+  LOGS("PROJECT: " PROJECT_NAME  " " PROJECT_VERSION);
+  #endif
+
   #ifdef ARDUINO
   LOG(VS("ARDUINO: "), VUI16(ARDUINO / 10000), VC('.'), VUI16(ARDUINO / 100 % 100), VC('.'), VUI16(ARDUINO % 100));
   #endif

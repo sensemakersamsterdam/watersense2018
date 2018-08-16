@@ -1,6 +1,6 @@
 #include "BMP280.h"
 
-#if USE_LSM303AGR
+#if USE_LSM303AGR || USE_BOARD_SODAQ_ONE_V3
 
 #include <Sodaq_LSM303AGR.h>
 
@@ -16,19 +16,24 @@
  * State
  ******************************************************************************/
 
+#if USE_LSM303AGR
 bool LSM303AGR_active = false;
+#endif
 
 #if USE_BOARD_TEMPERATURE
 int8_t LSM303AGR_temperature = 0;
 #endif
 
+#if USE_LSM303AGR
 static Sodaq_LSM303AGR accel;
+#endif
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
+#if USE_LSM303AGR
 void LSM303AGR_setup()
 {
   LSM303AGR_active = accel.checkWhoAmI();
@@ -40,12 +45,24 @@ void LSM303AGR_setup()
 
   LOG_SETUP_RESULT_TEXT(LSM303AGR_active);
 }
+#endif
+
+void LSM303AGR_setupDisable()
+{
+  Sodaq_LSM303AGR accel;
+
+  if (accel.checkWhoAmI()) {
+    accel.disableAccelerometer();
+    accel.disableMagnetometer();
+  }
+}
 
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
 
+#if USE_LSM303AGR
 void LSM303AGR_measure()
 {
   if (!LSM303AGR_active) { return; }
@@ -58,6 +75,6 @@ void LSM303AGR_measure()
   accel.disableAccelerometer();
   #endif
 }
-
-
 #endif
+
+#endif // USE_LSM303AGR || USE_BOARD_SODAQ_ONE_V3

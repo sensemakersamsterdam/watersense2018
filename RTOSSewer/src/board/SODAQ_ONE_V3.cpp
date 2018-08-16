@@ -3,6 +3,7 @@
 #if USE_BOARD_SODAQ_ONE_V3
 
 #include "../periph/I2C.h"
+#include "../sensor/LSM303AGR.h"
 
 #if USE_DEEPSLEEP && USE_RTC
 #include "../periph/RTC.h"
@@ -17,9 +18,9 @@
  * Definitions
  ******************************************************************************/
 
-#define ADC_AREF                  3.3f
-#define BATVOLT_R1                4.7f
-#define BATVOLT_R2                10.0f
+#define ADC_AREF   3.3f
+#define BATVOLT_R1 4.7f
+#define BATVOLT_R2 10.0f
 
 
 /*******************************************************************************
@@ -61,18 +62,31 @@ void Board_setup()
   digitalWrite(PIN_LED_GREEN, HIGH);
   digitalWrite(PIN_LED_RED,   HIGH);
 
-  // enable deepsleep
+  // set sleep mode: deepsleep
   #if USE_DEEPSLEEP
   SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
   #endif
 
+  // show last CPU reset reason(s)
   #if USE_LOGGER
   Board_logCpuResetCause();
   #endif
 
+  // init I2C
   #if USE_I2C
   I2C_setup();
   #endif
+
+  // setup LSM303AGR, disable accelerometer and magnetometer
+  #if USE_LSM303AGR
+  LSM303AGR_setup();
+  #else
+  LSM303AGR_setupDisable();
+  #endif
+
+  // if we don't use magnetometer we need to make this low otherwise this pin on the LSM303AGR starts leaking current
+  pinMode(MAG_INT, OUTPUT);
+  digitalWrite(MAG_INT, LOW);
 
   LOGS("SODAQ_ONE_V3 started");
 }
@@ -107,6 +121,10 @@ void Board_measure()
   #if USE_BOARD_VOLTAGE
   Board_voltage = (uint16_t)((ADC_AREF / 1.023) * (BATVOLT_R1 + BATVOLT_R2) / BATVOLT_R2 * (float)analogRead(BAT_VOLT));
   #endif
+
+  #if USE_LSM303AGR
+  LSM303AGR_measure();
+  #endif
 }
 
 void Board_setLed(uint8_t rgb)
@@ -119,27 +137,14 @@ void Board_setLed(uint8_t rgb)
 #if USE_DEEPSLEEP
 uint32_t Board_sleep(uint32_t ms)
 {
-  #if USE_BOARD_LED
-  if (ms > 200) { Board_setLed(0b010); }
-  #endif
-
-  uint32_t ms1 = 0;
-
   #if USE_RTC
-  if (ms > 1000) { ms1 = Board_sleep_RTC(ms); } else {
+  if (ms > 1000) { ms = Board_sleep_RTC(ms); }
   #endif
   #if USE_WDT
-    if (ms >= 8) { ms1 = Board_sleep_WDT(ms); }
-  #endif
-  #if USE_RTC
-  }
+  else { ms = Board_sleep_WDT(ms); }
   #endif
 
-  #if USE_BOARD_LED
-  if (ms > 200) Board_setLed(0b000);
-  #endif
-
-  return ms1;
+  return ms;
 }
 #else
 uint32_t Board_sleep(uint32_t ms) { return 0; }

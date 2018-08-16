@@ -1,6 +1,9 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#define PROJECT_NAME                  "RTOSSewer"
+#define PROJECT_VERSION               "0.0.1"
+
 #define USE_BOARD_ARDUINO_MEGA2560_R3 0
 #define USE_BOARD_ARDUINO_UNO_R3      0
 #define USE_BOARD_SODAQ_MOJA_R4       0
@@ -17,7 +20,7 @@
 #define USE_VL53L0X                   1
 
 #define USE_RTC                       1 && USE_BOARD_SODAQ_ONE_V3
-#define USE_WDT                       0
+#define USE_WDT                       1
 #define USE_DEEPSLEEP                 0 && (USE_RTC || USE_WDT)
 #define USE_LOGGER                    1
 

@@ -57,10 +57,6 @@ static void Sewer_initModules()
   FDC1004_setup();
   #endif
 
-  #if USE_LSM303AGR
-  LSM303AGR_setup();
-  #endif
-
   #if USE_VL53L0X
   VL53L0X_setup();
   #endif
@@ -127,10 +123,6 @@ static void Sewer_measure()
   FDC1004_measure();
   #endif
 
-  #if USE_LSM303AGR
-  LSM303AGR_measure();
-  #endif
-
   #if USE_VL53L0X
   VL53L0X_measure();
   #endif
@@ -147,7 +139,7 @@ static void Sewer_threadMain(void* pvParameters)
   LoRa_sleep();
   #endif
 
-  //TickType_t x = xTaskGetTickCount();
+  TickType_t ts = xTaskGetTickCount();
 
   for (;;) {
     Sewer_measure();
@@ -157,8 +149,6 @@ static void Sewer_threadMain(void* pvParameters)
     #endif
 
     LOGS("need delay " STR(T0_DELAY_LOOP) " ms");
-
-    //vTaskDelayUntil(&x, pdMS_TO_TICKS(T0_DELAY_LOOP));
-    vTaskDelay(pdMS_TO_TICKS(T0_DELAY_LOOP));
+    vTaskDelayUntil(&ts, pdMS_TO_TICKS(T0_DELAY_LOOP));
   }
 }
