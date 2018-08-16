@@ -1,6 +1,6 @@
 #include "../Common.h"
 
-#if USE_WDT && !defined(WDT_H)
+#ifndef WDT_H
 #define WDT_H
 
 
@@ -12,4 +12,4 @@ uint32_t WDT_enable(uint32_t ms);
 
 void WDT_disable();
 
-#endif // USE_WDT && defined(WDT_H)
+#endif // WDT_H

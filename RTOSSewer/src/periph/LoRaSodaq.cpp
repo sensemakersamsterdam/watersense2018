@@ -30,6 +30,14 @@ static const uint8_t APP_KEY[]  = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x
 
 
 /*******************************************************************************
+ * Private declarations
+ ******************************************************************************/
+
+static void LoRa_logDeviceInfo();
+static void LoRa_logTransmissionResult(uint8_t result);
+
+
+/*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
@@ -57,7 +65,7 @@ bool LoRa_setup()
     LoRa_sleep();
   }
 
-  LOG_SHOW_SETUP_RESULT(b);
+  LOG(b ? VS("started") : VS("failed"));
 
   return b;
 }
@@ -81,12 +89,12 @@ bool LoRa_initOTAA()
   bool b = false;
 
   for (uint8_t i = 0; i < JOINNETWORK_MAX_RETRIES; i++) {
-    LOG(VS("initOTA (attempt "), VUI8(i), VS(")..."));
+    LOG(VS("attempt "), VUI8(i), VS("..."));
 
     if (LoRaBee.initOTA(eui, APP_EUI, APP_KEY, false)) { b = true; break; }
   }
 
-  if (b) { LOGS("accepted"); } else { LOGS("denied"); }
+  LOG(b ? VS("accepted") : VS("denied"));
 
   // TODO: following is for debug only(!), it will be removed later
   // TODO: instead of this => send data from sensors every 5 minutes
@@ -104,7 +112,7 @@ bool LoRa_initOTAA()
 // bool LoRa_send(const uint8_t *buffer, uint8_t size)
 // {
 //   for (uint8_t i = 0; i < SEND_MAX_RETRIES; i++) {
-//     LOG(VS("send (attempt "), VUI8(i), VS(")..."));
+//     LOG(VS("attempt "), VUI8(i), VS("..."));
 //
 //     uint8_t result = LoRaBee.send(1, buffer, size);
 //
@@ -115,7 +123,7 @@ bool LoRa_initOTAA()
 //     if (result == NoError) { return true; }
 //
 //     if (result == Busy || result == Timeout) {
-//       RTOS_delay(pdMS_TO_TICKS(10000));
+//       vTaskDelay(pdMS_TO_TICKS(10000));
 //       continue;
 //     }
 //

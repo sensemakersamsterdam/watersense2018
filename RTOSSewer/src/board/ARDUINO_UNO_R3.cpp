@@ -2,6 +2,8 @@
 
 #if USE_BOARD_ARDUINO_UNO_R3
 
+#include "../periph/I2C.h"
+
 
 /*******************************************************************************
  * Lifecycle
@@ -13,6 +15,10 @@ void Board_setup()
 
   digitalWrite(LED_BUILTIN, LOW);
 
+  #if USE_I2C
+  I2C_setup();
+  #endif
+
   LOGS("ARDUINO_UNO_R3 started");
 }
 
@@ -20,6 +26,9 @@ void Board_setup()
 /*******************************************************************************
  * Public
  ******************************************************************************/
+
+// TODO: implement Board_measure
+void Board_measure() {}
 
 void Board_setLed(uint8_t state)
 {

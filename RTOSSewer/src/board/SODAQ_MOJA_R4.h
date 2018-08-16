@@ -1,6 +1,6 @@
 #include "../Common.h"
 
-#if USE_BOARD_SODAQ_MOJA_R4 && !defined(SODAQ_MOJA_R4_H)
+#ifndef SODAQ_MOJA_R4_H
 #define SODAQ_MOJA_R4_H
 
 
@@ -17,6 +17,7 @@ void Board_setup();
 
 extern "C" uint32_t Board_sleep(uint32_t ms);
 
+void Board_measure();
 void Board_setLed(uint8_t state);
 
-#endif // USE_BOARD_SODAQ_MOJA_R4 && !defined(SODAQ_MOJA_R4_H)
+#endif // SODAQ_MOJA_R4_H

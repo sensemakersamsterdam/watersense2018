@@ -53,7 +53,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources, <https://github.com/pololu/vl53l0x-arduino>*
 
 
-### ProtoCentral FDC1004 Capacitive Sensor Library 1.0.2
+### ProtoCentral FDC1004 Capacitive Sensor library 1.0.2
 
 > *All software is released under the [MIT License](http://opensource.org/licenses/MIT).*  
 > *Copyright (c) 2015 ProtoCentral.*
@@ -61,12 +61,20 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources, <https://github.com/Protocentral/ProtoCentral_fdc1004_breakout>*
 
 
-### RTCZero 1.5.2
+### RTCZero library 1.5.2
 
 > *This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.*  
 > *Copyright (c) Arduino LLC. All right reserved.*
 
 *See: sources*
+
+
+### Sodaq LSM303AGR library 1.1.0
+
+> *Sodaq_LSM303AGR is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.*  
+> *Copyright (c) 2018 SODAQ. All rights reserved.*
+
+*See: sources, <https://github.com/SodaqMoja/Sodaq_LSM303AGR>*
 
 
 ### Sodaq RN2483 library 1.0.11

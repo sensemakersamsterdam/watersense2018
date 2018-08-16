@@ -10,7 +10,7 @@
  * Definitions
  ******************************************************************************/
 
-#define LOCAL_BAROMETRIC_PRESSURE 1013.25
+#define LOCAL_BAROMETRIC_PRESSURE 1013.25f
 #define BMP280_ADDRESS_CLONE      0x76
 #define BMP280_ADDRESS_ORIGINAL   0x77
 
@@ -19,6 +19,11 @@
  * State
  ******************************************************************************/
 
+bool  BMP280_active      = false;
+float BMP280_temperature = 0;
+float BMP280_pressure    = 0;
+float BMP280_altitude    = 0;
+
 static Adafruit_BMP280 sensor;
 
 
@@ -26,16 +31,14 @@ static Adafruit_BMP280 sensor;
  * Lifecycle
  ******************************************************************************/
 
-bool BMP280_setup()
+void BMP280_setup()
 {
   Wire.beginTransmission(BMP280_ADDRESS_CLONE);
   uint8_t error = Wire.endTransmission();
 
-  bool b = sensor.begin(error == 0 ? BMP280_ADDRESS_CLONE : BMP280_ADDRESS_ORIGINAL);
+  BMP280_active = sensor.begin(error == 0 ? BMP280_ADDRESS_CLONE : BMP280_ADDRESS_ORIGINAL);
 
-  LOG_SHOW_SETUP_RESULT(b);
-
-  return b;
+  LOG_SETUP_RESULT_TEXT(BMP280_active);
 }
 
 
@@ -45,17 +48,11 @@ bool BMP280_setup()
 
 void BMP280_measure()
 {
-  #if USE_LOGGER
-  LOGS("reading a measurement...");
+  if (!BMP280_active) { return; }
 
-  float t = sensor.readTemperature();
-  float p = sensor.readPressure();
-  float a = sensor.readAltitude(LOCAL_BAROMETRIC_PRESSURE);
-
-  LOG(VS("temperature = "), VF(t), VS(" *C"));
-  LOG(VS("pressure = "),    VF(p), VS(" Pa"));
-  LOG(VS("altitude = "),    VF(a), VS(" m"));
-  #endif
+  BMP280_temperature = sensor.readTemperature();
+  BMP280_pressure    = sensor.readPressure();
+  BMP280_altitude    = sensor.readAltitude(LOCAL_BAROMETRIC_PRESSURE);
 }
 
 #endif // USE_BMP280

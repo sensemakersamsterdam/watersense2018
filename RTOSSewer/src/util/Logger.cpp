@@ -11,6 +11,13 @@ static SemaphoreHandle_t logMutex;
 
 
 /*******************************************************************************
+ * Private declarations
+ ******************************************************************************/
+
+static void Logger_printSysinfo();
+
+
+/*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
@@ -26,7 +33,7 @@ void Logger_setup()
 
   logMutex = xSemaphoreCreateMutexStatic(&logMutexBuffer);
 
-  LOG_SHOW_SETUP_RESULT(true);
+  LOG_SETUP_RESULT_TEXT(true);
 
   Logger_printSysinfo();
 }
@@ -60,6 +67,11 @@ void Logger_end()
   Logger_printCH('\n');
 
   xSemaphoreGive(logMutex);
+}
+
+void Logger_logSetupResultText(bool b)
+{
+  if (b) { VS("started"); } else { VS("failed"); }
 }
 
 void Logger_printCH(BaseType_t c)

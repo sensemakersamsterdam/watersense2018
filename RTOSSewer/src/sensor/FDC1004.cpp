@@ -23,6 +23,9 @@
  * State
  ******************************************************************************/
 
+bool    FDC1004_active = false;
+int32_t FDC1004_cap    = 0;
+
 static FDC1004 FDC;
 
 static uint8_t capdac = 0;
@@ -32,15 +35,13 @@ static uint8_t capdac = 0;
  * Lifecycle
  ******************************************************************************/
 
-bool FDC1004_setup()
+void FDC1004_setup()
 {
   Wire.beginTransmission(FDC1004_ADDRESS);
 
-  bool b = Wire.endTransmission() == 0;
+  FDC1004_active = Wire.endTransmission() == 0;
 
-  LOG_SHOW_SETUP_RESULT(b);
-
-  return b;
+  LOG_SETUP_RESULT_TEXT(FDC1004_active);
 }
 
 
@@ -50,8 +51,9 @@ bool FDC1004_setup()
 
 void FDC1004_measure()
 {
-  #if USE_LOGGER
-  LOGS("reading a measurement...");
+  if (!FDC1004_active) { return; }
+
+  FDC1004_cap = 0;
 
   uint8_t result = FDC.configureMeasurementSingle(MEASURMENT, CHANNEL, capdac);
   FDC.triggerSingleMeasurement(MEASURMENT, FDC1004_100HZ);
@@ -61,7 +63,7 @@ void FDC1004_measure()
     return;
   }
 
-  RTOS_delay(pdMS_TO_TICKS(15));
+  vTaskDelay(pdMS_TO_TICKS(15));
 
   uint16_t value[2];
 
@@ -73,20 +75,15 @@ void FDC1004_measure()
   }
 
   int16_t msb = (int16_t)value[0];
-  int32_t cap = ((int32_t)457) * ((int32_t)msb); // in attofarads
+  int32_t cap = ((int32_t)457) * ((int32_t)msb);                  // in attofarads
 
-  cap /= 1000;                                   // in femtofarads
-  cap += ((int32_t)3028) * ((int32_t)capdac);
+  FDC1004_cap = cap / 1000 + ((int32_t)3028) * ((int32_t)capdac); // in femtofarads
 
-  LOG(VS("capacitance = "), VF((float)cap / 1000), VS(" pf"));
-
-  if (msb > UPPER_BOUND) {                       // adjust capdac accordingly
+  if (msb > UPPER_BOUND) {                                        // adjust capdac accordingly
     if (capdac < FDC1004_CAPDAC_MAX) { capdac++; }
   } else if (msb < LOWER_BOUND) {
     if (capdac > 0) { capdac--; }
   }
-
-  #endif
 }
 
 #endif // USE_FDC1004

@@ -1,6 +1,6 @@
 #include "../Common.h"
 
-#if USE_RTC && !defined(RTC_H)
+#ifndef RTC_H
 #define RTC_H
 
 
@@ -10,4 +10,4 @@
 
 uint32_t RTC_setAlarm(uint32_t ms);
 
-#endif // USE_RTC && defined(RTC_H)
+#endif // RTC_H

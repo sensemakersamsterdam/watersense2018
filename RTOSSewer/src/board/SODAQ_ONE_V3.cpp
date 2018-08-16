@@ -2,6 +2,8 @@
 
 #if USE_BOARD_SODAQ_ONE_V3
 
+#include "../periph/I2C.h"
+
 #if USE_DEEPSLEEP && USE_RTC
 #include "../periph/RTC.h"
 #endif
@@ -9,6 +11,33 @@
 #if USE_DEEPSLEEP && USE_WDT
 #include "../periph/WDT.h"
 #endif
+
+
+/*******************************************************************************
+ * Definitions
+ ******************************************************************************/
+
+#define ADC_AREF                  3.3f
+#define BATVOLT_R1                4.7f
+#define BATVOLT_R2                10.0f
+
+
+/*******************************************************************************
+ * State
+ ******************************************************************************/
+
+#if USE_BOARD_VOLTAGE
+uint16_t Board_voltage = 0;
+#endif
+
+
+/*******************************************************************************
+ * Private declarations
+ ******************************************************************************/
+
+static void Board_logCpuResetCause();
+static uint32_t Board_sleep_RTC(uint32_t ms);
+static uint32_t Board_sleep_WDT(uint32_t ms);
 
 
 /*******************************************************************************
@@ -37,6 +66,14 @@ void Board_setup()
   SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
   #endif
 
+  #if USE_LOGGER
+  Board_logCpuResetCause();
+  #endif
+
+  #if USE_I2C
+  I2C_setup();
+  #endif
+
   LOGS("SODAQ_ONE_V3 started");
 }
 
@@ -54,14 +91,21 @@ void Board_fatalShutdown()
   #if USE_BOARD_LED
   for (;;) {
     Board_setLed(0b100);
-    RTOS_delay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
     Board_setLed(0b000);
-    RTOS_delay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
   #else
   SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
   __DSB();
   __WFI();
+  #endif
+}
+
+void Board_measure()
+{
+  #if USE_BOARD_VOLTAGE
+  Board_voltage = (uint16_t)((ADC_AREF / 1.023) * (BATVOLT_R1 + BATVOLT_R2) / BATVOLT_R2 * (float)analogRead(BAT_VOLT));
   #endif
 }
 
@@ -106,8 +150,21 @@ uint32_t Board_sleep(uint32_t ms) { return 0; }
  * Private
  ******************************************************************************/
 
+static void Board_logCpuResetCause()
+{
+  LOG(VS("CPU reset by: "),
+    PM->RCAUSE.bit.SYST            ? VS("Software ")     : (void)NULL,
+    PM->RCAUSE.reg & PM_RCAUSE_WDT ? VS("Watchdog ")     : (void)NULL,
+    PM->RCAUSE.bit.EXT             ? VS("External ")     : (void)NULL,
+    PM->RCAUSE.bit.BOD33           ? VS("BOD33 ")        : (void)NULL,
+    PM->RCAUSE.bit.BOD12           ? VS("BOD12 ")        : (void)NULL,
+    PM->RCAUSE.bit.POR             ? VS("PowerOnReset ") : (void)NULL,
+    VS("(0x"), VUI8H02(PM->RCAUSE.reg), VC(')')
+  );
+}
+
 #if USE_DEEPSLEEP && USE_RTC
-uint32_t Board_sleep_RTC(uint32_t ms)
+static uint32_t Board_sleep_RTC(uint32_t ms)
 {
   uint32_t ms1 = RTC_setAlarm(ms);
 
@@ -125,7 +182,7 @@ uint32_t Board_sleep_RTC(uint32_t ms)
 #endif
 
 #if USE_DEEPSLEEP && USE_WDT
-uint32_t Board_sleep_WDT(uint32_t ms)
+static uint32_t Board_sleep_WDT(uint32_t ms)
 {
   uint32_t ms1 = WDT_enable(ms);
 

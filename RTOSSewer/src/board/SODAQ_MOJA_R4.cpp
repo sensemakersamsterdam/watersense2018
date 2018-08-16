@@ -2,6 +2,9 @@
 
 #if USE_BOARD_SODAQ_MOJA_R4
 
+#include "../periph/I2C.h"
+
+
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -19,6 +22,10 @@ void Board_setup()
 
   digitalWrite(PIN_LED, LOW);
 
+  #if USE_I2C
+  I2C_setup();
+  #endif
+
   LOGS("SODAQ_MOJA_R4 started");
 }
 
@@ -26,6 +33,9 @@ void Board_setup()
 /*******************************************************************************
  * Public
  ******************************************************************************/
+
+// TODO: implement Board_measure
+void Board_measure() {}
 
 void Board_setLed(uint8_t state)
 {

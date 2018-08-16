@@ -1,23 +1,28 @@
 #include "../Common.h"
 
-#if USE_LORA_SODAQ && !defined(LORA_SODAQ_H)
-#define LORA_SODAQ_H
+#ifndef LSM303AGR_H
+#define LSM303AGR_H
+
+
+/*******************************************************************************
+ * State
+ ******************************************************************************/
+
+extern bool   LSM303AGR_active;
+extern int8_t LSM303AGR_temperature;
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-bool LoRa_setup();
+void LSM303AGR_setup();
 
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
 
-bool LoRa_initOTAA();
-bool LoRa_send(const uint8_t *buffer, uint8_t size);
-void LoRa_sleep();
-void LoRa_wakeUp();
+void LSM303AGR_measure();
 
-#endif // USE_SODAQ_LORA && defined(LORA_SODAQ_H)
+#endif // LSM303AGR_H
