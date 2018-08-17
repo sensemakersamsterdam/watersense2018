@@ -19,13 +19,22 @@ void Board_setup()
   I2C_setup();
   #endif
 
-  LOGS("ARDUINO_MEGA2560_R3 started");
+  LOG_SETUP_RESULT_TEXT(true);
 }
 
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
+
+void Board_fatalShutdown()
+{
+  LOGS("FATAL ERROR! SHUTDOWN");
+
+  taskDISABLE_INTERRUPTS();
+
+  for (;;) { Board_sleep(60 * 60 * 1000); }
+}
 
 // TODO: implement Board_measure
 void Board_measure() {}

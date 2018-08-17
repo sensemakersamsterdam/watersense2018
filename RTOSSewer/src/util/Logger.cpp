@@ -71,7 +71,7 @@ void Logger_end()
 
 void Logger_logSetupResultText(bool b)
 {
-  if (b) { VS("started"); } else { VS("failed"); }
+  if (b) { VS("ok"); } else { VS("fail"); }
 }
 
 void Logger_printCH(BaseType_t c)

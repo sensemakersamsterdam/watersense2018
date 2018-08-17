@@ -5,8 +5,9 @@
  * Definitions
  ******************************************************************************/
 
-#define T0_STACK_SIZE 256
-#define T0_DELAY_LOOP 10000
+#define MAINTHREAD_DELAY_LOOP 10000
+#define MAINTHREAD_STACK_SIZE 256
+#define MAINTHREAD_PRIORITY   tskIDLE_PRIORITY + 1
 
 
 /*******************************************************************************
@@ -16,6 +17,8 @@
 static void Sewer_initModules();
 static void Sewer_logState();
 static void Sewer_measure();
+static void Sewer_prepareData();
+static void Sewer_sendData();
 static void Sewer_threadMain(void* pvParameters);
 
 
@@ -26,9 +29,9 @@ static void Sewer_threadMain(void* pvParameters);
 void Sewer_setup()
 {
   static StaticTask_t xT0TaskBuffer;
-  static StackType_t  xT0Stack[T0_STACK_SIZE];
+  static StackType_t  xT0Stack[MAINTHREAD_STACK_SIZE];
 
-  xTaskCreateStatic(Sewer_threadMain, "M", T0_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, xT0Stack, &xT0TaskBuffer);
+  xTaskCreateStatic(Sewer_threadMain, "M", MAINTHREAD_STACK_SIZE, NULL, MAINTHREAD_PRIORITY, xT0Stack, &xT0TaskBuffer);
   vTaskStartScheduler();
 }
 
@@ -45,10 +48,6 @@ static void Sewer_initModules()
 
   Board_setup();
 
-  #if USE_LORA_SODAQ
-  if (!LoRa_setup()) { Board_fatalShutdown(); }
-  #endif
-
   #if USE_BMP280
   BMP280_setup();
   #endif
@@ -64,7 +63,7 @@ static void Sewer_initModules()
 
 static void Sewer_logState()
 {
-  #if USE_BOARD_VOLTAGE
+  #if USE_ONBOARD_VOLTAGE
   LOG(VS("BOARD battery: "), VUI16(Board_voltage), VS(" mV"));
   #endif
 
@@ -88,7 +87,7 @@ static void Sewer_logState()
   }
   #endif
 
-  #if USE_BOARD_TEMPERATURE && USE_LSM303AGR
+  #if USE_ONBOARD_TEMPERATURE && USE_LSM303AGR
   if (LSM303AGR_active) {
     LOG(VS("LSM303AGR temperature: "), VUI8(LSM303AGR_temperature), VS(" *C"));
   } else {
@@ -128,16 +127,29 @@ static void Sewer_measure()
   #endif
 }
 
+static void Sewer_prepareData()
+{
+
+}
+
+static void Sewer_sendData()
+{
+  #if USE_ONBOARD_LED
+  Board_setLed(0b001);
+  #endif
+
+  // LoRa_wakeUp();
+  // LoRa_initOTAA();
+  // LoRa_sleep();
+
+  #if USE_ONBOARD_LED
+  Board_setLed(0b000);
+  #endif
+}
+
 static void Sewer_threadMain(void* pvParameters)
 {
   Sewer_initModules();
-
-  // TODO - move it to loop (and do it on demand)
-  #if USE_LORA_SODAQ
-  LoRa_wakeUp();
-  LoRa_initOTAA();
-  LoRa_sleep();
-  #endif
 
   TickType_t ts = xTaskGetTickCount();
 
@@ -148,7 +160,12 @@ static void Sewer_threadMain(void* pvParameters)
     Sewer_logState();
     #endif
 
-    LOGS("need delay " STR(T0_DELAY_LOOP) " ms");
-    vTaskDelayUntil(&ts, pdMS_TO_TICKS(T0_DELAY_LOOP));
+    #if USE_LORA_SODAQ
+    Sewer_prepareData();
+    Sewer_sendData();
+    #endif
+
+    LOGS("need delay " STR(MAINTHREAD_DELAY_LOOP) " ms");
+    vTaskDelayUntil(&ts, pdMS_TO_TICKS(MAINTHREAD_DELAY_LOOP));
   }
 }

@@ -3,6 +3,7 @@
 #if USE_BOARD_SODAQ_ONE_V3
 
 #include "../periph/I2C.h"
+#include "../periph/LoRaSodaq.h"
 #include "../sensor/LSM303AGR.h"
 
 #if USE_DEEPSLEEP && USE_RTC
@@ -27,7 +28,7 @@
  * State
  ******************************************************************************/
 
-#if USE_BOARD_VOLTAGE
+#if USE_ONBOARD_VOLTAGE
 uint16_t Board_voltage = 0;
 #endif
 
@@ -73,22 +74,19 @@ void Board_setup()
   #endif
 
   // init I2C
-  #if USE_I2C
   I2C_setup();
-  #endif
 
-  // setup LSM303AGR, disable accelerometer and magnetometer
-  #if USE_LSM303AGR
+  // init LSM303AGR, disable accelerometer and magnetometer
   LSM303AGR_setup();
-  #else
-  LSM303AGR_setupDisable();
-  #endif
 
   // if we don't use magnetometer we need to make this low otherwise this pin on the LSM303AGR starts leaking current
   pinMode(MAG_INT, OUTPUT);
   digitalWrite(MAG_INT, LOW);
 
-  LOGS("SODAQ_ONE_V3 started");
+  // init LoRa, sleep LoRa
+  if (!LoRa_setup()) { Board_fatalShutdown(); }
+
+  LOG_SETUP_RESULT_TEXT(true);
 }
 
 
@@ -102,28 +100,28 @@ void Board_fatalShutdown()
 
   taskDISABLE_INTERRUPTS();
 
-  #if USE_BOARD_LED
   for (;;) {
+    #if USE_ONBOARD_LED
     Board_setLed(0b100);
     vTaskDelay(pdMS_TO_TICKS(1000));
     Board_setLed(0b000);
     vTaskDelay(pdMS_TO_TICKS(1000));
+    #else
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    __DSB();
+    __WFI();
+    #endif
   }
-  #else
-  SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-  __DSB();
-  __WFI();
-  #endif
 }
 
 void Board_measure()
 {
-  #if USE_BOARD_VOLTAGE
-  Board_voltage = (uint16_t)((ADC_AREF / 1.023) * (BATVOLT_R1 + BATVOLT_R2) / BATVOLT_R2 * (float)analogRead(BAT_VOLT));
+  #if USE_ONBOARD_TEMPERATURE
+  LSM303AGR_measure();
   #endif
 
-  #if USE_LSM303AGR
-  LSM303AGR_measure();
+  #if USE_ONBOARD_VOLTAGE
+  Board_voltage = (uint16_t)((ADC_AREF / 1.023) * (BATVOLT_R1 + BATVOLT_R2) / BATVOLT_R2 * (float)analogRead(BAT_VOLT));
   #endif
 }
 

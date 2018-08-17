@@ -43,10 +43,6 @@ static void LoRa_logTransmissionResult(uint8_t result);
 
 bool LoRa_setup()
 {
-  #if USE_BOARD_LED
-  Board_setLed(0b001);
-  #endif
-
   LOGS("starting...");
 
   SERIAL_LORA.begin(LoRaBee.getDefaultBaudRate());
@@ -65,7 +61,7 @@ bool LoRa_setup()
     LoRa_sleep();
   }
 
-  LOG(b ? VS("started") : VS("failed"));
+  LOG_SETUP_RESULT_TEXT(b);
 
   return b;
 }
@@ -143,10 +139,6 @@ void LoRa_sleep()
   LoRaBee.sleep();
 
   LOGS("sleep mode on");
-
-  #if USE_BOARD_LED
-  Board_setLed(0b000);
-  #endif
 }
 
 void LoRa_wakeUp()
@@ -154,10 +146,6 @@ void LoRa_wakeUp()
   LoRaBee.wakeUp();
 
   LOGS("active mode on");
-
-  #if USE_BOARD_LED
-  Board_setLed(0b001);
-  #endif
 }
 
 
