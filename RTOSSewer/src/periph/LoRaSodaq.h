@@ -1,6 +1,6 @@
 #include "../Common.h"
 
-#if USE_LORA_SODAQ && !defined(LORA_SODAQ_H)
+#ifndef LORA_SODAQ_H
 #define LORA_SODAQ_H
 
 
@@ -20,4 +20,4 @@ bool LoRa_send(const uint8_t *buffer, uint8_t size);
 void LoRa_sleep();
 void LoRa_wakeUp();
 
-#endif // USE_SODAQ_LORA && defined(LORA_SODAQ_H)
+#endif // LORA_SODAQ_H

@@ -1,9 +1,7 @@
-#include "FDC1004.h"
-
-#if USE_FDC1004
-
 #include <Protocentral_FDC1004.h>
+
 #include "../periph/I2C.h"
+#include "FDC1004.h"
 
 
 /*******************************************************************************
@@ -85,5 +83,3 @@ void FDC1004_measure()
     if (capdac > 0) { capdac--; }
   }
 }
-
-#endif // USE_FDC1004

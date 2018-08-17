@@ -152,28 +152,16 @@ void Logger_printUI8H02(uint8_t i)
 
 static void Logger_printSysinfo()
 {
-  #if defined(PROJECT_NAME) && defined(PROJECT_VERSION)
-  LOGS("PROJECT: " PROJECT_NAME  " " PROJECT_VERSION);
+  #ifdef PROJECT_VERSION
+  LOGS("PROJECT: " PROJECT_VERSION);
   #endif
 
   #ifdef ARDUINO
   LOG(VS("ARDUINO: "), VUI16(ARDUINO / 10000), VC('.'), VUI16(ARDUINO / 100 % 100), VC('.'), VUI16(ARDUINO % 100));
   #endif
 
-  #ifdef ARDUINO_ARCH_AVR
-  #if defined(ARDUINO_AVR_MEGA2560)
-  LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR, ARDUINO_AVR_MEGA2560");
-  #elif defined(ARDUINO_AVR_PRO)
-  LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR, ARDUINO_AVR_PRO");
-  #elif defined(ARDUINO_AVR_UNO)
-  LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR, ARDUINO_AVR_UNO");
-  #else
-  LOGS("ARDUINO ARCH: ARDUINO_ARCH_AVR");
-  #endif
-  #endif
-
   #ifdef ARDUINO_ARCH_SAMD
-  #if defined(__SAMD21G18A__)
+  #ifdef __SAMD21G18A__
   LOGS("ARDUINO ARCH: ARDUINO_ARCH_SAMD, __SAMD21G18A__");
   #else
   LOGS("ARDUINO ARCH: ARDUINO_ARCH_SAMD");
@@ -186,18 +174,6 @@ static void Logger_printSysinfo()
   #else
   LOGS("ARM ARCH: " STR(__ARM_ARCH));
   #endif
-  #endif
-
-  #ifdef __AVR_ARCH__
-  LOGS("AVR ARCH: " STR(__AVR_ARCH__));
-  #endif
-
-  #ifdef __AVR_DEVICE_NAME__
-  LOGS("AVR DEVICE: " STR(__AVR_DEVICE_NAME__));
-  #endif
-
-  #ifdef __AVR_LIBC_VERSION_STRING__
-  LOGS("AVR LIBC: " __AVR_LIBC_VERSION_STRING__)
   #endif
 
   #ifdef __VERSION__

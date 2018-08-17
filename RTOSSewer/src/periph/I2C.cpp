@@ -1,8 +1,6 @@
-#include "I2C.h"
-
-#if USE_I2C
-
 #include <Wire.h>
+
+#include "I2C.h"
 
 
 /*******************************************************************************
@@ -63,5 +61,3 @@ static void I2C_logDevices()
 
   if (b) { LOGS("scanning done"); } else { LOGS("no devices found"); }
 }
-
-#endif // USE_I2C

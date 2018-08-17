@@ -1,8 +1,6 @@
-#include "LSM303AGR.h"
-
-#if USE_LSM303AGR
-
 #include <Sodaq_LSM303AGR.h>
+
+#include "LSM303AGR.h"
 
 
 /*******************************************************************************
@@ -17,10 +15,7 @@
  ******************************************************************************/
 
 bool LSM303AGR_active = false;
-
-#if USE_ONBOARD_TEMPERATURE
 int8_t LSM303AGR_temperature = 0;
-#endif
 
 static Sodaq_LSM303AGR accel;
 
@@ -56,5 +51,3 @@ void LSM303AGR_measure()
   LSM303AGR_temperature = TEMPERATURE_SENSOR_OFFSET + accel.getTemperatureDelta();
   accel.disableAccelerometer();
 }
-
-#endif // USE_LSM303AGR

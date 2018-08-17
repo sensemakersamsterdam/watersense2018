@@ -1,8 +1,7 @@
-#include "WDT.h"
-
-#if USE_WDT
-
+#include <Arduino.h>
 #include <Sodaq_wdt.h>
+
+#include "WDT.h"
 
 
 /*******************************************************************************
@@ -54,6 +53,3 @@ uint32_t WDT_enable(uint32_t ms)
 }
 
 void WDT_disable() { sodaq_wdt_disable(); }
-
-
-#endif // USE_WDT

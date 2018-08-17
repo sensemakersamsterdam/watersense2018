@@ -48,26 +48,15 @@ static void Sewer_initModules()
 
   Board_setup();
 
-  #if USE_BMP280
   BMP280_setup();
-  #endif
-
-  #if USE_FDC1004
   FDC1004_setup();
-  #endif
-
-  #if USE_VL53L0X
   VL53L0X_setup();
-  #endif
 }
 
 static void Sewer_logState()
 {
-  #if USE_ONBOARD_VOLTAGE
   LOG(VS("BOARD battery: "), VUI16(Board_voltage), VS(" mV"));
-  #endif
 
-  #if USE_BMP280
   if (BMP280_active) {
     LOG(VS("BMP280 temperature: "), VF(BMP280_temperature), VS(" *C"));
     LOG(VS("BMP280 pressure: "),    VF(BMP280_pressure),    VS(" Pa"));
@@ -77,25 +66,19 @@ static void Sewer_logState()
     LOGS("BMP280 pressure: N/A");
     LOGS("BMP280 altitude: N/A");
   }
-  #endif
 
-  #if USE_FDC1004
   if (FDC1004_active) {
     LOG(VS("FDC1004 capacitance: "), VUI32(FDC1004_cap), VS(" fF"));
   } else {
     LOGS("FDC1004 capacitance: N/A");
   }
-  #endif
 
-  #if USE_ONBOARD_TEMPERATURE && USE_LSM303AGR
   if (LSM303AGR_active) {
     LOG(VS("LSM303AGR temperature: "), VUI8(LSM303AGR_temperature), VS(" *C"));
   } else {
     LOGS("LSM303AGR temperature: N/A");
   }
-  #endif
 
-  #if USE_VL53L0X
   if (VL53L0X_active) {
     if (VL53L0X_distance <= 2000) {
       LOG(VS("VL53L0X distance: "), VUI16(VL53L0X_distance), VS(" mm"));
@@ -105,7 +88,6 @@ static void Sewer_logState()
   } else {
     LOGS("VL53L0X distance: N/A");
   }
-  #endif
 }
 
 static void Sewer_measure()
@@ -113,18 +95,9 @@ static void Sewer_measure()
   LOGS("reading a measurement...");
 
   Board_measure();
-
-  #if USE_BMP280
   BMP280_measure();
-  #endif
-
-  #if USE_FDC1004
   FDC1004_measure();
-  #endif
-
-  #if USE_VL53L0X
   VL53L0X_measure();
-  #endif
 }
 
 static void Sewer_prepareData()
@@ -134,17 +107,13 @@ static void Sewer_prepareData()
 
 static void Sewer_sendData()
 {
-  #if USE_ONBOARD_LED
   Board_setLed(0b001);
-  #endif
 
   // LoRa_wakeUp();
   // LoRa_initOTAA();
   // LoRa_sleep();
 
-  #if USE_ONBOARD_LED
   Board_setLed(0b000);
-  #endif
 }
 
 static void Sewer_threadMain(void* pvParameters)
@@ -160,10 +129,8 @@ static void Sewer_threadMain(void* pvParameters)
     Sewer_logState();
     #endif
 
-    #if USE_LORA_SODAQ
     Sewer_prepareData();
     Sewer_sendData();
-    #endif
 
     LOGS("need delay " STR(MAINTHREAD_DELAY_LOOP) " ms");
     vTaskDelayUntil(&ts, pdMS_TO_TICKS(MAINTHREAD_DELAY_LOOP));

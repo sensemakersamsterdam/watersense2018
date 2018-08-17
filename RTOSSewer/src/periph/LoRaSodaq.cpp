@@ -1,8 +1,6 @@
-#include "LoRaSodaq.h"
-
-#if USE_LORA_SODAQ
-
 #include <Sodaq_RN2483.h>
+
+#include "LoRaSodaq.h"
 
 
 /*******************************************************************************
@@ -183,5 +181,3 @@ static void LoRa_logTransmissionResult(uint8_t result)
     default:                LOGS("Unknown");           break; // should be impossible
   }
 }
-
-#endif // USE_LORA

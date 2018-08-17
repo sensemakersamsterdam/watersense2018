@@ -1,8 +1,6 @@
-#include "RTC.h"
-
-#if USE_RTC
-
 #include <RTCZero.h>
+
+#include "RTC.h"
 
 
 /*******************************************************************************
@@ -28,5 +26,3 @@ uint32_t RTC_setAlarm(uint32_t ms)
 
   return ms * 1000;
 }
-
-#endif // USE_RTC

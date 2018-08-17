@@ -1,19 +1,9 @@
-#include "SODAQ_ONE_V3.h"
-
-#if USE_BOARD_SODAQ_ONE_V3
-
 #include "../periph/I2C.h"
-#include "../periph/LoRaSodaq.h"
-#include "../sensor/LSM303AGR.h"
-
-#if USE_DEEPSLEEP && USE_RTC
 #include "../periph/RTC.h"
-#endif
-
-#if USE_DEEPSLEEP && USE_WDT
+#include "../periph/LoRaSodaq.h"
 #include "../periph/WDT.h"
-#endif
-
+#include "../sensor/LSM303AGR.h"
+#include "SODAQ_ONE_V3.h"
 
 /*******************************************************************************
  * Definitions
@@ -22,15 +12,6 @@
 #define ADC_AREF   3.3f
 #define BATVOLT_R1 4.7f
 #define BATVOLT_R2 10.0f
-
-
-/*******************************************************************************
- * State
- ******************************************************************************/
-
-#if USE_ONBOARD_VOLTAGE
-uint16_t Board_voltage = 0;
-#endif
 
 
 /*******************************************************************************
@@ -43,17 +24,24 @@ static uint32_t Board_sleep_WDT(uint32_t ms);
 
 
 /*******************************************************************************
+ * State
+ ******************************************************************************/
+
+uint16_t Board_voltage = 0;
+
+
+/*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
 void Board_setup()
 {
+  // disable WDT and turn off the power to the WDT
+  WDT_disable();
+
   // turn off GPS
   pinMode(GPS_ENABLE, OUTPUT);
   digitalWrite(GPS_ENABLE, LOW);
-
-  // turn off the power to the WDT
-  PM->APBAMASK.reg &= ~PM_APBAMASK_WDT;
 
   // turn off LEDs
   pinMode(PIN_LED_BLUE,  OUTPUT);
@@ -101,28 +89,18 @@ void Board_fatalShutdown()
   taskDISABLE_INTERRUPTS();
 
   for (;;) {
-    #if USE_ONBOARD_LED
     Board_setLed(0b100);
     vTaskDelay(pdMS_TO_TICKS(1000));
     Board_setLed(0b000);
     vTaskDelay(pdMS_TO_TICKS(1000));
-    #else
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-    __DSB();
-    __WFI();
-    #endif
   }
 }
 
 void Board_measure()
 {
-  #if USE_ONBOARD_TEMPERATURE
   LSM303AGR_measure();
-  #endif
 
-  #if USE_ONBOARD_VOLTAGE
   Board_voltage = (uint16_t)((ADC_AREF / 1.023) * (BATVOLT_R1 + BATVOLT_R2) / BATVOLT_R2 * (float)analogRead(BAT_VOLT));
-  #endif
 }
 
 void Board_setLed(uint8_t rgb)
@@ -135,18 +113,11 @@ void Board_setLed(uint8_t rgb)
 #if USE_DEEPSLEEP
 uint32_t Board_sleep(uint32_t ms)
 {
-  #if USE_RTC
-  if (ms > 1000) { ms = Board_sleep_RTC(ms); }
-  #endif
-  #if USE_WDT
-  else { ms = Board_sleep_WDT(ms); }
-  #endif
-
-  return ms;
+  return ms > 1000 ? Board_sleep_RTC(ms) : Board_sleep_WDT(ms);
 }
 #else
 uint32_t Board_sleep(uint32_t ms) { return 0; }
-#endif // USE_DEEPSLEEP
+#endif
 
 
 /*******************************************************************************
@@ -166,7 +137,6 @@ static void Board_logCpuResetCause()
   );
 }
 
-#if USE_DEEPSLEEP && USE_RTC
 static uint32_t Board_sleep_RTC(uint32_t ms)
 {
   uint32_t ms1 = RTC_setAlarm(ms);
@@ -182,9 +152,7 @@ static uint32_t Board_sleep_RTC(uint32_t ms)
 
   return ms1;
 }
-#endif
 
-#if USE_DEEPSLEEP && USE_WDT
 static uint32_t Board_sleep_WDT(uint32_t ms)
 {
   uint32_t ms1 = WDT_enable(ms);
@@ -197,10 +165,8 @@ static uint32_t Board_sleep_WDT(uint32_t ms)
 
   __DSB();
   __WFI();
+
   WDT_disable();
 
   return ms1;
 }
-#endif
-
-#endif // USE_BOARD_SODAQ_ONE_V3

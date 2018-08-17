@@ -1,9 +1,7 @@
-#include "BMP280.h"
-
-#if USE_BMP280
-
 #include <Adafruit_BMP280.h>
+
 #include "../periph/I2C.h"
+#include "BMP280.h"
 
 
 /*******************************************************************************
@@ -54,5 +52,3 @@ void BMP280_measure()
   BMP280_pressure    = sensor.readPressure();
   BMP280_altitude    = sensor.readAltitude(LOCAL_BAROMETRIC_PRESSURE);
 }
-
-#endif // USE_BMP280

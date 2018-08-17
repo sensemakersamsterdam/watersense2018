@@ -1,9 +1,7 @@
-#include "VL53L0X.h"
-
-#if USE_VL53L0X
-
 #include <VL53L0X.h>
+
 #include "../periph/I2C.h"
+#include "VL53L0X.h"
 
 
 /*******************************************************************************
@@ -48,5 +46,3 @@ void VL53L0X_measure()
     LOGS("timeout");
   }
 }
-
-#endif // USE_VL53L0X
