@@ -8,9 +8,6 @@
  * State
  ******************************************************************************/
 
-bool     VL53L0X_active   = false;
-uint16_t VL53L0X_distance = 0;
-
 static VL53L0X sensor;
 
 
@@ -18,16 +15,18 @@ static VL53L0X sensor;
  * Lifecycle
  ******************************************************************************/
 
-void VL53L0X_setup()
+bool VL53L0X_setup()
 {
-  VL53L0X_active = sensor.init() && sensor.last_status == 0;
+  bool b = sensor.init() && sensor.last_status == 0;
 
-  if (VL53L0X_active) {
+  if (b) {
     sensor.setTimeout(500);
     sensor.setMeasurementTimingBudget(200000);
   }
 
-  LOG_SETUP_RESULT_TEXT(VL53L0X_active);
+  LOG_SETUP_RESULT_TEXT(b);
+
+  return b;
 }
 
 
@@ -35,14 +34,14 @@ void VL53L0X_setup()
  * Public
  ******************************************************************************/
 
-void VL53L0X_measure()
+uint16_t VL53L0X_measureDistance()
 {
-  if (!VL53L0X_active) { return; }
-
-  VL53L0X_distance = sensor.readRangeSingleMillimeters();
+  uint16_t i = sensor.readRangeSingleMillimeters();
 
   if (sensor.timeoutOccurred()) {
-    VL53L0X_distance = 0;
     LOGS("timeout");
+    return 0;
   }
+
+  return i;
 }

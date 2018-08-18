@@ -18,16 +18,9 @@
  * Private declarations
  ******************************************************************************/
 
-static void Board_logCpuResetCause();
+static void     Board_logCpuResetCause();
 static uint32_t Board_sleep_RTC(uint32_t ms);
 static uint32_t Board_sleep_WDT(uint32_t ms);
-
-
-/*******************************************************************************
- * State
- ******************************************************************************/
-
-uint16_t Board_voltage = 0;
 
 
 /*******************************************************************************
@@ -65,14 +58,14 @@ void Board_setup()
   I2C_setup();
 
   // init LSM303AGR, disable accelerometer and magnetometer
-  LSM303AGR_setup();
+  // LSM303AGR_setup(); // note: it will be done separately
 
   // if we don't use magnetometer we need to make this low otherwise this pin on the LSM303AGR starts leaking current
   pinMode(MAG_INT, OUTPUT);
   digitalWrite(MAG_INT, LOW);
 
   // init LoRa, sleep LoRa
-  if (!LoRa_setup()) { Board_fatalShutdown(); }
+  // if (!LoRa_setup()) { Board_fatalShutdown(); } // note: it will be done separately
 
   LOG_SETUP_RESULT_TEXT(true);
 }
@@ -96,11 +89,9 @@ void Board_fatalShutdown()
   }
 }
 
-void Board_measure()
+uint16_t Board_measureVoltage()
 {
-  LSM303AGR_measure();
-
-  Board_voltage = (uint16_t)((ADC_AREF / 1.023) * (BATVOLT_R1 + BATVOLT_R2) / BATVOLT_R2 * (float)analogRead(BAT_VOLT));
+  return (uint16_t)((ADC_AREF / 1.023) * (BATVOLT_R1 + BATVOLT_R2) / BATVOLT_R2 * (float)analogRead(BAT_VOLT));
 }
 
 void Board_setLed(uint8_t rgb)

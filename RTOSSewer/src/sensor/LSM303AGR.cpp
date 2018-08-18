@@ -4,18 +4,8 @@
 
 
 /*******************************************************************************
- * Definitions
- ******************************************************************************/
-
-#define TEMPERATURE_SENSOR_OFFSET 25
-
-
-/*******************************************************************************
  * State
  ******************************************************************************/
-
-bool LSM303AGR_active = false;
-int8_t LSM303AGR_temperature = 0;
 
 static Sodaq_LSM303AGR accel;
 
@@ -24,16 +14,18 @@ static Sodaq_LSM303AGR accel;
  * Lifecycle
  ******************************************************************************/
 
-void LSM303AGR_setup()
+bool LSM303AGR_setup()
 {
-  LSM303AGR_active = accel.checkWhoAmI();
+  bool b = accel.checkWhoAmI();
 
-  if (LSM303AGR_active) {
+  if (b) {
     accel.disableAccelerometer();
     accel.disableMagnetometer();
   }
 
-  LOG_SETUP_RESULT_TEXT(LSM303AGR_active);
+  LOG_SETUP_RESULT_TEXT(b);
+
+  return b;
 }
 
 
@@ -41,13 +33,16 @@ void LSM303AGR_setup()
  * Public
  ******************************************************************************/
 
-void LSM303AGR_measure()
+int8_t LSM303AGR_measureTemperature()
 {
-  if (!LSM303AGR_active) { return; }
+  accel.enableAccelerometer(Sodaq_LSM303AGR::LowPowerMode, Sodaq_LSM303AGR::HrNormalLowPower100Hz,
+                            Sodaq_LSM303AGR::XYZ, Sodaq_LSM303AGR::Scale2g, true);
 
-  accel.enableAccelerometer(Sodaq_LSM303AGR::LowPowerMode, Sodaq_LSM303AGR::HrNormalLowPower100Hz, Sodaq_LSM303AGR::XYZ,
-                            Sodaq_LSM303AGR::Scale2g, true);
   vTaskDelay(pdMS_TO_TICKS(30));
-  LSM303AGR_temperature = TEMPERATURE_SENSOR_OFFSET + accel.getTemperatureDelta();
+
+  int8_t i = 25 + accel.getTemperatureDelta();
+
   accel.disableAccelerometer();
+
+  return i;
 }

@@ -1,3 +1,9 @@
+#include "board/SODAQ_ONE_V3.h"
+#include "periph/LoRaSodaq.h"
+#include "sensor/BMP280.h"
+#include "sensor/FDC1004.h"
+#include "sensor/LSM303AGR.h"
+#include "sensor/VL53L0X.h"
 #include "Sewer.h"
 
 
@@ -9,15 +15,54 @@
 #define MAINTHREAD_STACK_SIZE 256
 #define MAINTHREAD_PRIORITY   tskIDLE_PRIORITY + 1
 
+#define DATA_BIT_LSM303AGR    1
+#define DATA_BIT_BMP280       2
+#define DATA_BIT_VL53L0X      4
+#define DATA_BIT_FDC1004      8
+
+
+/*******************************************************************************
+ * State
+ ******************************************************************************/
+
+struct {
+  struct {
+    char     sign[2]     = {0x53, 0x57}; // 'S', 'W'
+    uint32_t version     = 18081800;
+  } common;
+
+  struct {
+    uint8_t  active      = 0; // bit 0: LSM303AGR, 1: BMP280, 2: VL53L0X, 3: FDC1004
+    uint16_t voltage     = 0;
+  } board;
+
+  struct {
+    int8_t   temperature = 0;
+  } lsm303agr;
+
+  struct {
+    float    temperature = 0;
+    float    pressure    = 0;
+    float    altitude    = 0;
+  } bmp280;
+
+  struct {
+    int8_t distance      = 0;
+  } vl53l0x;
+
+  struct {
+    float    capacity    = 0;
+  } fdc1004;
+} data;
+
 
 /*******************************************************************************
  * Private declarations
  ******************************************************************************/
 
 static void Sewer_initModules();
-static void Sewer_logState();
-static void Sewer_measure();
-static void Sewer_prepareData();
+static void Sewer_logData();
+static void Sewer_measureData();
 static void Sewer_sendData();
 static void Sewer_threadMain(void* pvParameters);
 
@@ -48,72 +93,87 @@ static void Sewer_initModules()
 
   Board_setup();
 
-  BMP280_setup();
-  FDC1004_setup();
-  VL53L0X_setup();
+  Board_setLed(0b010);
+
+  if (!LoRa_setup()) { Board_fatalShutdown(); }
+
+  if (LSM303AGR_setup()) { data.board.active  = DATA_BIT_LSM303AGR; }
+  if (BMP280_setup()   ) { data.board.active |= DATA_BIT_BMP280;    }
+  if (VL53L0X_setup()  ) { data.board.active |= DATA_BIT_VL53L0X;   }
+  if (FDC1004_setup()  ) { data.board.active |= DATA_BIT_FDC1004;   }
+
+  Board_setLed(0b000);
 }
 
-static void Sewer_logState()
+static void Sewer_logData()
 {
-  LOG(VS("BOARD battery: "), VUI16(Board_voltage), VS(" mV"));
+  LOG(VS("BOARD battery: "), VUI16(data.board.voltage), VS(" mV"));
 
-  if (BMP280_active) {
-    LOG(VS("BMP280 temperature: "), VF(BMP280_temperature), VS(" *C"));
-    LOG(VS("BMP280 pressure: "),    VF(BMP280_pressure),    VS(" Pa"));
-    LOG(VS("BMP280 altitude: "),    VF(BMP280_altitude),    VS(" m"));
-  } else {
-    LOGS("BMP280 temperature: N/A");
-    LOGS("BMP280 pressure: N/A");
-    LOGS("BMP280 altitude: N/A");
+  if (data.board.active & DATA_BIT_LSM303AGR) {
+    LOG(VS("LSM303AGR temperature: "), VUI8(data.lsm303agr.temperature), VS(" *C"));
   }
 
-  if (FDC1004_active) {
-    LOG(VS("FDC1004 capacitance: "), VUI32(FDC1004_cap), VS(" fF"));
-  } else {
-    LOGS("FDC1004 capacitance: N/A");
+  if (data.board.active & DATA_BIT_BMP280) {
+    LOG(VS("BMP280 temperature: "), VF(data.bmp280.temperature), VS(" *C"));
+    LOG(VS("BMP280 pressure: "),    VF(data.bmp280.pressure),    VS(" Pa"));
+    LOG(VS("BMP280 altitude: "),    VF(data.bmp280.altitude),    VS(" m"));
   }
 
-  if (LSM303AGR_active) {
-    LOG(VS("LSM303AGR temperature: "), VUI8(LSM303AGR_temperature), VS(" *C"));
-  } else {
-    LOGS("LSM303AGR temperature: N/A");
-  }
-
-  if (VL53L0X_active) {
-    if (VL53L0X_distance <= 2000) {
-      LOG(VS("VL53L0X distance: "), VUI16(VL53L0X_distance), VS(" mm"));
+  if (data.board.active & DATA_BIT_VL53L0X) {
+    if (data.vl53l0x.distance <= 2000) {
+      LOG(VS("VL53L0X distance: "), VUI16(data.vl53l0x.distance), VS(" mm"));
     } else {
       LOGS("VL53L0X distance: out of range");
     }
-  } else {
-    LOGS("VL53L0X distance: N/A");
+  }
+
+  if (data.board.active & DATA_BIT_FDC1004) {
+    LOG(VS("FDC1004 capacitance: "), VUI32(data.fdc1004.capacity), VS(" fF"));
   }
 }
 
-static void Sewer_measure()
+static void Sewer_measureData()
 {
+  Board_setLed(0b010);
+
   LOGS("reading a measurement...");
 
-  Board_measure();
-  BMP280_measure();
-  FDC1004_measure();
-  VL53L0X_measure();
-}
+  data.board.voltage = Board_measureVoltage();
 
-static void Sewer_prepareData()
-{
+  if (data.board.active & DATA_BIT_LSM303AGR) {
+    data.lsm303agr.temperature = LSM303AGR_measureTemperature();
+  }
 
+  if (data.board.active & DATA_BIT_BMP280) {
+    data.bmp280.temperature = BMP280_measureTemperature();
+    data.bmp280.pressure    = BMP280_measurePressure();
+    data.bmp280.altitude    = BMP280_measureAltitude();
+  }
+
+  if (data.board.active & DATA_BIT_VL53L0X) {
+    data.vl53l0x.distance = VL53L0X_measureDistance();
+  }
+
+  if (data.board.active & DATA_BIT_FDC1004) {
+    data.fdc1004.capacity = FDC1004_measureCapacity();
+  }
+
+  #if USE_LOGGER
+  Sewer_logData();
+  #endif
+
+  Board_setLed(0b000);
 }
 
 static void Sewer_sendData()
 {
-  Board_setLed(0b001);
+  // Board_setLed(0b001);
 
   // LoRa_wakeUp();
   // LoRa_initOTAA();
   // LoRa_sleep();
 
-  Board_setLed(0b000);
+  // Board_setLed(0b000);
 }
 
 static void Sewer_threadMain(void* pvParameters)
@@ -123,13 +183,7 @@ static void Sewer_threadMain(void* pvParameters)
   TickType_t ts = xTaskGetTickCount();
 
   for (;;) {
-    Sewer_measure();
-
-    #if USE_LOGGER
-    Sewer_logState();
-    #endif
-
-    Sewer_prepareData();
+    Sewer_measureData();
     Sewer_sendData();
 
     LOGS("need delay " STR(MAINTHREAD_DELAY_LOOP) " ms");

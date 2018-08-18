@@ -17,11 +17,6 @@
  * State
  ******************************************************************************/
 
-bool  BMP280_active      = false;
-float BMP280_temperature = 0;
-float BMP280_pressure    = 0;
-float BMP280_altitude    = 0;
-
 static Adafruit_BMP280 sensor;
 
 
@@ -29,14 +24,16 @@ static Adafruit_BMP280 sensor;
  * Lifecycle
  ******************************************************************************/
 
-void BMP280_setup()
+bool BMP280_setup()
 {
   Wire.beginTransmission(BMP280_ADDRESS_CLONE);
   uint8_t error = Wire.endTransmission();
 
-  BMP280_active = sensor.begin(error == 0 ? BMP280_ADDRESS_CLONE : BMP280_ADDRESS_ORIGINAL);
+  bool b = sensor.begin(error == 0 ? BMP280_ADDRESS_CLONE : BMP280_ADDRESS_ORIGINAL);
 
-  LOG_SETUP_RESULT_TEXT(BMP280_active);
+  LOG_SETUP_RESULT_TEXT(b);
+
+  return b;
 }
 
 
@@ -44,11 +41,8 @@ void BMP280_setup()
  * Public
  ******************************************************************************/
 
-void BMP280_measure()
-{
-  if (!BMP280_active) { return; }
+float BMP280_measureAltitude() { return sensor.readAltitude(LOCAL_BAROMETRIC_PRESSURE); }
 
-  BMP280_temperature = sensor.readTemperature();
-  BMP280_pressure    = sensor.readPressure();
-  BMP280_altitude    = sensor.readAltitude(LOCAL_BAROMETRIC_PRESSURE);
-}
+float BMP280_measurePressure() { return sensor.readPressure(); }
+
+float BMP280_measureTemperature() { return sensor.readTemperature(); }
