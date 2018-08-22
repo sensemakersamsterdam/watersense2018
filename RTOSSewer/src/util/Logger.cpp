@@ -152,8 +152,8 @@ void Logger_printUI8H02(uint8_t i)
 
 static void Logger_printSysinfo()
 {
-  #ifdef PROJECT_VERSION
-  LOGS("PROJECT: " PROJECT_VERSION);
+  #if defined(PROJECT_NAME) && defined(PROJECT_VERSION)
+  LOGS("PROJECT: " PROJECT_NAME " " STR(PROJECT_VERSION));
   #endif
 
   #ifdef ARDUINO

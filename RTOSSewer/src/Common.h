@@ -1,9 +1,11 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define PROJECT_VERSION "RTOSSewer 0.0.1"
+#define PROJECT_NAME    "RTOSSewer"
+#define PROJECT_VERSION 2018082200
 #define USE_DEEPSLEEP   0
 #define USE_LOGGER      1
+#define USE_LORA        1
 
 #include <Arduino.h>
 

@@ -49,6 +49,13 @@ void Board_setup()
   SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
   #endif
 
+  // setup BOD33, shutdown at 3.07 Volt
+  SYSCTRL->BOD33.bit.LEVEL  = 0x30; // 3.07 Volt
+  SYSCTRL->BOD33.bit.ACTION = 1;    // go to Reset
+  SYSCTRL->BOD33.bit.ENABLE = 1;    // enabled
+  SYSCTRL->BOD33.bit.HYST   = 1;    // hysteresis on
+  while (!SYSCTRL->PCLKSR.bit.B33SRDY);
+
   // show last CPU reset reason(s)
   #if USE_LOGGER
   Board_logCpuResetCause();

@@ -9,12 +9,6 @@
 
 #include "../LoRaConfig.h"
 
-/*
-static const uint8_t APP_EUI[]  = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-static const uint8_t APP_KEY[]  = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-*/
-
 
 /*******************************************************************************
  * Definitions
@@ -71,8 +65,6 @@ bool LoRa_setup()
 
 bool LoRa_initOTAA()
 {
-  LOGS("init OTAA...");
-
   uint8_t eui[8];
 
   if (LoRaBee.getHWEUI(eui, sizeof(eui)) != 8) {
@@ -83,54 +75,44 @@ bool LoRa_initOTAA()
   bool b = false;
 
   for (uint8_t i = 0; i < JOINNETWORK_MAX_RETRIES; i++) {
-    LOG(VS("attempt "), VUI8(i), VS("..."));
+    LOG(VS("init OTAA: attempt "), VUI8(i), VS("..."));
 
     if (LoRaBee.initOTA(eui, APP_EUI, APP_KEY, false)) { b = true; break; }
   }
 
   LOG(b ? VS("accepted") : VS("denied"));
 
-  // TODO: following is for debug only(!), it will be removed later
-  // TODO: instead of this => send data from sensors every 5 minutes
-  // if (b) {
-  //   LOGS("sending test...");
-  //
-  //   static uint8_t testPayload[] = { 0x01, 0x10, 0x02, 0x22 };
-  //
-  //   LoRa_send(testPayload, sizeof(testPayload));
-  // }
-
   return b;
 }
 
-// bool LoRa_send(const uint8_t *buffer, uint8_t size)
-// {
-//   for (uint8_t i = 0; i < SEND_MAX_RETRIES; i++) {
-//     LOG(VS("attempt "), VUI8(i), VS("..."));
-//
-//     uint8_t result = LoRaBee.send(1, buffer, size);
-//
-//     #if USE_LOGGER
-//     LoRa_logTransmissionResult(result);
-//     #endif
-//
-//     if (result == NoError) { return true; }
-//
-//     if (result == Busy || result == Timeout) {
-//       vTaskDelay(pdMS_TO_TICKS(10000));
-//       continue;
-//     }
-//
-//     if (result == NoResponse || result == InternalError || result == NetworkFatalError || result == NotConnected) {
-//       if (!LoRa_initOTAA()) { return false; }
-//       continue;
-//     }
-//
-//     if (result == PayloadSizeError) { return false; }
-//   }
-//
-//   return false;
-// }
+bool LoRa_send(const uint8_t *buffer, uint8_t size)
+{
+  for (uint8_t i = 0; i < SEND_MAX_RETRIES; i++) {
+    LOG(VS("send: attempt "), VUI8(i), VS("..."));
+
+    uint8_t result = LoRaBee.send(1, buffer, size);
+
+    #if USE_LOGGER
+    LoRa_logTransmissionResult(result);
+    #endif
+
+    if (result == NoError) { return true; }
+
+    if (result == Busy || result == Timeout) {
+      vTaskDelay(pdMS_TO_TICKS(10000));
+      continue;
+    }
+
+    if (result == NoResponse || result == InternalError || result == NetworkFatalError || result == NotConnected) {
+      if (!LoRa_initOTAA()) { return false; }
+      continue;
+    }
+
+    if (result == PayloadSizeError) { return false; }
+  }
+
+  return false;
+}
 
 void LoRa_sleep()
 {
