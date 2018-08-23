@@ -15,6 +15,7 @@ bool LSM303AGR_setup();
  * Public
  ******************************************************************************/
 
+bool   LSM303AGR_isActive();
 int8_t LSM303AGR_measureTemperature();
 
 #endif // LSM303AGR_H

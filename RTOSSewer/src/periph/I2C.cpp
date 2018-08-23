@@ -16,13 +16,30 @@ static void I2C_logDevices();
 
 void I2C_setup()
 {
-  Wire.begin();
-
   LOG_SETUP_RESULT_TEXT(true);
 
   #if USE_LOGGER
   I2C_logDevices();
   #endif
+}
+
+
+/*******************************************************************************
+ * Public
+ ******************************************************************************/
+
+void I2C_disable()
+{
+  Wire.end();
+
+  LOGS("disabled");
+}
+
+void I2C_enable()
+{
+  Wire.begin();
+
+  LOGS("enabled");
 }
 
 
@@ -35,6 +52,8 @@ static void I2C_logDevices()
   LOGS("scanning...");
 
   bool b = false;
+
+  I2C_enable();
 
   for (uint8_t address = 1; address < 127; address++)
   {
@@ -58,6 +77,8 @@ static void I2C_logDevices()
       );
     }
   }
+
+  I2C_disable();
 
   if (b) { LOGS("scanning done"); } else { LOGS("no devices found"); }
 }

@@ -1,5 +1,6 @@
 #include <Sodaq_RN2483.h>
 
+#include "../periph/WDT.h"
 #include "LoRaSodaq.h"
 
 
@@ -77,6 +78,8 @@ bool LoRa_initOTAA()
   for (uint8_t i = 0; i < JOINNETWORK_MAX_RETRIES; i++) {
     LOG(VS("init OTAA: attempt "), VUI8(i), VS("..."));
 
+    LoRaBee.hardwareReset();
+
     if (LoRaBee.initOTA(eui, APP_EUI, APP_KEY, false)) { b = true; break; }
   }
 
@@ -85,7 +88,7 @@ bool LoRa_initOTAA()
   return b;
 }
 
-bool LoRa_send(const uint8_t *buffer, uint8_t size)
+uint8_t LoRa_send(const uint8_t *buffer, uint8_t size)
 {
   for (uint8_t i = 0; i < SEND_MAX_RETRIES; i++) {
     LOG(VS("send: attempt "), VUI8(i), VS("..."));
@@ -96,22 +99,24 @@ bool LoRa_send(const uint8_t *buffer, uint8_t size)
     LoRa_logTransmissionResult(result);
     #endif
 
-    if (result == NoError) { return true; }
+    if (result == NoError) { return 0; }
 
     if (result == Busy || result == Timeout) {
+      WDT_disable();
       vTaskDelay(pdMS_TO_TICKS(10000));
+      WDT_enable();
       continue;
     }
 
     if (result == NoResponse || result == InternalError || result == NetworkFatalError || result == NotConnected) {
-      if (!LoRa_initOTAA()) { return false; }
+      if (!LoRa_initOTAA()) { return 2; }
       continue;
     }
 
-    if (result == PayloadSizeError) { return false; }
+    if (result == PayloadSizeError) { return 1; }
   }
 
-  return false;
+  return 1;
 }
 
 void LoRa_sleep()

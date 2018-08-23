@@ -1,5 +1,8 @@
 TODO
 
+- add Relay MOSFET DFR0457
+- add Ultrasonic sensor (10 measurements and do average)
+- add measurements with sound speaker 8ohm 0.5W and microphone CJMCU-9812
 - add BMP3290 sensor
 - add Aquaplumb sensor
 - add Turbidity sensor
@@ -31,7 +34,11 @@ function Decoder(bytes, port) {
     return bytes[offset + 3] << 24 | bytes[offset + 2] << 16 | bytes[offset + 1] << 8 | bytes[offset + 0];
   }
 
-  if (!bytes || bytes.length != 26) { return {result: 'ERROR'} }
+  if (!bytes || bytes.length != 26) {
+    return {
+      TestValue: String.fromCharCode.apply(null, bytes)
+    }
+  }
 
   return {
     result: 'OK',
@@ -69,5 +76,6 @@ function Validator(converted, port) {
   // Return false if the decoded, converted
   // message is invalid and should be dropped.
 
-  return converted && converted.result === 'OK';
+  //return converted && converted.result === 'OK';
+  return true;
 }

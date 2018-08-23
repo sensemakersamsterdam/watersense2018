@@ -1,7 +1,7 @@
+#include <RTCZero.h>
+
 #include "../periph/I2C.h"
-#include "../periph/RTC.h"
 #include "../periph/LoRaSodaq.h"
-#include "../periph/WDT.h"
 #include "../sensor/LSM303AGR.h"
 #include "SODAQ_ONE_V3.h"
 
@@ -15,12 +15,18 @@
 
 
 /*******************************************************************************
+ * State
+ ******************************************************************************/
+
+static RTCZero rtc;
+
+
+/*******************************************************************************
  * Private declarations
  ******************************************************************************/
 
 static void     Board_logCpuResetCause();
 static uint32_t Board_sleep_RTC(uint32_t ms);
-static uint32_t Board_sleep_WDT(uint32_t ms);
 
 
 /*******************************************************************************
@@ -30,7 +36,7 @@ static uint32_t Board_sleep_WDT(uint32_t ms);
 void Board_setup()
 {
   // disable WDT and turn off the power to the WDT
-  WDT_disable();
+  // WDT_disable();
 
   // turn off GPS
   pinMode(GPS_ENABLE, OUTPUT);
@@ -56,6 +62,13 @@ void Board_setup()
   SYSCTRL->BOD33.bit.HYST   = 1;    // hysteresis on
   while (!SYSCTRL->PCLKSR.bit.B33SRDY);
 
+  #if USE_LOGGER == 0
+  SerialUSB.flush();
+  SerialUSB.end();
+  USBDevice.detach();
+  USB->DEVICE.CTRLA.reg &= ~USB_CTRLA_ENABLE; // disable USB
+  #endif
+
   // show last CPU reset reason(s)
   #if USE_LOGGER
   Board_logCpuResetCause();
@@ -65,14 +78,16 @@ void Board_setup()
   I2C_setup();
 
   // init LSM303AGR, disable accelerometer and magnetometer
-  // LSM303AGR_setup(); // note: it will be done separately
+  I2C_enable();
+  LSM303AGR_setup();
+  I2C_disable();
 
   // if we don't use magnetometer we need to make this low otherwise this pin on the LSM303AGR starts leaking current
   pinMode(MAG_INT, OUTPUT);
   digitalWrite(MAG_INT, LOW);
 
   // init LoRa, sleep LoRa
-  // if (!LoRa_setup()) { Board_fatalShutdown(); } // note: it will be done separately
+  if (!LoRa_setup()) { Board_fatalShutdown(); }
 
   LOG_SETUP_RESULT_TEXT(true);
 }
@@ -108,14 +123,14 @@ void Board_setLed(uint8_t rgb)
   digitalWrite(PIN_LED_BLUE , !(rgb & 0b001));
 }
 
-#if USE_DEEPSLEEP
 uint32_t Board_sleep(uint32_t ms)
 {
-  return ms > 1000 ? Board_sleep_RTC(ms) : Board_sleep_WDT(ms);
+  #if USE_DEEPSLEEP
+  if (ms > 1000) { return Board_sleep_RTC(ms); }
+  #endif
+
+  return 0;
 }
-#else
-uint32_t Board_sleep(uint32_t ms) { return 0; }
-#endif
 
 
 /*******************************************************************************
@@ -137,7 +152,15 @@ static void Board_logCpuResetCause()
 
 static uint32_t Board_sleep_RTC(uint32_t ms)
 {
-  uint32_t ms1 = RTC_setAlarm(ms);
+  uint32_t ms1 = (ms + 999) / 1000;
+
+  rtc.begin(false);
+  rtc.setTime(0, 0, 0);
+  rtc.setDate(1, 1, 18);
+  rtc.setAlarmTime(ms1 / 60 / 60, ms1 / 60 % 60, ms1 % 60);
+  rtc.enableAlarm(rtc.MATCH_HHMMSS);
+
+  ms1 *= 1000;
 
   LOG(VS("need sleep: "), VUI32(ms), VS(" ms, will sleep: "), VUI32(ms1), VS(" ms"));
 
@@ -147,24 +170,6 @@ static uint32_t Board_sleep_RTC(uint32_t ms)
 
   __DSB();
   __WFI();
-
-  return ms1;
-}
-
-static uint32_t Board_sleep_WDT(uint32_t ms)
-{
-  uint32_t ms1 = WDT_enable(ms);
-
-  LOG(VS("need sleep: "), VUI32(ms), VS(" ms, will sleep: "), VUI32(ms1), VS(" ms"));
-
-  #if USE_LOGGER
-  USBDevice.standby();
-  #endif
-
-  __DSB();
-  __WFI();
-
-  WDT_disable();
 
   return ms1;
 }

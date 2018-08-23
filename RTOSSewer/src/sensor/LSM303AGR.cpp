@@ -33,6 +33,8 @@ bool LSM303AGR_setup()
  * Public
  ******************************************************************************/
 
+bool LSM303AGR_isActive() { return accel.checkWhoAmI(); }
+
 int8_t LSM303AGR_measureTemperature()
 {
   accel.enableAccelerometer(Sodaq_LSM303AGR::LowPowerMode, Sodaq_LSM303AGR::HrNormalLowPower100Hz,

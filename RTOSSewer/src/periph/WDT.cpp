@@ -5,51 +5,50 @@
 
 
 /*******************************************************************************
+ * Lifecycle
+ ******************************************************************************/
+
+void WDT_setup() {
+  // generic clock generator 2, divisor = 32 (2^(DIV+1))
+  GCLK->GENDIV.reg = GCLK_GENDIV_ID(2) | GCLK_GENDIV_DIV(4);
+
+  // enable clock generator 2 using low-power 32KHz oscillator.
+  // with /32 divisor above, this yields 1024Hz(ish) clock.
+  GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(2) | GCLK_GENCTRL_GENEN | GCLK_GENCTRL_SRC_OSCULP32K | GCLK_GENCTRL_DIVSEL;
+  while(GCLK->STATUS.bit.SYNCBUSY);
+
+  // WDT clock = clock gen 2
+  GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID_WDT | GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK2;
+
+  // enable WDT early-warning interrupt
+  NVIC_DisableIRQ(WDT_IRQn);
+  NVIC_ClearPendingIRQ(WDT_IRQn);
+  NVIC_SetPriority(WDT_IRQn, 0); // top priority
+  NVIC_EnableIRQ(WDT_IRQn);
+}
+
+
+/*******************************************************************************
  * Public
  ******************************************************************************/
 
-uint32_t WDT_enable(uint32_t ms)
+void WDT_disable() { sodaq_wdt_disable(); }
+
+void WDT_enable()
 {
-  uint8_t pr;
+  PM->APBAMASK.reg |= PM_APBAMASK_WDT;  // turn the power to the WDT module on
 
-  if (ms >= 8000) {
-    ms = 8000;
-    pr = 0xA;
-  } else if (ms >= 4000) {
-    ms = 4000;
-    pr = 0x09;
-  } else if (ms >= 2000) {
-    ms = 2000;
-    pr = 0x08;
-  } else if (ms >= 1000) {
-    ms = 1000;
-    pr = 0x07;
-  } else if (ms >= 500) {
-    ms = 500;
-    pr = 0x06;
-  } else if (ms >= 250) {
-    ms = 250;
-    pr = 0x05;
-  } else if (ms >= 125) {
-    ms = 125;
-    pr = 0x04;
-  } else if (ms >= 63) {
-    ms = 63;
-    pr = 0x03;
-  } else if (ms >= 31) {
-    ms = 31;
-    pr = 0x02;
-  } else if (ms >= 16) {
-    ms = 16;
-    pr = 0x01;
-  } else {
-    ms = 8;
-    pr = 0x00;
-  }
+  WDT->CTRL.reg = 0;                    // disable watchdog for config
+  while(WDT->STATUS.bit.SYNCBUSY);
 
-  sodaq_wdt_enable((wdt_period)pr);
+  WDT->INTENCLR.bit.EW = 1;             // disable early warning interrupt
+  WDT->CONFIG.bit.PER  = 10;            // set period 8 sec for chip reset
+  WDT->CTRL.bit.WEN    = 0;             // disable window mode
+  while(WDT->STATUS.bit.SYNCBUSY);      // sync CTRL write
 
-  return ms;
+  WDT_reset();                          // clear watchdog interval
+  WDT->CTRL.bit.ENABLE = 1;             // start watchdog now
+  while(WDT->STATUS.bit.SYNCBUSY);
 }
 
-void WDT_disable() { sodaq_wdt_disable(); }
+void WDT_reset() { sodaq_wdt_reset(); }
