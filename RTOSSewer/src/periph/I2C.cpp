@@ -32,6 +32,12 @@ void I2C_disable()
 {
   Wire.end();
 
+  // TODO: turn off power
+  // pinMode(PIN_WIRE_SCL, OUTPUT);
+  // pinMode(PIN_WIRE_SDA, OUTPUT);
+  // digitalWrite(PIN_WIRE_SCL, LOW);
+  // digitalWrite(PIN_WIRE_SDA, LOW);
+
   LOGS("disabled");
 }
 

@@ -104,10 +104,9 @@ void Board_fatalShutdown()
   taskDISABLE_INTERRUPTS();
 
   for (;;) {
-    Board_setLed(0b100);
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    Board_setLed(0b000);
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+    __DSB();
+    __WFI();
   }
 }
 

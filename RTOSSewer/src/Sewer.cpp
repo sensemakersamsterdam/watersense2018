@@ -98,8 +98,6 @@ static void Sewer_logData()
 
 static void Sewer_measureData()
 {
-  Board_setLed(0b010);
-
   LOGS("reading a measurement...");
 
   data.board_voltage = Board_measureVoltage();
@@ -147,8 +145,6 @@ static void Sewer_measureData()
   #if USE_LOGGER
   Sewer_logData();
   #endif
-
-  Board_setLed(0b000);
 }
 
 static void Sewer_sendData()
@@ -157,16 +153,12 @@ static void Sewer_sendData()
 
   LOG(VS("data, "), VUI8(sizeof(data)), VS(" bytes: "), VUI8AH02((const uint8_t*)&data, sizeof(data)));
 
-  Board_setLed(0b001);
-
   LoRa_wakeUp();
   if (!b) { b = LoRa_initOTAA(); }
   if (b) {
     if (LoRa_send((const uint8_t*)&data, sizeof(data)) == 2) { b = false; }
   }
   LoRa_sleep();
-
-  Board_setLed(0b000);
 }
 
 static void Sewer_threadMain(void* pvParameters)
@@ -188,11 +180,14 @@ static void Sewer_threadMain(void* pvParameters)
   for (;;) {
     WDT_enable();
 
-    // TODO: turn on relay, delay
+    // TODO: turn on power, delay
+    // pinMode(11, OUTPUT);
+    // digitalWrite(11, HIGH);
 
     Sewer_measureData();
 
-    // TODO: turn off relay
+    // TODO: turn off power
+    //digitalWrite(11, LOW);
 
     #if USE_LORA
     Sewer_sendData();
