@@ -4,6 +4,13 @@
 
 
 /*******************************************************************************
+ * Definitions
+ ******************************************************************************/
+
+#define PIN_SENSORS_POWER 9
+
+
+/*******************************************************************************
  * Private declarations
  ******************************************************************************/
 
@@ -16,6 +23,8 @@ static void I2C_logDevices();
 
 void I2C_setup()
 {
+  pinMode(PIN_SENSORS_POWER, OUTPUT);
+
   LOG_SETUP_RESULT_TEXT(true);
 
   #if USE_LOGGER
@@ -32,17 +41,15 @@ void I2C_disable()
 {
   Wire.end();
 
-  // TODO: turn off power
-  // pinMode(PIN_WIRE_SCL, OUTPUT);
-  // pinMode(PIN_WIRE_SDA, OUTPUT);
-  // digitalWrite(PIN_WIRE_SCL, LOW);
-  // digitalWrite(PIN_WIRE_SDA, LOW);
+  digitalWrite(PIN_SENSORS_POWER, LOW);
 
   LOGS("disabled");
 }
 
 void I2C_enable()
 {
+  digitalWrite(PIN_SENSORS_POWER, HIGH);
+
   Wire.begin();
 
   LOGS("enabled");

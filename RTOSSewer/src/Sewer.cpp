@@ -5,6 +5,7 @@
 #include "sensor/BMP280.h"
 #include "sensor/FDC1004.h"
 #include "sensor/LSM303AGR.h"
+#include "sensor/MB7092.h"
 #include "sensor/VL53L0X.h"
 #include "Sewer.h"
 
@@ -13,7 +14,7 @@
  * Definitions
  ******************************************************************************/
 
-#define MAINTHREAD_DELAY_LOOP 30000
+#define MAINTHREAD_DELAY_LOOP 10000
 #define MAINTHREAD_STACK_SIZE 256
 #define MAINTHREAD_PRIORITY   tskIDLE_PRIORITY + 1
 
@@ -21,6 +22,7 @@
 #define DATA_BIT_BMP280       2
 #define DATA_BIT_VL53L0X      4
 #define DATA_BIT_FDC1004      8
+#define DATA_BIT_MB7092       16
 
 
 /*******************************************************************************
@@ -29,13 +31,14 @@
 
 struct __attribute__((__packed__)) {
   uint32_t version               = PROJECT_VERSION;
-  uint8_t  board_modules         = 0; // bit 0: LSM303AGR, 1: BMP280, 2: VL53L0X, 3: FDC1004
+  uint8_t  board_modules         = 0; // bit 0: LSM303AGR, 1: BMP280, 2: VL53L0X, 3: FDC1004, 4: MB7092
   uint16_t board_voltage         = 0;
   int8_t   lsm303agr_temperature = 0;
   float    bmp280_temperature    = 0;
   float    bmp280_pressure       = 0;
   uint16_t vl53l0x_distance      = 0;
   float    fdc1004_capacity      = 0;
+  uint16_t mb7092_distance       = 0;
 } data;
 
 
@@ -92,6 +95,10 @@ static void Sewer_logData()
   if (data.board_modules & DATA_BIT_FDC1004) {
     LOG(VS("FDC1004 capacitance: "), VUI32(data.fdc1004_capacity), VS(" fF"));
   }
+
+  if (data.board_modules & DATA_BIT_MB7092) {
+    LOG(VS("MB7092 distance: "), VUI16(data.mb7092_distance));
+  }
 }
 
 static void Sewer_measureData()
@@ -138,6 +145,10 @@ static void Sewer_measureData()
 
   I2C_disable();
 
+  MB7092_setup();
+  data.board_modules  |= DATA_BIT_MB7092;
+  data.mb7092_distance = MB7092_measureDistance();
+
   #if USE_LOGGER
   Sewer_logData();
   #endif
@@ -176,14 +187,11 @@ static void Sewer_threadMain(void* pvParameters)
   for (;;) {
     WDT_enable();
 
-    // TODO: turn on power, delay
-    // pinMode(11, OUTPUT);
-    // digitalWrite(11, HIGH);
+    // LOGS("need delay 5000 ms");
+    // vTaskDelay(pdMS_TO_TICKS(5000));
+    // LOGS("start measurements");
 
     Sewer_measureData();
-
-    // TODO: turn off power
-    //digitalWrite(11, LOW);
 
     #if USE_LORA
     Sewer_sendData();

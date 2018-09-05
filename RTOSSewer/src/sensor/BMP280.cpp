@@ -32,6 +32,8 @@ bool BMP280_setup()
 
   LOG_SETUP_RESULT_TEXT(b);
 
+  if (b) { vTaskDelay(pdMS_TO_TICKS(200)); }
+
   return b;
 }
 

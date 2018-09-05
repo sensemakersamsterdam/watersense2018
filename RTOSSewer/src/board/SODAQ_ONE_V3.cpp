@@ -56,11 +56,11 @@ void Board_setup()
   #endif
 
   // setup BOD33, shutdown at 3.07 Volt
-  SYSCTRL->BOD33.bit.LEVEL  = 0x30; // 3.07 Volt
-  SYSCTRL->BOD33.bit.ACTION = 1;    // go to Reset
-  SYSCTRL->BOD33.bit.ENABLE = 1;    // enabled
-  SYSCTRL->BOD33.bit.HYST   = 1;    // hysteresis on
-  while (!SYSCTRL->PCLKSR.bit.B33SRDY);
+  // SYSCTRL->BOD33.bit.LEVEL  = 0x30; // 3.07 Volt
+  // SYSCTRL->BOD33.bit.ACTION = 1;    // go to Reset
+  // SYSCTRL->BOD33.bit.ENABLE = 1;    // enabled
+  // SYSCTRL->BOD33.bit.HYST   = 1;    // hysteresis on
+  // while (!SYSCTRL->PCLKSR.bit.B33SRDY);
 
   #if USE_LOGGER == 0
   SerialUSB.flush();
