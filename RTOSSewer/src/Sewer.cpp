@@ -13,7 +13,7 @@
  * Definitions
  ******************************************************************************/
 
-#define MAINTHREAD_DELAY_LOOP 300000
+#define MAINTHREAD_DELAY_LOOP 30000
 #define MAINTHREAD_STACK_SIZE 256
 #define MAINTHREAD_PRIORITY   tskIDLE_PRIORITY + 1
 
@@ -34,7 +34,6 @@ struct __attribute__((__packed__)) {
   int8_t   lsm303agr_temperature = 0;
   float    bmp280_temperature    = 0;
   float    bmp280_pressure       = 0;
-  float    bmp280_altitude       = 0;
   uint16_t vl53l0x_distance      = 0;
   float    fdc1004_capacity      = 0;
 } data;
@@ -80,7 +79,6 @@ static void Sewer_logData()
   if (data.board_modules & DATA_BIT_BMP280) {
     LOG(VS("BMP280 temperature: "), VF(data.bmp280_temperature), VS(" *C"));
     LOG(VS("BMP280 pressure: "),    VF(data.bmp280_pressure),    VS(" Pa"));
-    LOG(VS("BMP280 altitude: "),    VF(data.bmp280_altitude),    VS(" m"));
   }
 
   if (data.board_modules & DATA_BIT_VL53L0X) {
@@ -116,12 +114,10 @@ static void Sewer_measureData()
     data.board_modules     |= DATA_BIT_BMP280;
     data.bmp280_temperature = BMP280_measureTemperature();
     data.bmp280_pressure    = BMP280_measurePressure();
-    data.bmp280_altitude    = BMP280_measureAltitude();
   } else {
     data.board_modules     &= ~DATA_BIT_BMP280;
     data.bmp280_temperature = 0;
     data.bmp280_pressure    = 0;
-    data.bmp280_altitude    = 0;
   }
 
   if (VL53L0X_setup()) {

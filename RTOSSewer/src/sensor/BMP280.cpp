@@ -8,7 +8,6 @@
  * Definitions
  ******************************************************************************/
 
-#define LOCAL_BAROMETRIC_PRESSURE 1013.25f
 #define BMP280_ADDRESS_CLONE      0x76
 #define BMP280_ADDRESS_ORIGINAL   0x77
 
@@ -40,8 +39,6 @@ bool BMP280_setup()
 /*******************************************************************************
  * Public
  ******************************************************************************/
-
-float BMP280_measureAltitude() { return sensor.readAltitude(LOCAL_BAROMETRIC_PRESSURE); }
 
 float BMP280_measurePressure() { return sensor.readPressure(); }
 
