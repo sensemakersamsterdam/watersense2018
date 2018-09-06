@@ -1,15 +1,13 @@
 #include "../Common.h"
 
-#ifndef I2C_H
-#define I2C_H
+#ifndef ONEWIRE_H
+#define ONEWIRE_H
 
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
 
-void I2C_disable();
-void I2C_enable();
-void I2C_logDevices();
+void OneWire_logDevices();
 
-#endif // I2C_H
+#endif // ONEWIRE_H

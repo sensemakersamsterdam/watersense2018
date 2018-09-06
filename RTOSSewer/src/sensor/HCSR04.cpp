@@ -1,23 +1,24 @@
-#include "MB7092.h"
+#include "HCSR04.h"
 
 
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
 
-#define PIN_MB7092_ANALOG PIN_A9
-#define PIN_MB7092_TRIG   10
+#define PIN_HCSR04_ECHO 7
+#define PIN_HCSR04_TRIG 8
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void MB7092_setup()
+void HCSR04_setup()
 {
-  pinMode(PIN_MB7092_TRIG, OUTPUT);
+  pinMode(PIN_HCSR04_TRIG, OUTPUT);
+  pinMode(PIN_HCSR04_ECHO, INPUT);
 
-  digitalWrite(PIN_MB7092_TRIG, LOW);
+  digitalWrite(PIN_HCSR04_TRIG, LOW);
 }
 
 
@@ -25,17 +26,18 @@ void MB7092_setup()
  * Public
  ******************************************************************************/
 
-uint16_t MB7092_measureDistance()
+uint16_t HCSR04_measureDistance()
 {
-  digitalWrite(PIN_MB7092_TRIG, LOW);
-  vTaskDelay(pdMS_TO_TICKS(1));
-  digitalWrite(PIN_MB7092_TRIG, HIGH);
-  vTaskDelay(pdMS_TO_TICKS(500));
-
   uint32_t val = 0;
-  for (uint8_t i = 0; i < 5; i++) { val += analogRead(PIN_MB7092_ANALOG); }
 
-  digitalWrite(PIN_MB7092_TRIG, LOW);
+  for (uint8_t i = 0; i < 5; i++) {
+    digitalWrite(PIN_HCSR04_TRIG, LOW);
+    delayMicroseconds(2);
+    digitalWrite(PIN_HCSR04_TRIG, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(PIN_HCSR04_TRIG, LOW);
+    val += pulseIn(PIN_HCSR04_ECHO, HIGH);
+  }
 
   return val / 5;
 }

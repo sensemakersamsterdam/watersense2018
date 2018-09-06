@@ -16,7 +16,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 
 ## Used open source software:
 
-### Adafruit BMP280 library 1.0.2
+### Adafruit BMP280 Sensor library 1.0.2
 
 > *Adafruit invests time and resources providing this open source code, please support Adafruit andopen-source hardware by purchasing products from Adafruit!*  
 > *Written by Kevin Townsend for Adafruit Industries. BSD license, all text above must be included in any redistribution*
@@ -34,6 +34,13 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources, <https://github.com/adafruit/Adafruit_Sensor>*
 
 
+### Dallas Temperature Sensor library 3.8.0
+
+> *This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.*  
+
+*See: sources, <https://github.com/milesburton/Arduino-Temperature-Control-Library>*
+
+
 ### FreeRTOS 10.0.1
 
 > *Both the FreeRTOS kernel and Amazon FreeRTOS are provided under the following MIT open source license.*  
@@ -42,7 +49,15 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources, <https://www.freertos.org/a00114.html>*
 
 
-### Pololu VL53L0X library 1.0.2
+### OneWire library 2.3.4
+
+> *Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do [...]*  
+> *Copyright (c) 2007, Jim Studt  (original old version - many contributors since)*
+
+*See: sources, <http://www.pjrc.com/teensy/td_libs_OneWire.html>*
+
+
+### Pololu VL53L0X Sensor library 1.0.2
 
 > *Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do [...]*  
 > *Copyright (c) 2017 Pololu Corporation.*
@@ -69,7 +84,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources*
 
 
-### Sodaq LSM303AGR library 1.1.0
+### Sodaq LSM303AGR Sensor library 1.1.0
 
 > *Sodaq_LSM303AGR is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.*  
 > *Copyright (c) 2018 SODAQ. All rights reserved.*
@@ -90,18 +105,6 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *Note: this library used in Sodaq RN2483 library 1.0.11*
 
 *See: <https://github.com/SodaqMoja/Sodaq_wdt>*
-
-
-### Arduino software for Arduino AVR 1.6.21
-
-> *Arduino is an open-source project founded by Massimo Banzi, David Cuartielles, Tom Igoe, Gianluca Martino, and David Mellis. It builds on the work of many people, projects, and institutions.*
-
-*See: <https://www.arduino.cc/en/Main/Credits>*
-
-> *This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.*  
-> *Copyright (c) 2005-2013 Arduino Team. All right reserved.*
-
-*See: sources*
 
 
 ### SODAQ software for Arduino SAMD 1.6.18
@@ -128,24 +131,6 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 > *This is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.*
 
 *See: arm-none-eabi-gcc --version*
-
-
-### AVR GCC 4.9.2
-
-> *avr-gcc (GCC) 4.9.2*  
-> *Copyright (C) 2014 Free Software Foundation, Inc.*  
-> *This is free software; see the source for copying conditions.  There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.*
-
-*See: avr-gcc --version*
-
-
-### AVRDUDE 6.3.0
-
-> *This project is not part of the GNU Project.*  
-> *AVRDUDE is software for programming Atmel AVR Microcontrollers.*  
-> *License: GNU General Public License v2 or later*
-
-*See: <http://savannah.nongnu.org/projects/avrdude/>*
 
 
 ### BOSSA 1.7.0

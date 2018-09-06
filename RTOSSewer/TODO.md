@@ -1,7 +1,5 @@
 TODO
 
-- add Relay MOSFET DFR0457
-- add Ultrasonic sensor (10 measurements and do average)
 - add measurements with sound speaker 8ohm 0.5W and microphone CJMCU-9812
 - add BMP3290 sensor
 - add Aquaplumb sensor

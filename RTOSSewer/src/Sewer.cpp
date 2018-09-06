@@ -1,9 +1,12 @@
 #include "board/SODAQ_ONE_V3.h"
 #include "periph/I2C.h"
 #include "periph/LoRaSodaq.h"
+#include "periph/OneWire.h"
 #include "periph/WDT.h"
 #include "sensor/BMP280.h"
+#include "sensor/DS18B20.h"
 #include "sensor/FDC1004.h"
+#include "sensor/HCSR04.h"
 #include "sensor/LSM303AGR.h"
 #include "sensor/MB7092.h"
 #include "sensor/VL53L0X.h"
@@ -18,11 +21,15 @@
 #define MAINTHREAD_STACK_SIZE 256
 #define MAINTHREAD_PRIORITY   tskIDLE_PRIORITY + 1
 
+#define PIN_SENSORS_POWER     11
+
 #define DATA_BIT_LSM303AGR    1
 #define DATA_BIT_BMP280       2
 #define DATA_BIT_VL53L0X      4
 #define DATA_BIT_FDC1004      8
 #define DATA_BIT_MB7092       16
+#define DATA_BIT_HCSR04       32
+#define DATA_BIT_DS18B20      64
 
 
 /*******************************************************************************
@@ -31,7 +38,7 @@
 
 struct __attribute__((__packed__)) {
   uint32_t version               = PROJECT_VERSION;
-  uint8_t  board_modules         = 0; // bit 0: LSM303AGR, 1: BMP280, 2: VL53L0X, 3: FDC1004, 4: MB7092
+  uint8_t  board_modules         = 0;
   uint16_t board_voltage         = 0;
   int8_t   lsm303agr_temperature = 0;
   float    bmp280_temperature    = 0;
@@ -39,6 +46,8 @@ struct __attribute__((__packed__)) {
   uint16_t vl53l0x_distance      = 0;
   float    fdc1004_capacity      = 0;
   uint16_t mb7092_distance       = 0;
+  uint16_t hcsr04_distance       = 0;
+  float    ds18b20_temperature   = 0;
 } data;
 
 
@@ -59,6 +68,9 @@ static void Sewer_threadMain(void* pvParameters);
 
 void Sewer_setup()
 {
+  pinMode(PIN_SENSORS_POWER, OUTPUT);
+  digitalWrite(PIN_SENSORS_POWER, LOW);
+
   static StaticTask_t xT0TaskBuffer;
   static StackType_t  xT0Stack[MAINTHREAD_STACK_SIZE];
 
@@ -70,6 +82,29 @@ void Sewer_setup()
 /*******************************************************************************
  * Private
  ******************************************************************************/
+
+static void Sewer_initModules()
+{
+  #if USE_LOGGER
+  Logger_setup();
+  #endif
+
+  WDT_setup();
+
+  WDT_enable();
+  Board_setup();
+
+  #if USE_LOGGER
+  digitalWrite(PIN_SENSORS_POWER, HIGH);
+  I2C_logDevices();
+  OneWire_logDevices();
+  digitalWrite(PIN_SENSORS_POWER, LOW);
+  #endif
+
+  WDT_disable();
+
+  vTaskDelay(pdMS_TO_TICKS(200));
+}
 
 static void Sewer_logData()
 {
@@ -99,11 +134,21 @@ static void Sewer_logData()
   if (data.board_modules & DATA_BIT_MB7092) {
     LOG(VS("MB7092 distance: "), VUI16(data.mb7092_distance));
   }
+
+  if (data.board_modules & DATA_BIT_HCSR04) {
+    LOG(VS("HCSR04 distance: "), VUI16(data.hcsr04_distance));
+  }
+
+  if (data.board_modules & DATA_BIT_DS18B20) {
+    LOG(VS("DS18B20 temperature: "), VF(data.ds18b20_temperature));
+  }
 }
 
 static void Sewer_measureData()
 {
   LOGS("reading a measurement...");
+
+  digitalWrite(PIN_SENSORS_POWER, HIGH);
 
   data.board_voltage = Board_measureVoltage();
 
@@ -149,6 +194,20 @@ static void Sewer_measureData()
   data.board_modules  |= DATA_BIT_MB7092;
   data.mb7092_distance = MB7092_measureDistance();
 
+  HCSR04_setup();
+  data.board_modules  |= DATA_BIT_HCSR04;
+  data.hcsr04_distance = HCSR04_measureDistance();
+
+  if (DS18B20_setup()) {
+    data.board_modules      |= DATA_BIT_DS18B20;
+    data.ds18b20_temperature = DS18B20_measureTemperature();
+  } else {
+    data.board_modules      &= ~DATA_BIT_DS18B20;
+    data.ds18b20_temperature = 0;
+  }
+
+  digitalWrite(PIN_SENSORS_POWER, LOW);
+
   #if USE_LOGGER
   Sewer_logData();
   #endif
@@ -170,26 +229,12 @@ static void Sewer_sendData()
 
 static void Sewer_threadMain(void* pvParameters)
 {
-  #if USE_LOGGER
-  Logger_setup();
-  #endif
-
-  WDT_setup();
-
-  WDT_enable();
-  Board_setup();
-  WDT_disable();
-
-  vTaskDelay(pdMS_TO_TICKS(200));
+  Sewer_initModules();
 
   TickType_t ts = xTaskGetTickCount();
 
   for (;;) {
     WDT_enable();
-
-    // LOGS("need delay 5000 ms");
-    // vTaskDelay(pdMS_TO_TICKS(5000));
-    // LOGS("start measurements");
 
     Sewer_measureData();
 
