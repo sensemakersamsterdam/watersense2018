@@ -1,3 +1,4 @@
+#include "../periph/WDT.h"
 #include "HCSR04.h"
 
 
@@ -31,6 +32,8 @@ uint16_t HCSR04_measureDistance()
   uint32_t val = 0;
 
   for (uint8_t i = 0; i < 5; i++) {
+    WDT_reset();
+
     digitalWrite(PIN_HCSR04_TRIG, LOW);
     delayMicroseconds(2);
     digitalWrite(PIN_HCSR04_TRIG, HIGH);
