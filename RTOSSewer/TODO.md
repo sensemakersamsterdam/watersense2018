@@ -1,9 +1,5 @@
 TODO
 
-- add measurements with sound speaker 8ohm 0.5W and microphone CJMCU-9812
-- add BMP3290 sensor
-- add Aquaplumb sensor
-- add Turbidity sensor
 - discuss LICENSE (maybe LGPL?)
 
 ===============================================================================
@@ -32,7 +28,7 @@ function Decoder(bytes, port) {
     return bytes[offset + 3] << 24 | bytes[offset + 2] << 16 | bytes[offset + 1] << 8 | bytes[offset + 0];
   }
 
-  if (!bytes || bytes.length != 30) {
+  if (!bytes || bytes.length != 33) {
     return {
       TestValue: String.fromCharCode.apply(null, bytes)
     }
@@ -48,19 +44,21 @@ function Decoder(bytes, port) {
       MB7092: (bytes[4] & 8) > 0,
       HCSR04: (bytes[4] & 16) > 0,
       DS18B20: (bytes[4] & 32) > 0,
-      conductivity: (bytes[4] & 64) > 0,
-      SEN0189: (bytes[4] & 128) > 0
+      Conductivity: (bytes[4] & 64) > 0,
+      SEN0189: (bytes[4] & 128) > 0,
+      VegetronixAquaPlumb: (bytes[5] & 1) > 0
     },
-    board_voltage: decodeUI16(bytes, 5),
-    lsm303agr_temperature: decodeUI8(bytes, 7),
-    bmp280_temperature: decodeFloat(bytes, 8),
-    bmp280_pressure: decodeFloat(bytes, 12),
-    vl53l0x_distance: decodeUI16(bytes, 16),
-    mb7092_distance: decodeUI16(bytes, 18),
-    hcsr04_distance: decodeUI16(bytes, 20),
-    ds18b20_temperature: decodeFloat(bytes, 22),
-    conductivity_value: decodeUI16(bytes, 26),
-    sen0189_value: decodeUI16(bytes, 28)
+    board_voltage: decodeUI16(bytes, 6),
+    lsm303agr_temperature: decodeUI8(bytes, 8),
+    bmp280_temperature: decodeFloat(bytes, 9),
+    bmp280_pressure: decodeFloat(bytes, 13),
+    vl53l0x_distance: decodeUI16(bytes, 17),
+    mb7092_distance: decodeUI16(bytes, 19),
+    hcsr04_distance: decodeUI16(bytes, 21),
+    ds18b20_temperature: decodeFloat(bytes, 23),
+    conductivity_value: decodeUI16(bytes, 27),
+    sen0189_value: decodeUI16(bytes, 29),
+    vegetronixaquaplumb_value: decodeUI16(bytes, 31)
   };
 }
 
