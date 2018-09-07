@@ -1,7 +1,7 @@
 #include "../Common.h"
 
-#ifndef Conductivity_H
-#define Conductivity_H
+#ifndef CONDUCTIVITY_H
+#define CONDUCTIVITY_H
 
 
 /*******************************************************************************
@@ -17,4 +17,4 @@ void Conductivity_setup();
 
 uint16_t Conductivity_measure();
 
-#endif // Conductivity_H
+#endif // CONDUCTIVITY_H

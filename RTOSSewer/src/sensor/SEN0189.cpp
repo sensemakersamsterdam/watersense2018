@@ -1,3 +1,4 @@
+#include "../util/Collection.h"
 #include "SEN0189.h"
 
 
@@ -5,6 +6,7 @@
  * Definitions
  ******************************************************************************/
 
+#define MEASUREMENTS_COUNT 5
 #define PIN_SEN0189_ANALOG PIN_A1
 
 
@@ -14,10 +16,9 @@
 
 uint16_t SEN0189_measure()
 {
-  // TODO: use median
+  uint16_t values[MEASUREMENTS_COUNT];
 
-  uint32_t val = 0;
-  for (uint8_t i = 0; i < 5; i++) { val += analogRead(PIN_SEN0189_ANALOG); }
+  for (uint8_t i = 0; i < MEASUREMENTS_COUNT; i++) { values[i] = analogRead(PIN_SEN0189_ANALOG); }
 
-  return val / 5;
+  return median(values, MEASUREMENTS_COUNT);
 }

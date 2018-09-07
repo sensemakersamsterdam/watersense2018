@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 #define MAINTHREAD_DELAY_LOOP 10000
-#define MAINTHREAD_STACK_SIZE 256
+#define MAINTHREAD_STACK_SIZE 384
 #define MAINTHREAD_PRIORITY   tskIDLE_PRIORITY + 1
 
 #define PIN_SENSORS_POWER     11

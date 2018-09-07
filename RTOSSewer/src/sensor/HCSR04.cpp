@@ -1,4 +1,5 @@
 #include "../periph/WDT.h"
+#include "../util/Collection.h"
 #include "HCSR04.h"
 
 
@@ -6,9 +7,10 @@
  * Definitions
  ******************************************************************************/
 
-#define PIN_HCSR04_ECHO 7
-#define PIN_HCSR04_TRIG 8
-#define TIMEOUT_ECHO    500000 /* 500 ms */
+#define MEASUREMENTS_COUNT 5
+#define PIN_HCSR04_ECHO    7
+#define PIN_HCSR04_TRIG    8
+#define TIMEOUT_ECHO       500000 /* 500 ms */
 
 
 /*******************************************************************************
@@ -30,11 +32,9 @@ void HCSR04_setup()
 
 uint16_t HCSR04_measureDistance()
 {
-  uint32_t val = 0;
+  uint16_t values[MEASUREMENTS_COUNT];
 
-  // TODO: use median
-
-  for (uint8_t i = 0; i < 5; i++) {
+  for (uint8_t i = 0; i < MEASUREMENTS_COUNT; i++) {
     WDT_reset();
 
     digitalWrite(PIN_HCSR04_TRIG, LOW);
@@ -42,9 +42,9 @@ uint16_t HCSR04_measureDistance()
     digitalWrite(PIN_HCSR04_TRIG, HIGH);
     delayMicroseconds(10);
     digitalWrite(PIN_HCSR04_TRIG, LOW);
-    val += pulseIn(PIN_HCSR04_ECHO, HIGH, TIMEOUT_ECHO);
-    if (val == 0) { return 0; }
+    values[i] = pulseIn(PIN_HCSR04_ECHO, HIGH, TIMEOUT_ECHO);
+    if (values[i] == 0) { return 0; }
   }
 
-  return val / 5;
+  return median(values, MEASUREMENTS_COUNT);
 }

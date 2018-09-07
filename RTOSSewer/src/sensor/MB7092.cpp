@@ -1,3 +1,4 @@
+#include "../util/Collection.h"
 #include "MB7092.h"
 
 
@@ -5,8 +6,9 @@
  * Definitions
  ******************************************************************************/
 
-#define PIN_MB7092_ANALOG PIN_A9
-#define PIN_MB7092_TRIG   10
+#define MEASUREMENTS_COUNT 5
+#define PIN_MB7092_ANALOG  PIN_A9
+#define PIN_MB7092_TRIG    10
 
 
 /*******************************************************************************
@@ -32,12 +34,13 @@ uint16_t MB7092_measureDistance()
   digitalWrite(PIN_MB7092_TRIG, HIGH);
   vTaskDelay(pdMS_TO_TICKS(500));
 
-  // TODO: use median
+  uint16_t values[MEASUREMENTS_COUNT];
 
-  uint32_t val = 0;
-  for (uint8_t i = 0; i < 5; i++) { val += analogRead(PIN_MB7092_ANALOG); }
+  for (uint8_t i = 0; i < MEASUREMENTS_COUNT; i++) { values[i] = analogRead(PIN_MB7092_ANALOG); }
+
+  uint16_t val = median(values, MEASUREMENTS_COUNT);
 
   digitalWrite(PIN_MB7092_TRIG, LOW);
 
-  return val / 5;
+  return val;
 }
