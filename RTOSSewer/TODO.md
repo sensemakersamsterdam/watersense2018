@@ -32,7 +32,7 @@ function Decoder(bytes, port) {
     return bytes[offset + 3] << 24 | bytes[offset + 2] << 16 | bytes[offset + 1] << 8 | bytes[offset + 0];
   }
 
-  if (!bytes || bytes.length != 26) {
+  if (!bytes || bytes.length != 30) {
     return {
       TestValue: String.fromCharCode.apply(null, bytes)
     }
@@ -45,15 +45,22 @@ function Decoder(bytes, port) {
       LSM303AGR: (bytes[4] & 1) > 0,
       BMP280: (bytes[4] & 2) > 0,
       VL53L0X: (bytes[4] & 4) > 0,
-      FDC1004: (bytes[4] & 8) > 0
+      MB7092: (bytes[4] & 8) > 0,
+      HCSR04: (bytes[4] & 16) > 0,
+      DS18B20: (bytes[4] & 32) > 0,
+      conductivity: (bytes[4] & 64) > 0,
+      SEN0189: (bytes[4] & 128) > 0
     },
     board_voltage: decodeUI16(bytes, 5),
     lsm303agr_temperature: decodeUI8(bytes, 7),
     bmp280_temperature: decodeFloat(bytes, 8),
     bmp280_pressure: decodeFloat(bytes, 12),
-    bmp280_altitude: decodeFloat(bytes, 16),
-    vl53l0x_distance: decodeUI16(bytes, 20),
-    fdc1004_capacity: decodeFloat(bytes, 22)
+    vl53l0x_distance: decodeUI16(bytes, 16),
+    mb7092_distance: decodeUI16(bytes, 18),
+    hcsr04_distance: decodeUI16(bytes, 20),
+    ds18b20_temperature: decodeFloat(bytes, 22),
+    conductivity_value: decodeUI16(bytes, 26),
+    sen0189_value: decodeUI16(bytes, 28)
   };
 }
 

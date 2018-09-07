@@ -10,7 +10,6 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 - Board [ARDUINO UNO REV3](https://store.arduino.cc/arduino-uno-rev3)
 - Board ELEGOO MEGA 2560 R3 - compatible with [ARDUINO MEGA 2560 REV3](https://store.arduino.cc/arduino-mega-2560-rev3)) ([shop](https://www.elegoo.com/product/elegoo-mega-2560-r3-board-blue-atmega2560-atmega16u2-usb-cable/))
 - Sensor [BMP280](https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout/) ([shop](https://www.adafruit.com/product/2651))
-- Sensor [FDC1004](https://github.com/Protocentral/ProtoCentral_fdc1004_breakout) ([shop](https://www.protocentral.com/gasliquid/1082-fdc1004-capacitance-converter-breakout-board-0642078949616.html))
 - Sensor [VL53L0X](https://learn.adafruit.com/adafruit-vl53l0x-micro-lidar-distance-sensor-breakout/) ([shop](https://www.adafruit.com/product/3317))
 
 
@@ -66,14 +65,6 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 > *Copyright © 2016, STMicroelectronics International N.V. All rights reserved.*  
 
 *See: sources, <https://github.com/pololu/vl53l0x-arduino>*
-
-
-### ProtoCentral FDC1004 Capacitive Sensor library 1.0.2
-
-> *All software is released under the [MIT License](http://opensource.org/licenses/MIT).*  
-> *Copyright (c) 2015 ProtoCentral.*
-
-*See: sources, <https://github.com/Protocentral/ProtoCentral_fdc1004_breakout>*
 
 
 ### RTCZero library 1.5.2

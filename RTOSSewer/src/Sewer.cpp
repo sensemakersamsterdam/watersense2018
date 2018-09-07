@@ -6,7 +6,6 @@
 #include "sensor/BMP280.h"
 #include "sensor/Conductivity.h"
 #include "sensor/DS18B20.h"
-#include "sensor/FDC1004.h"
 #include "sensor/HCSR04.h"
 #include "sensor/LSM303AGR.h"
 #include "sensor/MB7092.h"
@@ -28,12 +27,11 @@
 #define DATA_BIT_LSM303AGR    1
 #define DATA_BIT_BMP280       2
 #define DATA_BIT_VL53L0X      4
-#define DATA_BIT_FDC1004      8
-#define DATA_BIT_MB7092       16
-#define DATA_BIT_HCSR04       32
-#define DATA_BIT_DS18B20      64
-#define DATA_BIT_CONDUCTIVITY 128
-#define DATA_BIT_SEN0189      256
+#define DATA_BIT_MB7092       8
+#define DATA_BIT_HCSR04       16
+#define DATA_BIT_DS18B20      32
+#define DATA_BIT_CONDUCTIVITY 64
+#define DATA_BIT_SEN0189      128
 
 
 /*******************************************************************************
@@ -42,13 +40,12 @@
 
 struct __attribute__((__packed__)) {
   uint32_t version               = PROJECT_VERSION;
-  uint16_t board_modules         = 0;
+  uint8_t  board_modules         = 0;
   uint16_t board_voltage         = 0;
   int8_t   lsm303agr_temperature = 0;
   float    bmp280_temperature    = 0;
   float    bmp280_pressure       = 0;
   uint16_t vl53l0x_distance      = 0;
-  float    fdc1004_capacity      = 0;
   uint16_t mb7092_distance       = 0;
   uint16_t hcsr04_distance       = 0;
   float    ds18b20_temperature   = 0;
@@ -98,15 +95,16 @@ static void Sewer_initModules()
   WDT_setup();
 
   WDT_enable();
+  digitalWrite(PIN_SENSORS_POWER, HIGH);
+
   Board_setup();
 
   #if USE_LOGGER
-  digitalWrite(PIN_SENSORS_POWER, HIGH);
   I2C_logDevices();
   OneWire_logDevices();
-  digitalWrite(PIN_SENSORS_POWER, LOW);
   #endif
 
+  digitalWrite(PIN_SENSORS_POWER, LOW);
   WDT_disable();
 
   vTaskDelay(pdMS_TO_TICKS(200));
@@ -131,10 +129,6 @@ static void Sewer_logData()
     } else {
       LOGS("VL53L0X distance: out of range");
     }
-  }
-
-  if (data.board_modules & DATA_BIT_FDC1004) {
-    LOG(VS("FDC1004 capacitance: "), VUI32(data.fdc1004_capacity), VS(" fF"));
   }
 
   if (data.board_modules & DATA_BIT_MB7092) {
@@ -192,14 +186,6 @@ static void Sewer_measureData()
   } else {
     data.board_modules   &= ~DATA_BIT_VL53L0X;
     data.vl53l0x_distance = 0;
-  }
-
-  if (FDC1004_setup()) {
-    data.board_modules   |= DATA_BIT_FDC1004;
-    data.fdc1004_capacity = FDC1004_measureCapacity();
-  } else {
-    data.board_modules   &= ~DATA_BIT_FDC1004;
-    data.fdc1004_capacity = 0;
   }
 
   I2C_disable();
