@@ -114,7 +114,7 @@ static void Sewer_initModules()
 
 static void Sewer_logData()
 {
-  LOG(VS("BOARD battery: "), VUI16(data.board_voltage), VS(" mV"));
+  LOG(VS("BOARD battery: "), VUI16(data.board_voltage));
 
   if (data.board_modules & DATA_BIT_LSM303AGR) {
     LOG(VS("LSM303AGR temperature: "), VUI8(data.lsm303agr_temperature), VS(" *C"));
