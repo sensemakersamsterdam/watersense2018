@@ -5,7 +5,7 @@
 #define PROJECT_VERSION 2018090700
 #define USE_DEEPSLEEP   0
 #define USE_LOGGER      1
-#define USE_LORA        0
+#define USE_LORA        1
 
 //#define PIN_VEGETRONIXAQUAPLUMB_ANALOG PIN_A0
 //#define PIN_SEN0189_ANALOG             PIN_A1

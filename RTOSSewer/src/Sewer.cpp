@@ -19,7 +19,7 @@
  * Definitions
  ******************************************************************************/
 
-#define MAINTHREAD_DELAY_LOOP        10000
+#define MAINTHREAD_DELAY_LOOP        60000
 #define MAINTHREAD_STACK_SIZE        384
 #define MAINTHREAD_PRIORITY          tskIDLE_PRIORITY + 1
 
