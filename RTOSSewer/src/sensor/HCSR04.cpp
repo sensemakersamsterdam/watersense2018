@@ -32,6 +32,8 @@ uint16_t HCSR04_measureDistance()
 {
   uint32_t val = 0;
 
+  // TODO: use median
+
   for (uint8_t i = 0; i < 5; i++) {
     WDT_reset();
 

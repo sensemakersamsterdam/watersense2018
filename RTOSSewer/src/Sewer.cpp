@@ -4,11 +4,13 @@
 #include "periph/OneWire.h"
 #include "periph/WDT.h"
 #include "sensor/BMP280.h"
+#include "sensor/Conductivity.h"
 #include "sensor/DS18B20.h"
 #include "sensor/FDC1004.h"
 #include "sensor/HCSR04.h"
 #include "sensor/LSM303AGR.h"
 #include "sensor/MB7092.h"
+#include "sensor/SEN0189.h"
 #include "sensor/VL53L0X.h"
 #include "Sewer.h"
 
@@ -30,6 +32,8 @@
 #define DATA_BIT_MB7092       16
 #define DATA_BIT_HCSR04       32
 #define DATA_BIT_DS18B20      64
+#define DATA_BIT_CONDUCTIVITY 128
+#define DATA_BIT_SEN0189      256
 
 
 /*******************************************************************************
@@ -38,7 +42,7 @@
 
 struct __attribute__((__packed__)) {
   uint32_t version               = PROJECT_VERSION;
-  uint8_t  board_modules         = 0;
+  uint16_t board_modules         = 0;
   uint16_t board_voltage         = 0;
   int8_t   lsm303agr_temperature = 0;
   float    bmp280_temperature    = 0;
@@ -48,6 +52,8 @@ struct __attribute__((__packed__)) {
   uint16_t mb7092_distance       = 0;
   uint16_t hcsr04_distance       = 0;
   float    ds18b20_temperature   = 0;
+  uint16_t conductivity_value    = 0;
+  uint16_t sen0189_value         = 0;
 } data;
 
 
@@ -142,6 +148,14 @@ static void Sewer_logData()
   if (data.board_modules & DATA_BIT_DS18B20) {
     LOG(VS("DS18B20 temperature: "), VF(data.ds18b20_temperature));
   }
+
+  if (data.board_modules & DATA_BIT_CONDUCTIVITY) {
+    LOG(VS("Conductivity value: "), VUI16(data.conductivity_value));
+  }
+
+  if (data.board_modules & DATA_BIT_SEN0189) {
+    LOG(VS("SEN0189 value: "), VUI16(data.sen0189_value));
+  }
 }
 
 static void Sewer_measureData()
@@ -191,8 +205,12 @@ static void Sewer_measureData()
   I2C_disable();
 
   MB7092_setup();
-  data.board_modules  |= DATA_BIT_MB7092;
   data.mb7092_distance = MB7092_measureDistance();
+  if (data.mb7092_distance > 10) {
+    data.board_modules |= DATA_BIT_MB7092;
+  } else {
+    data.board_modules &= ~DATA_BIT_MB7092;
+  }
 
   HCSR04_setup();
   data.hcsr04_distance = HCSR04_measureDistance();
@@ -208,6 +226,21 @@ static void Sewer_measureData()
   } else {
     data.board_modules      &= ~DATA_BIT_DS18B20;
     data.ds18b20_temperature = 0;
+  }
+
+  Conductivity_setup();
+  data.conductivity_value = Conductivity_measure();
+  if (data.conductivity_value <= 1000) {
+    data.board_modules |= DATA_BIT_CONDUCTIVITY;
+  } else {
+    data.board_modules &= ~DATA_BIT_CONDUCTIVITY;
+  }
+
+  data.sen0189_value = SEN0189_measure();
+  if (data.conductivity_value <= 1000) {
+    data.board_modules |= DATA_BIT_SEN0189;
+  } else {
+    data.board_modules &= ~DATA_BIT_SEN0189;
   }
 
   digitalWrite(PIN_SENSORS_POWER, LOW);

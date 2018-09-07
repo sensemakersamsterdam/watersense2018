@@ -1,23 +1,23 @@
-#include "MB7092.h"
+#include "Conductivity.h"
 
 
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
 
-#define PIN_MB7092_ANALOG PIN_A9
-#define PIN_MB7092_TRIG   10
+#define PIN_CONDUCTIVITY_ANALOG PIN_A2
+#define PIN_CONDUCTIVITY_TRIG   3
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-void MB7092_setup()
+void Conductivity_setup()
 {
-  pinMode(PIN_MB7092_TRIG, OUTPUT);
+  pinMode(PIN_CONDUCTIVITY_TRIG, OUTPUT);
 
-  digitalWrite(PIN_MB7092_TRIG, LOW);
+  digitalWrite(PIN_CONDUCTIVITY_TRIG, LOW);
 }
 
 
@@ -25,19 +25,17 @@ void MB7092_setup()
  * Public
  ******************************************************************************/
 
-uint16_t MB7092_measureDistance()
+uint16_t Conductivity_measure()
 {
-  digitalWrite(PIN_MB7092_TRIG, LOW);
+  digitalWrite(PIN_CONDUCTIVITY_TRIG, HIGH);
   vTaskDelay(pdMS_TO_TICKS(1));
-  digitalWrite(PIN_MB7092_TRIG, HIGH);
-  vTaskDelay(pdMS_TO_TICKS(500));
 
   // TODO: use median
 
   uint32_t val = 0;
-  for (uint8_t i = 0; i < 5; i++) { val += analogRead(PIN_MB7092_ANALOG); }
+  for (uint8_t i = 0; i < 5; i++) { val += analogRead(PIN_CONDUCTIVITY_ANALOG); }
 
-  digitalWrite(PIN_MB7092_TRIG, LOW);
+  digitalWrite(PIN_CONDUCTIVITY_TRIG, LOW);
 
   return val / 5;
 }
