@@ -84,7 +84,7 @@ Sensing Water quality in a variety of ways. Used by Watersense2018 team.
 *See: sources*
 
 
-### Sodaq LSM303AGR Sensor library 1.1.0
+### Sodaq LSM303AGR Sensor library 2.0.0
 
 > *Sodaq_LSM303AGR is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or(at your option) any later version.*  
 > *Copyright (c) 2018 SODAQ. All rights reserved.*

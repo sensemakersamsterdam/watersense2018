@@ -8,6 +8,7 @@
 
 #define PIN_HCSR04_ECHO 7
 #define PIN_HCSR04_TRIG 8
+#define TIMEOUT_ECHO    500000 /* 500 ms */
 
 
 /*******************************************************************************
@@ -39,7 +40,8 @@ uint16_t HCSR04_measureDistance()
     digitalWrite(PIN_HCSR04_TRIG, HIGH);
     delayMicroseconds(10);
     digitalWrite(PIN_HCSR04_TRIG, LOW);
-    val += pulseIn(PIN_HCSR04_ECHO, HIGH);
+    val += pulseIn(PIN_HCSR04_ECHO, HIGH, TIMEOUT_ECHO);
+    if (val == 0) { return 0; }
   }
 
   return val / 5;

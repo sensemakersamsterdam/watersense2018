@@ -211,7 +211,7 @@ public:
     };
 
     enum MagnetometerSystemMode {
-        Continiuous = 0b00,
+        Continuous = 0b00,
         Single = 0b01,
         IdleMode = 0b10,
     };
@@ -259,8 +259,7 @@ public:
     Sodaq_LSM303AGR(TwoWire& wire = Wire, uint8_t accelAddress = SODAQ_LSM303AGR_ACCEL_ADDRESS, uint8_t magAddress = SODAQ_LSM303AGR_MAG_ADDRESS);
 
     bool checkWhoAmI();
-
-    int8_t getTemperatureDelta();
+    int8_t getTemperature();
     void enableAccelerometer(AccelerometerMode mode = NormalMode, AccelerometerODR odr = HrNormalLowPower25Hz, Axes axes = XYZ, Scale scale = Scale2g, bool isTemperatureOn = true);
     void disableAccelerometer();
     void rebootAccelerometer();
@@ -287,15 +286,13 @@ protected:
     TwoWire& _wire;
     uint8_t _accelAddress;
     uint8_t _magAddress;
-    Scale _accelScale;
+    Scale _accelScale = Scale::Scale2g;
+    AccelerometerMode _accelMode = AccelerometerMode::LowPowerMode;
 
     void setLPF(bool enabled);
 
-    void setAccelScale(Scale scale);
-
     double getGsFromScaledValue(int16_t value);
-    int16_t getScaledValueFromGs(double gValue);
-    int8_t getAccelScaleMax(Scale scale);
+    uint8_t getScaledInterruptThreshold(double threshold);
     double getMagFromScaledValue(int16_t value);
 
     uint8_t readRegister(uint8_t deviceAddress, uint8_t reg);

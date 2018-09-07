@@ -32,7 +32,12 @@ void WDT_setup() {
  * Public
  ******************************************************************************/
 
-void WDT_disable() { sodaq_wdt_disable(); }
+void WDT_disable()
+{
+  sodaq_wdt_disable();
+
+  LOGS("disabled");
+}
 
 void WDT_enable()
 {
@@ -49,6 +54,8 @@ void WDT_enable()
   WDT_reset();                          // clear watchdog interval
   WDT->CTRL.bit.ENABLE = 1;             // start watchdog now
   while(WDT->STATUS.bit.SYNCBUSY);
+
+  LOGS("enabled, period 8 sec");
 }
 
 void WDT_reset() { sodaq_wdt_reset(); }

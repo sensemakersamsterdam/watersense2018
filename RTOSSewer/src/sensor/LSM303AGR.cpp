@@ -42,7 +42,7 @@ int8_t LSM303AGR_measureTemperature()
 
   vTaskDelay(pdMS_TO_TICKS(30));
 
-  int8_t i = 25 + accel.getTemperatureDelta();
+  int8_t i = 25 + accel.getTemperature();
 
   accel.disableAccelerometer();
 

@@ -195,8 +195,12 @@ static void Sewer_measureData()
   data.mb7092_distance = MB7092_measureDistance();
 
   HCSR04_setup();
-  data.board_modules  |= DATA_BIT_HCSR04;
   data.hcsr04_distance = HCSR04_measureDistance();
+  if (data.hcsr04_distance > 0) {
+    data.board_modules |= DATA_BIT_HCSR04;
+  } else {
+    data.board_modules &= ~DATA_BIT_HCSR04;
+  }
 
   if (DS18B20_setup()) {
     data.board_modules      |= DATA_BIT_DS18B20;
