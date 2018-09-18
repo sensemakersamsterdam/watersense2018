@@ -279,12 +279,12 @@ static void Sewer_threadMain(void* pvParameters)
     Sewer_measureData();
 
     #if USE_LORA
-    Sewer_sendData();
+ //   Sewer_sendData();
     #endif
 
     WDT_disable();
 
     LOGS("need delay " STR(MAINTHREAD_DELAY_LOOP) " ms");
-    vTaskDelayUntil(&ts, pdMS_TO_TICKS(MAINTHREAD_DELAY_LOOP));
+    //vTaskDelayUntil(&ts, pdMS_TO_TICKS(MAINTHREAD_DELAY_LOOP));
   }
 }

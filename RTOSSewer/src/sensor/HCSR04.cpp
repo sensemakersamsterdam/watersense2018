@@ -20,9 +20,9 @@
 void HCSR04_setup()
 {
   pinMode(PIN_HCSR04_TRIG, OUTPUT);
-  pinMode(PIN_HCSR04_ECHO, INPUT);
+  pinMode(PIN_HCSR04_ECHO, INPUT_PULLDOWN);
 
-  digitalWrite(PIN_HCSR04_TRIG, LOW);
+  digitalWrite(PIN_HCSR04_TRIG, HIGH);
 }
 
 
@@ -33,17 +33,23 @@ void HCSR04_setup()
 uint16_t HCSR04_measureDistance()
 {
   uint16_t values[MEASUREMENTS_COUNT];
+  
 
+  
   for (uint8_t i = 0; i < MEASUREMENTS_COUNT; i++) {
     WDT_reset();
 
-    digitalWrite(PIN_HCSR04_TRIG, LOW);
-    delayMicroseconds(2);
+    //digitalWrite(PIN_HCSR04_TRIG, LOW);
+    //delayMicroseconds(2);
     digitalWrite(PIN_HCSR04_TRIG, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(PIN_HCSR04_TRIG, LOW);
+	delayMicroseconds(15);
+	digitalWrite(PIN_HCSR04_TRIG, LOW);
+	
     values[i] = pulseIn(PIN_HCSR04_ECHO, HIGH, TIMEOUT_ECHO);
-    if (values[i] == 0) { return 0; }
+	
+	Serial.println(values[i]);
+	delayMicroseconds(1000);
+    //if (values[i] == 0) { return 0; }
   }
 
   return median(values, MEASUREMENTS_COUNT);
