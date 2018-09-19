@@ -42,19 +42,19 @@
  ******************************************************************************/
 
 struct __attribute__((__packed__)) {
-  uint16_t version                   = PROJECT_VERSION;
-  uint16_t board_modules             = 0;
-  uint16_t board_voltage             = 0;
-  int8_t   lsm303agr_temperature     = 0;
-  int8_t   bmp280_temperature        = 0;
-  uint32_t bmp280_pressure           = 0;
-  uint16_t vl53l0x_distance          = 0;
-  uint16_t mb7092_distance           = 0;
-  uint16_t hcsr04_distance           = 0;
-  int8_t   ds18b20_temperature       = 0;
-  uint16_t conductivity_value        = 0;
-  uint16_t sen0189_value             = 0;
-  uint16_t vegetronixaquaplumb_value = 0;
+  uint16_t version;
+  uint16_t modules;
+  uint16_t board_vo;
+  int8_t   lsm303agr_te;
+  int8_t   bmp280_te;
+  uint32_t bmp280_pr;
+  uint16_t vl53l0x_di;
+  uint16_t mb7092_di;
+  uint16_t hcsr04_di;
+  int8_t   ds18b20_te;
+  uint16_t cond_co;
+  uint16_t sen0189_di;
+  uint16_t aquap_di;
 } data;
 
 
@@ -116,47 +116,47 @@ static void Sewer_initModules()
 
 static void Sewer_logData()
 {
-  LOG(VS("BOARD battery: "), VUI16(data.board_voltage));
+  LOG(VS("BOARD battery: "), VUI16(data.board_vo));
 
-  if (data.board_modules & DATA_BIT_LSM303AGR) {
-    LOG(VS("LSM303AGR temperature: "), VI8(data.lsm303agr_temperature), VS(" *C"));
+  if (data.modules & DATA_BIT_LSM303AGR) {
+    LOG(VS("LSM303AGR temperature: "), VI8(data.lsm303agr_te), VS(" *C"));
   }
 
-  if (data.board_modules & DATA_BIT_BMP280) {
-    LOG(VS("BMP280 temperature: "), VI8  (data.bmp280_temperature), VS(" *C"));
-    LOG(VS("BMP280 pressure: "),    VUI32(data.bmp280_pressure),    VS(" Pa"));
+  if (data.modules & DATA_BIT_BMP280) {
+    LOG(VS("BMP280 temperature: "), VI8  (data.bmp280_te), VS(" *C"));
+    LOG(VS("BMP280 pressure: "),    VUI32(data.bmp280_pr),    VS(" Pa"));
   }
 
-  if (data.board_modules & DATA_BIT_VL53L0X) {
-    if (data.vl53l0x_distance <= 2000) {
-      LOG(VS("VL53L0X distance: "), VUI16(data.vl53l0x_distance), VS(" mm"));
+  if (data.modules & DATA_BIT_VL53L0X) {
+    if (data.vl53l0x_di <= 2000) {
+      LOG(VS("VL53L0X distance: "), VUI16(data.vl53l0x_di), VS(" mm"));
     } else {
       LOGS("VL53L0X distance: out of range");
     }
   }
 
-  if (data.board_modules & DATA_BIT_MB7092) {
-    LOG(VS("MB7092 distance: "), VUI16(data.mb7092_distance));
+  if (data.modules & DATA_BIT_MB7092) {
+    LOG(VS("MB7092 distance: "), VUI16(data.mb7092_di));
   }
 
-  if (data.board_modules & DATA_BIT_HCSR04) {
-    LOG(VS("HCSR04 distance: "), VUI16(data.hcsr04_distance));
+  if (data.modules & DATA_BIT_HCSR04) {
+    LOG(VS("HCSR04 distance: "), VUI16(data.hcsr04_di));
   }
 
-  if (data.board_modules & DATA_BIT_DS18B20) {
-    LOG(VS("DS18B20 temperature: "), VI8(data.ds18b20_temperature));
+  if (data.modules & DATA_BIT_DS18B20) {
+    LOG(VS("DS18B20 temperature: "), VI8(data.ds18b20_te));
   }
 
-  if (data.board_modules & DATA_BIT_CONDUCTIVITY) {
-    LOG(VS("Conductivity value: "), VUI16(data.conductivity_value));
+  if (data.modules & DATA_BIT_CONDUCTIVITY) {
+    LOG(VS("Conductivity value: "), VUI16(data.cond_co));
   }
 
-  if (data.board_modules & DATA_BIT_SEN0189) {
-    LOG(VS("SEN0189 value: "), VUI16(data.sen0189_value));
+  if (data.modules & DATA_BIT_SEN0189) {
+    LOG(VS("SEN0189 value: "), VUI16(data.sen0189_di));
   }
 
-  if (data.board_modules & DATA_BIT_VEGETRONIXAQUAPLUMB) {
-    LOG(VS("VegetronixAquaPlumb value: "), VUI16(data.vegetronixaquaplumb_value));
+  if (data.modules & DATA_BIT_VEGETRONIXAQUAPLUMB) {
+    LOG(VS("VegetronixAquaPlumb value: "), VUI16(data.aquap_di));
   }
 }
 
@@ -169,82 +169,84 @@ static void Sewer_measureData()
   vTaskDelay(pdMS_TO_TICKS(3));
   SYSCTRL->BOD33.bit.ENABLE = 1; // enabled brown-out detect
 
-  data.board_voltage = Board_measureVoltage();
+  data.version  = PROTOCOL_VERSION;
+  data.modules  = 0;
+  data.board_vo = Board_measureVoltage();
 
   I2C_enable();
 
   if (LSM303AGR_isActive()) {
-    data.board_modules        |= DATA_BIT_LSM303AGR;
-    data.lsm303agr_temperature = LSM303AGR_measureTemperature();
+    data.modules     |= DATA_BIT_LSM303AGR;
+    data.lsm303agr_te = LSM303AGR_measureTemperature();
   } else {
-    data.board_modules        &= ~DATA_BIT_LSM303AGR;
-    data.lsm303agr_temperature = 0;
+    data.modules     &= ~DATA_BIT_LSM303AGR;
+    data.lsm303agr_te = 0;
   }
 
   if (BMP280_setup()) {
-    data.board_modules     |= DATA_BIT_BMP280;
-    data.bmp280_temperature = floor(BMP280_measureTemperature() + 0.5F);
-    data.bmp280_pressure    = floor(BMP280_measurePressure() + 0.5F);
+    data.modules  |= DATA_BIT_BMP280;
+    data.bmp280_te = floor(BMP280_measureTemperature() + 0.5F);
+    data.bmp280_pr = floor(BMP280_measurePressure() + 0.5F);
   } else {
-    data.board_modules     &= ~DATA_BIT_BMP280;
-    data.bmp280_temperature = 0;
-    data.bmp280_pressure    = 0;
+    data.modules  &= ~DATA_BIT_BMP280;
+    data.bmp280_te = 0;
+    data.bmp280_pr = 0;
   }
 
   if (VL53L0X_setup()) {
-    data.board_modules   |= DATA_BIT_VL53L0X;
-    data.vl53l0x_distance = VL53L0X_measureDistance();
+    data.modules   |= DATA_BIT_VL53L0X;
+    data.vl53l0x_di = VL53L0X_measureDistance();
   } else {
-    data.board_modules   &= ~DATA_BIT_VL53L0X;
-    data.vl53l0x_distance = 0;
+    data.modules   &= ~DATA_BIT_VL53L0X;
+    data.vl53l0x_di = 0;
   }
 
   I2C_disable();
 
   MB7092_setup();
-  data.mb7092_distance = MB7092_measureDistance();
-  if (data.mb7092_distance > 10) {
-    data.board_modules |= DATA_BIT_MB7092;
+  data.mb7092_di = MB7092_measureDistance();
+  if (data.mb7092_di > 10) {
+    data.modules |= DATA_BIT_MB7092;
   } else {
-    data.board_modules &= ~DATA_BIT_MB7092;
+    data.modules &= ~DATA_BIT_MB7092;
   }
 
   HCSR04_setup();
-  data.hcsr04_distance = HCSR04_measureDistance();
-  if (data.hcsr04_distance > 0) {
-    data.board_modules |= DATA_BIT_HCSR04;
+  data.hcsr04_di = HCSR04_measureDistance();
+  if (data.hcsr04_di > 0) {
+    data.modules |= DATA_BIT_HCSR04;
   } else {
-    data.board_modules &= ~DATA_BIT_HCSR04;
+    data.modules &= ~DATA_BIT_HCSR04;
   }
 
   if (DS18B20_setup()) {
-    data.board_modules      |= DATA_BIT_DS18B20;
-    data.ds18b20_temperature = floor(DS18B20_measureTemperature() + 0.5F);
+    data.modules   |= DATA_BIT_DS18B20;
+    data.ds18b20_te = floor(DS18B20_measureTemperature() + 0.5F);
   } else {
-    data.board_modules      &= ~DATA_BIT_DS18B20;
-    data.ds18b20_temperature = 0;
+    data.modules   &= ~DATA_BIT_DS18B20;
+    data.ds18b20_te = 0;
   }
 
   Conductivity_setup();
-  data.conductivity_value = Conductivity_measure();
-  if (data.conductivity_value <= 1000) {
-    data.board_modules |= DATA_BIT_CONDUCTIVITY;
+  data.cond_co = Conductivity_measure();
+  if (data.cond_co <= 1000) {
+    data.modules |= DATA_BIT_CONDUCTIVITY;
   } else {
-    data.board_modules &= ~DATA_BIT_CONDUCTIVITY;
+    data.modules &= ~DATA_BIT_CONDUCTIVITY;
   }
 
-  data.sen0189_value = SEN0189_measure();
-  if (data.sen0189_value <= 1000) {
-    data.board_modules |= DATA_BIT_SEN0189;
+  data.sen0189_di = SEN0189_measure();
+  if (data.sen0189_di <= 1000) {
+    data.modules |= DATA_BIT_SEN0189;
   } else {
-    data.board_modules &= ~DATA_BIT_SEN0189;
+    data.modules &= ~DATA_BIT_SEN0189;
   }
 
-  data.vegetronixaquaplumb_value = VEGETRONIXAQUAPLUMB_measure();
-  if (data.vegetronixaquaplumb_value <= 1000) {
-    data.board_modules |= DATA_BIT_VEGETRONIXAQUAPLUMB;
+  data.aquap_di = VEGETRONIXAQUAPLUMB_measure();
+  if (data.aquap_di <= 1000) {
+    data.modules |= DATA_BIT_VEGETRONIXAQUAPLUMB;
   } else {
-    data.board_modules &= ~DATA_BIT_VEGETRONIXAQUAPLUMB;
+    data.modules &= ~DATA_BIT_VEGETRONIXAQUAPLUMB;
   }
 
   digitalWrite(PIN_SENSORS_POWER, LOW);

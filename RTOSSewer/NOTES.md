@@ -1,6 +1,7 @@
 TODO:
 
 - discuss LICENSE (maybe LGPL?)
+- change data structure: lsm303agr_temperature => lsm303agr_te
 
 
 ===============================================================================
@@ -11,7 +12,7 @@ payload: CC9E4978C901011119000000000000000000007F02000000000000660129014001
 size   : 33 bytes
 
 version: 2
-payload: 0200C901011119000000000000006E0200000039014C013901
+payload: 0200C901011118000000000000007902000000580156013C01
 size   : 25 bytes
 
 
@@ -29,8 +30,13 @@ function Decoder(bytes, port) {
     return ((bits >>> 31 === 0) ? 1.0 : -1.0) * m * Math.pow(2, e - 150)
   }
 
+  function decodeI8(bytes, offset) {
+    var i = bytes[offset]
+    return i <= 127 ? i : i - 256
+  }
+
   function decodeUI8(bytes, offset) {
-    return bytes[offset + 0]
+    return bytes[offset]
   }
 
   function decodeUI16(bytes, offset) {
@@ -73,20 +79,21 @@ function Decoder(bytes, port) {
 
   var version = bytes.length > 2 ? decodeUI16(bytes, 0) : null
 
-  if (version == 2) {
+  if (bytes.length == 25 && version == 2) {
+    modules = decodeUI16(bytes, 2)
     return {
       version     : version,
       board_vo    : decodeUI16(bytes, 4),
-      lsm303agr_te: (bytes[4] &   1) > 0 ? decodeUI8 (bytes,  6) : null,
-      bmp280_te   : (bytes[4] &   2) > 0 ? decodeUI8 (bytes,  7) : null,
-      bmp280_pr   : (bytes[4] &   2) > 0 ? decodeUI32(bytes,  8) : null,
-      vl53l0x_di  : (bytes[4] &   4) > 0 ? decodeUI16(bytes, 12) : null,
-      mb7092_di   : (bytes[4] &   8) > 0 ? decodeUI16(bytes, 14) : null,
-      hcsr04_di   : (bytes[4] &  16) > 0 ? decodeUI16(bytes, 16) : null,
-      ds18b20_te  : (bytes[4] &  32) > 0 ? decodeUI8 (bytes, 18) : null,
-      cond_co     : (bytes[4] &  64) > 0 ? decodeUI16(bytes, 19) : null,
-      sen0189_di  : (bytes[4] & 128) > 0 ? decodeUI16(bytes, 21) : null,
-      aquap_di    : (bytes[5] &   1) > 0 ? decodeUI16(bytes, 23) : null
+      lsm303agr_te: (modules &   1) > 0 ? decodeI8  (bytes,  6) : null,
+      bmp280_te   : (modules &   2) > 0 ? decodeI8  (bytes,  7) : null,
+      bmp280_pr   : (modules &   2) > 0 ? decodeUI32(bytes,  8) : null,
+      vl53l0x_di  : (modules &   4) > 0 ? decodeUI16(bytes, 12) : null,
+      mb7092_di   : (modules &   8) > 0 ? decodeUI16(bytes, 14) : null,
+      hcsr04_di   : (modules &  16) > 0 ? decodeUI16(bytes, 16) : null,
+      ds18b20_te  : (modules &  32) > 0 ? decodeI8  (bytes, 18) : null,
+      cond_co     : (modules &  64) > 0 ? decodeUI16(bytes, 19) : null,
+      sen0189_di  : (modules & 128) > 0 ? decodeUI16(bytes, 21) : null,
+      aquap_di    : (modules & 256) > 0 ? decodeUI16(bytes, 23) : null
     }
   }
 
