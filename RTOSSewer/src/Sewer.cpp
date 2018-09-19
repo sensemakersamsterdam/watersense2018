@@ -12,6 +12,7 @@
 #include "sensor/SEN0189.h"
 #include "sensor/VegetronixAquaPlumb.h"
 #include "sensor/VL53L0X.h"
+#include "util/Collection.h"
 #include "Sewer.h"
 
 
@@ -41,16 +42,16 @@
  ******************************************************************************/
 
 struct __attribute__((__packed__)) {
-  uint32_t version                   = PROJECT_VERSION;
+  uint16_t version                   = PROJECT_VERSION;
   uint16_t board_modules             = 0;
   uint16_t board_voltage             = 0;
   int8_t   lsm303agr_temperature     = 0;
-  float    bmp280_temperature        = 0;
-  float    bmp280_pressure           = 0;
+  uint8_t  bmp280_temperature        = 0;
+  uint32_t bmp280_pressure           = 0;
   uint16_t vl53l0x_distance          = 0;
   uint16_t mb7092_distance           = 0;
   uint16_t hcsr04_distance           = 0;
-  float    ds18b20_temperature       = 0;
+  uint8_t  ds18b20_temperature       = 0;
   uint16_t conductivity_value        = 0;
   uint16_t sen0189_value             = 0;
   uint16_t vegetronixaquaplumb_value = 0;
@@ -122,8 +123,8 @@ static void Sewer_logData()
   }
 
   if (data.board_modules & DATA_BIT_BMP280) {
-    LOG(VS("BMP280 temperature: "), VF(data.bmp280_temperature), VS(" *C"));
-    LOG(VS("BMP280 pressure: "),    VF(data.bmp280_pressure),    VS(" Pa"));
+    LOG(VS("BMP280 temperature: "), VUI8 (data.bmp280_temperature), VS(" *C"));
+    LOG(VS("BMP280 pressure: "),    VUI32(data.bmp280_pressure),    VS(" Pa"));
   }
 
   if (data.board_modules & DATA_BIT_VL53L0X) {
@@ -143,7 +144,7 @@ static void Sewer_logData()
   }
 
   if (data.board_modules & DATA_BIT_DS18B20) {
-    LOG(VS("DS18B20 temperature: "), VF(data.ds18b20_temperature));
+    LOG(VS("DS18B20 temperature: "), VUI8(data.ds18b20_temperature));
   }
 
   if (data.board_modules & DATA_BIT_CONDUCTIVITY) {
@@ -182,8 +183,8 @@ static void Sewer_measureData()
 
   if (BMP280_setup()) {
     data.board_modules     |= DATA_BIT_BMP280;
-    data.bmp280_temperature = BMP280_measureTemperature();
-    data.bmp280_pressure    = BMP280_measurePressure();
+    data.bmp280_temperature = round8 (BMP280_measureTemperature());
+    data.bmp280_pressure    = round32(BMP280_measurePressure());
   } else {
     data.board_modules     &= ~DATA_BIT_BMP280;
     data.bmp280_temperature = 0;
@@ -218,7 +219,7 @@ static void Sewer_measureData()
 
   if (DS18B20_setup()) {
     data.board_modules      |= DATA_BIT_DS18B20;
-    data.ds18b20_temperature = DS18B20_measureTemperature();
+    data.ds18b20_temperature = round8(DS18B20_measureTemperature());
   } else {
     data.board_modules      &= ~DATA_BIT_DS18B20;
     data.ds18b20_temperature = 0;
@@ -260,10 +261,14 @@ static void Sewer_sendData()
   LOG(VS("data, "), VUI8(sizeof(data)), VS(" bytes: "), VUI8AH02((const uint8_t*)&data, sizeof(data)));
 
   LoRa_wakeUp();
-  if (!b) { b = LoRa_initOTAA(); }
-  if (b) {
-    if (LoRa_send((const uint8_t*)&data, sizeof(data)) == 2) { b = false; }
+
+  if (!b) {
+    LoRa_setSpreadingFactor(LORA_SF);
+    b = LoRa_initOTAA();
   }
+
+  if (b && LoRa_send((const uint8_t*)&data, sizeof(data)) == 2) { b = false; }
+
   LoRa_sleep();
 }
 

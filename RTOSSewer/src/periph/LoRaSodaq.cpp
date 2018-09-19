@@ -126,6 +126,13 @@ void LoRa_sleep()
   LOGS("sleep mode on");
 }
 
+void LoRa_setSpreadingFactor(uint8_t spreadingFactor)
+{
+  LoRaBee.setSpreadingFactor(spreadingFactor);
+
+  LOG(VS("spreading factor: "), VUI8(spreadingFactor));
+}
+
 void LoRa_wakeUp()
 {
   LoRaBee.wakeUp();

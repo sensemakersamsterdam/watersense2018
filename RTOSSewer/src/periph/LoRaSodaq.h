@@ -18,6 +18,7 @@ bool LoRa_setup();
 bool    LoRa_initOTAA();
 uint8_t LoRa_send(const uint8_t *buffer, uint8_t size); // return 0: OK, 1: not sent, 2: not connected
 void    LoRa_sleep();
+void    LoRa_setSpreadingFactor(uint8_t spreadingFactor);
 void    LoRa_wakeUp();
 
 #endif // LORA_SODAQ_H
