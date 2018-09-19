@@ -46,12 +46,12 @@ struct __attribute__((__packed__)) {
   uint16_t board_modules             = 0;
   uint16_t board_voltage             = 0;
   int8_t   lsm303agr_temperature     = 0;
-  uint8_t  bmp280_temperature        = 0;
+  int8_t   bmp280_temperature        = 0;
   uint32_t bmp280_pressure           = 0;
   uint16_t vl53l0x_distance          = 0;
   uint16_t mb7092_distance           = 0;
   uint16_t hcsr04_distance           = 0;
-  uint8_t  ds18b20_temperature       = 0;
+  int8_t   ds18b20_temperature       = 0;
   uint16_t conductivity_value        = 0;
   uint16_t sen0189_value             = 0;
   uint16_t vegetronixaquaplumb_value = 0;
@@ -119,11 +119,11 @@ static void Sewer_logData()
   LOG(VS("BOARD battery: "), VUI16(data.board_voltage));
 
   if (data.board_modules & DATA_BIT_LSM303AGR) {
-    LOG(VS("LSM303AGR temperature: "), VUI8(data.lsm303agr_temperature), VS(" *C"));
+    LOG(VS("LSM303AGR temperature: "), VI8(data.lsm303agr_temperature), VS(" *C"));
   }
 
   if (data.board_modules & DATA_BIT_BMP280) {
-    LOG(VS("BMP280 temperature: "), VUI8 (data.bmp280_temperature), VS(" *C"));
+    LOG(VS("BMP280 temperature: "), VI8  (data.bmp280_temperature), VS(" *C"));
     LOG(VS("BMP280 pressure: "),    VUI32(data.bmp280_pressure),    VS(" Pa"));
   }
 
@@ -144,7 +144,7 @@ static void Sewer_logData()
   }
 
   if (data.board_modules & DATA_BIT_DS18B20) {
-    LOG(VS("DS18B20 temperature: "), VUI8(data.ds18b20_temperature));
+    LOG(VS("DS18B20 temperature: "), VI8(data.ds18b20_temperature));
   }
 
   if (data.board_modules & DATA_BIT_CONDUCTIVITY) {
@@ -183,8 +183,8 @@ static void Sewer_measureData()
 
   if (BMP280_setup()) {
     data.board_modules     |= DATA_BIT_BMP280;
-    data.bmp280_temperature = round8 (BMP280_measureTemperature());
-    data.bmp280_pressure    = round32(BMP280_measurePressure());
+    data.bmp280_temperature = floor(BMP280_measureTemperature() + 0.5F);
+    data.bmp280_pressure    = floor(BMP280_measurePressure() + 0.5F);
   } else {
     data.board_modules     &= ~DATA_BIT_BMP280;
     data.bmp280_temperature = 0;
@@ -219,7 +219,7 @@ static void Sewer_measureData()
 
   if (DS18B20_setup()) {
     data.board_modules      |= DATA_BIT_DS18B20;
-    data.ds18b20_temperature = round8(DS18B20_measureTemperature());
+    data.ds18b20_temperature = floor(DS18B20_measureTemperature() + 0.5F);
   } else {
     data.board_modules      &= ~DATA_BIT_DS18B20;
     data.ds18b20_temperature = 0;

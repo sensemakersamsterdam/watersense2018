@@ -98,6 +98,16 @@ void Logger_printFL(float f)
   }
 }
 
+void Logger_printI32(int32_t i)
+{
+  if (i < 0) {
+    Logger_printCH('-');
+    Logger_printUI32(-i);
+  } else {
+    Logger_printUI32(i);
+  }
+}
+
 void Logger_printPSTR(const char *s)
 {
   while (true) {

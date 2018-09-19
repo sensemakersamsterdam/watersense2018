@@ -16,6 +16,7 @@
 #define VC(c)              Logger_printCH(c)
 #define VSZ(s)             Logger_printSTR(s)
 #define VF(f)              Logger_printFL(f)
+#define VI8(i)             Logger_printI32(i)
 #define VUI8(i)            Logger_printUI32(i)
 #define VUI16(i)           Logger_printUI32(i)
 #define VUI32(i)           Logger_printUI32(i)
@@ -37,6 +38,7 @@
 #define VC(c)
 #define VSZ(s)
 #define VF(f)
+#define VI8(i)
 #define VUI8(i)
 #define VUI16(i)
 #define VUI32(i)
@@ -67,6 +69,7 @@ void Logger_logMeasurementText();
 void Logger_logSetupResultText(bool b);
 void Logger_printCH(BaseType_t c);
 void Logger_printFL(float f);
+void Logger_printI32(int32_t i);
 void Logger_printPSTR(const char *s);
 void Logger_printSTR(const char *s);
 void Logger_printUI8AH02(const uint8_t *ia, uint8_t size);
