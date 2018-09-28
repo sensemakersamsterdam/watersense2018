@@ -21,14 +21,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define COMMON_H
 
 // main constants
-#define PROJECT_NAME       "RTOSSewer"
-#define PROJECT_VERSION    2018092800
-#define PROTOCOL_VERSION   2
-#define LORA_PORT          1
-#define LORA_SF            12
-#define USE_DEEPSLEEP      1
-#define USE_LOGGER         0
-#define USE_LORA           1
+#define PROJECT_NAME               "RTOSSewer"
+#define PROTOCOL_VERSION           2
+#define LORA_PORT                  1
+#define LORA_SF                    12
+#define MAINTHREAD_DELAY_LOOP      600000
+#define USE_DEEPSLEEP              1
+#define USE_LOGGER                 0
+#define USE_LORA                   1
 
 // sensors parameters
 // note: if the parameters changed => PROTOCOL_VERSION also should be changed

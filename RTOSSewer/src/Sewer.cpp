@@ -39,7 +39,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * Definitions
  ******************************************************************************/
 
-#define MAINTHREAD_DELAY_LOOP 600000
 #define MAINTHREAD_STACK_SIZE 384
 #define MAINTHREAD_PRIORITY   tskIDLE_PRIORITY + 1
 
