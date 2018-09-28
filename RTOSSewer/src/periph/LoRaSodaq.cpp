@@ -112,7 +112,7 @@ uint8_t LoRa_send(const uint8_t *buffer, uint8_t size)
   for (uint8_t i = 0; i < SEND_MAX_RETRIES; i++) {
     LOG(VS("send: attempt "), VUI8(i), VS("..."));
 
-    uint8_t result = LoRaBee.send(1, buffer, size);
+    uint8_t result = LoRaBee.send(LORA_PORT, buffer, size);
 
     #if USE_LOGGER
     LoRa_logTransmissionResult(result);

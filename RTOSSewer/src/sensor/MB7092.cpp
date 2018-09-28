@@ -17,17 +17,9 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "../periph/WDT.h"
 #include "../util/Collection.h"
 #include "MB7092.h"
-
-
-/*******************************************************************************
- * Definitions
- ******************************************************************************/
-
-#define MEASUREMENTS_COUNT 5
-#define PIN_MB7092_ANALOG  PIN_A9
-#define PIN_MB7092_TRIG    10
 
 
 /*******************************************************************************
@@ -48,18 +40,17 @@ void MB7092_setup()
 
 uint16_t MB7092_measureDistance()
 {
+  uint16_t values[MB7092_DI_ATTEMPTS];
+
+  WDT_reset();
   digitalWrite(PIN_MB7092_TRIG, LOW);
   vTaskDelay(pdMS_TO_TICKS(1));
   digitalWrite(PIN_MB7092_TRIG, HIGH);
   vTaskDelay(pdMS_TO_TICKS(500));
 
-  uint16_t values[MEASUREMENTS_COUNT];
-
-  for (uint8_t i = 0; i < MEASUREMENTS_COUNT; i++) { values[i] = analogRead(PIN_MB7092_ANALOG); }
-
-  uint16_t val = median(values, MEASUREMENTS_COUNT);
+  for (uint8_t i = 0; i < MB7092_DI_ATTEMPTS; i++) { values[i] = analogRead(PIN_MB7092_ANALOG); }
 
   digitalWrite(PIN_MB7092_TRIG, LOW);
 
-  return val;
+  return MB7092_DI_CALIB_OFFSET + MB7092_DI_CALIB_COEFF * median(values, MB7092_DI_ATTEMPTS);
 }

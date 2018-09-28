@@ -22,22 +22,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 /*******************************************************************************
- * Definitions
- ******************************************************************************/
-
-#define MEASUREMENTS_COUNT 5
-#define PIN_SEN0189_ANALOG PIN_A1
-
-
-/*******************************************************************************
  * Public
  ******************************************************************************/
 
 uint16_t SEN0189_measure()
 {
-  uint16_t values[MEASUREMENTS_COUNT];
+  uint16_t values[SEN0189_DI_ATTEMPTS];
 
-  for (uint8_t i = 0; i < MEASUREMENTS_COUNT; i++) { values[i] = analogRead(PIN_SEN0189_ANALOG); }
+  for (uint8_t i = 0; i < SEN0189_DI_ATTEMPTS; i++) { values[i] = analogRead(PIN_SEN0189_ANALOG); }
 
-  return median(values, MEASUREMENTS_COUNT);
+  return SEN0189_DI_CALIB_OFFSET + SEN0189_DI_CALIB_COEFF * median(values, SEN0189_DI_ATTEMPTS);
 }

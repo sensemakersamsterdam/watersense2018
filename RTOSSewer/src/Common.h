@@ -20,26 +20,62 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #ifndef COMMON_H
 #define COMMON_H
 
-#define PROJECT_NAME      "RTOSSewer"
-#define PROJECT_VERSION   2018091900
-#define PROTOCOL_VERSION  2
-#define LORA_SF           7
+// main constants
+#define PROJECT_NAME       "RTOSSewer"
+#define PROJECT_VERSION    2018091900
+#define PROTOCOL_VERSION   2
+#define LORA_PORT          1
+#define LORA_SF            7
+#define USE_DEEPSLEEP      0
+#define USE_LOGGER         1
+#define USE_LORA           1
 
-#define USE_DEEPSLEEP     0
-#define USE_LOGGER        1
-#define USE_LORA          1
+// sensors parameters
+// note: if the parameters changed => PROTOCOL_VERSION also should be changed
+#define AQUAP_DI_ATTEMPTS         5
+#define AQUAP_DI_CALIB_OFFSET     0.0F
+#define AQUAP_DI_CALIB_COEFF      1.0F
+#define BMP280_PR_ATTEMPTS        3
+#define BMP280_PR_CALIB_OFFSET    0.0F
+#define BMP280_PR_CALIB_COEFF     1.0F
+#define BMP280_TE_ATTEMPTS        3
+#define BMP280_TE_CALIB_OFFSET    0.0F
+#define BMP280_TE_CALIB_COEFF     1.0F
+#define COND_CO_ATTEMPTS          5
+#define COND_CO_CALIB_OFFSET      0.0F
+#define COND_CO_CALIB_COEFF       1.0F
+#define DS18B20_TE_ATTEMPTS       3
+#define DS18B20_TE_CALIB_OFFSET   0.0F
+#define DS18B20_TE_CALIB_COEFF    1.0F
+#define HCSR04_DI_ATTEMPTS        5
+#define HCSR04_DI_CALIB_OFFSET    0.0F
+#define HCSR04_DI_CALIB_COEFF     1.0F
+#define LSM303AGR_TE_ATTEMPTS     3
+#define LSM303AGR_TE_CALIB_OFFSET 0.0F
+#define LSM303AGR_TE_CALIB_COEFF  1.0F
+#define MB7092_DI_ATTEMPTS        5
+#define MB7092_DI_CALIB_OFFSET    0.0F
+#define MB7092_DI_CALIB_COEFF     1.0F
+#define SEN0189_DI_ATTEMPTS       5
+#define SEN0189_DI_CALIB_OFFSET   0.0F
+#define SEN0189_DI_CALIB_COEFF    1.0F
+#define VL53L0X_DI_ATTEMPTS       3
+#define VL53L0X_DI_CALIB_OFFSET   0.0F
+#define VL53L0X_DI_CALIB_COEFF    1.0F
 
-//#define PIN_VEGETRONIXAQUAPLUMB_ANALOG PIN_A0
-//#define PIN_SEN0189_ANALOG             PIN_A1
-//#define PIN_CONDUCTIVITY_ANALOG        PIN_A2
-//#define PIN_CONDUCTIVITY_TRIG          3
-//#define PIN_ONEWIREBUS                 6
-//#define PIN_HCSR04_ECHO                7
-//#define PIN_HCSR04_TRIG                8
-//#define PIN_MB7092_ANALOG              PIN_A9
-//#define PIN_MB7092_TRIG                10
-//#define PIN_SENSORS_POWER              11
+// pins
+#define PIN_AQUAP_ANALOG   PIN_A0
+#define PIN_SEN0189_ANALOG PIN_A1
+#define PIN_COND_ANALOG    PIN_A2
+#define PIN_COND_TRIG      3
+#define PIN_ONEWIREBUS     6
+#define PIN_HCSR04_ECHO    7
+#define PIN_HCSR04_TRIG    8
+#define PIN_MB7092_ANALOG  PIN_A9
+#define PIN_MB7092_TRIG    10
+#define PIN_SENSORS_POWER  11
 
+// required includes
 #include <Arduino.h>
 
 #include "freertos/FreeRTOSv10.0.1/FreeRTOS.h"

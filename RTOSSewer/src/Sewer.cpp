@@ -23,13 +23,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include "periph/OneWire.h"
 #include "periph/WDT.h"
 #include "sensor/BMP280.h"
-#include "sensor/Conductivity.h"
+#include "sensor/Cond.h"
 #include "sensor/DS18B20.h"
 #include "sensor/HCSR04.h"
 #include "sensor/LSM303AGR.h"
 #include "sensor/MB7092.h"
 #include "sensor/SEN0189.h"
-#include "sensor/VegetronixAquaPlumb.h"
+#include "sensor/AquaP.h"
 #include "sensor/VL53L0X.h"
 #include "util/Collection.h"
 #include "Sewer.h"
@@ -39,21 +39,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * Definitions
  ******************************************************************************/
 
-#define MAINTHREAD_DELAY_LOOP        180000
-#define MAINTHREAD_STACK_SIZE        384
-#define MAINTHREAD_PRIORITY          tskIDLE_PRIORITY + 1
+#define MAINTHREAD_DELAY_LOOP 180000
+#define MAINTHREAD_STACK_SIZE 384
+#define MAINTHREAD_PRIORITY   tskIDLE_PRIORITY + 1
 
-#define PIN_SENSORS_POWER            11
-
-#define DATA_BIT_LSM303AGR           1
-#define DATA_BIT_BMP280              2
-#define DATA_BIT_VL53L0X             4
-#define DATA_BIT_MB7092              8
-#define DATA_BIT_HCSR04              16
-#define DATA_BIT_DS18B20             32
-#define DATA_BIT_CONDUCTIVITY        64
-#define DATA_BIT_SEN0189             128
-#define DATA_BIT_VEGETRONIXAQUAPLUMB 256
+#define DATA_BIT_LSM303AGR    1
+#define DATA_BIT_BMP280       2
+#define DATA_BIT_VL53L0X      4
+#define DATA_BIT_MB7092       8
+#define DATA_BIT_HCSR04       16
+#define DATA_BIT_DS18B20      32
+#define DATA_BIT_COND         64
+#define DATA_BIT_SEN0189      128
+#define DATA_BIT_AQUAP        256
 
 
 /*******************************************************************************
@@ -66,8 +64,8 @@ struct __attribute__((__packed__)) {
   uint16_t board_vo;
   int8_t   lsm303agr_te;
   int8_t   bmp280_te;
-  uint32_t bmp280_pr;  // TODO: reduce to 2 bytes (minus 100.000)
-  uint16_t vl53l0x_di; // TODO: 1 byte for distance
+  uint32_t bmp280_pr;    // TODO: reduce to 2 bytes (minus 100.000)
+  uint16_t vl53l0x_di;   // TODO: 1 byte for distance
   uint16_t mb7092_di;
   uint16_t hcsr04_di;
   int8_t   ds18b20_te;
@@ -166,16 +164,16 @@ static void Sewer_logData()
     LOG(VS("DS18B20 temperature: "), VI8(data.ds18b20_te));
   }
 
-  if (data.modules & DATA_BIT_CONDUCTIVITY) {
-    LOG(VS("Conductivity value: "), VUI16(data.cond_co));
+  if (data.modules & DATA_BIT_COND) {
+    LOG(VS("Cond value: "), VUI16(data.cond_co));
   }
 
   if (data.modules & DATA_BIT_SEN0189) {
-    LOG(VS("SEN0189 value: "), VUI16(data.sen0189_di));
+    LOG(VS("SEN0189 distance: "), VUI16(data.sen0189_di));
   }
 
-  if (data.modules & DATA_BIT_VEGETRONIXAQUAPLUMB) {
-    LOG(VS("VegetronixAquaPlumb value: "), VUI16(data.aquap_di));
+  if (data.modules & DATA_BIT_AQUAP) {
+    LOG(VS("AquaP distance: "), VUI16(data.aquap_di));
   }
 }
 
@@ -246,12 +244,12 @@ static void Sewer_measureData()
     data.ds18b20_te = 0;
   }
 
-  Conductivity_setup();
-  data.cond_co = Conductivity_measure();
+  Cond_setup();
+  data.cond_co = Cond_measure();
   if (data.cond_co <= 1000) {
-    data.modules |= DATA_BIT_CONDUCTIVITY;
+    data.modules |= DATA_BIT_COND;
   } else {
-    data.modules &= ~DATA_BIT_CONDUCTIVITY;
+    data.modules &= ~DATA_BIT_COND;
   }
 
   data.sen0189_di = SEN0189_measure();
@@ -261,11 +259,11 @@ static void Sewer_measureData()
     data.modules &= ~DATA_BIT_SEN0189;
   }
 
-  data.aquap_di = VEGETRONIXAQUAPLUMB_measure();
+  data.aquap_di = AQUAP_measure();
   if (data.aquap_di <= 1000) {
-    data.modules |= DATA_BIT_VEGETRONIXAQUAPLUMB;
+    data.modules |= DATA_BIT_AQUAP;
   } else {
-    data.modules &= ~DATA_BIT_VEGETRONIXAQUAPLUMB;
+    data.modules &= ~DATA_BIT_AQUAP;
   }
 
   digitalWrite(PIN_SENSORS_POWER, LOW);

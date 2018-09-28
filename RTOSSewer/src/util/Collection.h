@@ -27,6 +27,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * Public
  ******************************************************************************/
 
+float    median(float    values[], uint8_t size);
+int8_t   median(int8_t   values[], uint8_t size);
 uint16_t median(uint16_t values[], uint8_t size);
 
 #endif // COLLECTION_H

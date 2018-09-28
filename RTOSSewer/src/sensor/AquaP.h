@@ -19,14 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include "../Common.h"
 
-#ifndef VEGETRONIXAQUAPLUMB_H
-#define VEGETRONIXAQUAPLUMB_H
+#ifndef AQUAP_H
+#define AQUAP_H
 
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
 
-uint16_t VEGETRONIXAQUAPLUMB_measure();
+uint16_t AQUAP_measure();
 
-#endif // VEGETRONIXAQUAPLUMB_H
+#endif // AQUAP_H

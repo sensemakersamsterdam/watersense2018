@@ -42,7 +42,7 @@ function Decoder(bytes, port) {
   }
 
   // it will be removed later
-  if (bytes.length == 33 && decodeUI32(bytes, 0) == 2018090700) {
+  if (port === 1 && bytes.length === 33 && decodeUI32(bytes, 0) === 2018090700) {
     return {
       result: 'OK',
       version: decodeUI32(bytes, 0),
@@ -73,7 +73,7 @@ function Decoder(bytes, port) {
 
   var version = bytes.length > 2 ? decodeUI16(bytes, 0) : null
 
-  if (bytes.length == 25 && version == 2) {
+  if (port === 1 && bytes.length === 25 && version === 2) {
     modules = decodeUI16(bytes, 2)
     return {
       version     : version,
@@ -91,28 +91,16 @@ function Decoder(bytes, port) {
     }
   }
 
+  else if (port === 10 && bytes.length === 16) {
+    return {
+      a: decodeUI32(bytes,  0),
+      b: decodeUI32(bytes,  4),
+      c: decodeUI32(bytes,  8),
+      d: decodeUI32(bytes,  12)
+    }
+  }
+
   return {
     TestValue: String.fromCharCode.apply(null, bytes)
   }
-}
-
-function Converter(decoded, port) {
-  // Merge, split or otherwise
-  // mutate decoded fields.
-
-  var converted = decoded;
-
-  // if (port === 1 && (converted.led === 0 || converted.led === 1)) {
-  //   converted.led = Boolean(converted.led);
-  // }
-
-  return converted;
-}
-
-function Validator(converted, port) {
-  // Return false if the decoded, converted
-  // message is invalid and should be dropped.
-
-  //return converted && converted.result === 'OK';
-  return true;
 }

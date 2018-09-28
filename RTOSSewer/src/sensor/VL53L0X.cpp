@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <VL53L0X.h>
 
 #include "../periph/I2C.h"
+#include "../periph/WDT.h"
+#include "../util/Collection.h"
 #include "VL53L0X.h"
 
 
@@ -64,12 +66,20 @@ bool VL53L0X_setup()
 
 uint16_t VL53L0X_measureDistance()
 {
-  uint16_t i = sensor.readRangeSingleMillimeters();
+  uint16_t values[VL53L0X_DI_ATTEMPTS];
 
-  if (sensor.timeoutOccurred()) {
-    LOGS("timeout");
-    return 0;
+  for (uint8_t i = 0; i < VL53L0X_DI_ATTEMPTS; i++) {
+    WDT_reset();
+
+    uint16_t v = sensor.readRangeSingleMillimeters();
+
+    if (sensor.timeoutOccurred()) {
+      LOGS("timeout");
+      return 0;
+    }
+
+    values[i] = v;
   }
 
-  return i;
+  return VL53L0X_DI_CALIB_OFFSET + VL53L0X_DI_CALIB_COEFF * median(values, VL53L0X_DI_ATTEMPTS);
 }

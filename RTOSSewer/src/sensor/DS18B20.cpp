@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+#include "../periph/WDT.h"
+#include "../util/Collection.h"
 #include "DS18B20.h"
 
 
@@ -62,6 +64,13 @@ bool DS18B20_setup()
 
 float DS18B20_measureTemperature()
 {
-  sensors.requestTemperatures();
-  return sensors.getTempCByIndex(DEVICE_INDEX);
+  float values[DS18B20_TE_ATTEMPTS];
+
+  for (uint8_t i = 0; i < DS18B20_TE_ATTEMPTS; i++) {
+    WDT_reset();
+    sensors.requestTemperatures();
+    values[i] = sensors.getTempCByIndex(DEVICE_INDEX);
+  }
+
+  return DS18B20_TE_CALIB_OFFSET + DS18B20_TE_CALIB_COEFF * median(values, DS18B20_TE_ATTEMPTS);
 }

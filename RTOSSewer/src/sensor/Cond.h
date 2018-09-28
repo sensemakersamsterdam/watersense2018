@@ -17,27 +17,23 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../util/Collection.h"
-#include "VegetronixAquaPlumb.h"
+#include "../Common.h"
+
+#ifndef COND_H
+#define COND_H
 
 
 /*******************************************************************************
- * Definitions
+ * Lifecycle
  ******************************************************************************/
 
-#define MEASUREMENTS_COUNT             5
-#define PIN_VEGETRONIXAQUAPLUMB_ANALOG PIN_A0
+void Cond_setup();
 
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
 
-uint16_t VEGETRONIXAQUAPLUMB_measure()
-{
-  uint16_t values[MEASUREMENTS_COUNT];
+uint16_t Cond_measure();
 
-  for (uint8_t i = 0; i < MEASUREMENTS_COUNT; i++) { values[i] = analogRead(PIN_VEGETRONIXAQUAPLUMB_ANALOG); }
-
-  return median(values, MEASUREMENTS_COUNT);
-}
+#endif // COND_H

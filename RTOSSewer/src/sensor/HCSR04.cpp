@@ -26,10 +26,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * Definitions
  ******************************************************************************/
 
-#define MEASUREMENTS_COUNT 5
-#define PIN_HCSR04_ECHO    7
-#define PIN_HCSR04_TRIG    8
-#define TIMEOUT_ECHO       500000 /* 500 ms */
+#define TIMEOUT_ECHO 500000 /* 500 ms */
 
 
 /*******************************************************************************
@@ -51,11 +48,10 @@ void HCSR04_setup()
 
 uint16_t HCSR04_measureDistance()
 {
-  uint16_t values[MEASUREMENTS_COUNT];
+  uint16_t values[HCSR04_DI_ATTEMPTS];
 
-  for (uint8_t i = 0; i < MEASUREMENTS_COUNT; i++) {
+  for (uint8_t i = 0; i < HCSR04_DI_ATTEMPTS; i++) {
     WDT_reset();
-
     digitalWrite(PIN_HCSR04_TRIG, LOW);
     delayMicroseconds(2);
     digitalWrite(PIN_HCSR04_TRIG, HIGH);
@@ -65,5 +61,5 @@ uint16_t HCSR04_measureDistance()
     if (values[i] == 0) { return 0; }
   }
 
-  return median(values, MEASUREMENTS_COUNT);
+  return HCSR04_DI_CALIB_OFFSET + HCSR04_DI_CALIB_COEFF * median(values, HCSR04_DI_ATTEMPTS);
 }
