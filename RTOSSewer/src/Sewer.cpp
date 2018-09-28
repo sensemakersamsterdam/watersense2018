@@ -1,3 +1,22 @@
+/*
+RTOSSewer project: sensing water quality in a variety of ways.
+
+Copyright (C) 2018 Sensemakers Amsterdam. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "board/SODAQ_ONE_V3.h"
 #include "periph/I2C.h"
 #include "periph/LoRaSodaq.h"
@@ -47,8 +66,8 @@ struct __attribute__((__packed__)) {
   uint16_t board_vo;
   int8_t   lsm303agr_te;
   int8_t   bmp280_te;
-  uint32_t bmp280_pr;
-  uint16_t vl53l0x_di;
+  uint32_t bmp280_pr;  // TODO: reduce to 2 bytes (minus 100.000)
+  uint16_t vl53l0x_di; // TODO: 1 byte for distance
   uint16_t mb7092_di;
   uint16_t hcsr04_di;
   int8_t   ds18b20_te;

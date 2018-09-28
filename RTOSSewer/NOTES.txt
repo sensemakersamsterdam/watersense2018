@@ -1,9 +1,3 @@
-TODO:
-
-- discuss LICENSE (maybe LGPL?)
-- change data structure: lsm303agr_temperature => lsm303agr_te
-
-
 ===============================================================================
 Payload examples:
 

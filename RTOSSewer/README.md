@@ -1,16 +1,26 @@
 # RTOSSewer
 
-Sensing Water quality in a variety of ways. Used by Watersense2018 team.
+RTOSSewer project: sensing water quality in a variety of ways.
+
+
+## License
+
+Copyright (C) 2018 Sensemakers Amsterdam. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+See the COPYING.LESSER file for details.
 
 
 ## Tested on hardware:
 
-- Board [SODAQ ONE-EU-RN2483-V3](http://support.sodaq.com/sodaq-one/sodaq-one/) ([shop](https://shop.sodaq.com/sodaq-one-eu-rn2483-v3.html))
-- Board [SODAQ MOJA REV4](http://support.sodaq.com/sodaq-one/moja/)
-- Board [ARDUINO UNO REV3](https://store.arduino.cc/arduino-uno-rev3)
-- Board ELEGOO MEGA 2560 R3 - compatible with [ARDUINO MEGA 2560 REV3](https://store.arduino.cc/arduino-mega-2560-rev3)) ([shop](https://www.elegoo.com/product/elegoo-mega-2560-r3-board-blue-atmega2560-atmega16u2-usb-cable/))
-- Sensor [BMP280](https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout/) ([shop](https://www.adafruit.com/product/2651))
-- Sensor [VL53L0X](https://learn.adafruit.com/adafruit-vl53l0x-micro-lidar-distance-sensor-breakout/) ([shop](https://www.adafruit.com/product/3317))
+- Board [SODAQ ONE-EU-RN2483-V3](http://support.sodaq.com/sodaq-one/sodaq-one/)
+- Sensor [BMP280](https://learn.adafruit.com/adafruit-bmp280-barometric-pressure-plus-temperature-sensor-breakout/)
+- Sensor [VL53L0X](https://learn.adafruit.com/adafruit-vl53l0x-micro-lidar-distance-sensor-breakout/)
 
 
 ## Used open source software:
