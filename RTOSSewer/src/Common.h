@@ -67,7 +67,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define PIN_AQUAP_ANALOG   PIN_A0
 #define PIN_SEN0189_ANALOG PIN_A1
 #define PIN_COND_ANALOG    PIN_A2
-#define PIN_COND_TRIG      3
 #define PIN_ONEWIREBUS     6
 #define PIN_HCSR04_ECHO    7
 #define PIN_HCSR04_TRIG    8

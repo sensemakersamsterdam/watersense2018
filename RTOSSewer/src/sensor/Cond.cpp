@@ -22,18 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 /*******************************************************************************
- * Lifecycle
- ******************************************************************************/
-
-void Cond_setup()
-{
-  pinMode(PIN_COND_TRIG, OUTPUT);
-
-  digitalWrite(PIN_COND_TRIG, LOW);
-}
-
-
-/*******************************************************************************
  * Public
  ******************************************************************************/
 
@@ -41,12 +29,7 @@ uint16_t Cond_measure()
 {
   uint16_t values[COND_CO_ATTEMPTS];
 
-  digitalWrite(PIN_COND_TRIG, HIGH);
-  vTaskDelay(pdMS_TO_TICKS(1));
-
   for (uint8_t i = 0; i < COND_CO_ATTEMPTS; i++) { values[i] = analogRead(PIN_COND_ANALOG); }
-
-  digitalWrite(PIN_COND_TRIG, LOW);
 
   return COND_CO_CALIB_OFFSET + COND_CO_CALIB_COEFF * median(values, COND_CO_ATTEMPTS);
 }

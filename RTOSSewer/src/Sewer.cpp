@@ -244,7 +244,6 @@ static void Sewer_measureData()
     data.ds18b20_te = 0;
   }
 
-  Cond_setup();
   data.cond_co = Cond_measure();
   if (data.cond_co <= 1000) {
     data.modules |= DATA_BIT_COND;
