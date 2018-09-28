@@ -27,9 +27,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 uint16_t SEN0189_measure()
 {
-  uint16_t values[SEN0189_DI_ATTEMPTS];
+  uint16_t values[SEN0189_TB_ATTEMPTS];
 
-  for (uint8_t i = 0; i < SEN0189_DI_ATTEMPTS; i++) { values[i] = analogRead(PIN_SEN0189_ANALOG); }
+  for (uint8_t i = 0; i < SEN0189_TB_ATTEMPTS; i++) { values[i] = analogRead(PIN_SEN0189_ANALOG); }
 
-  return SEN0189_DI_CALIB_OFFSET + SEN0189_DI_CALIB_COEFF * median(values, SEN0189_DI_ATTEMPTS);
+  return SEN0189_TB_CALIB_OFFSET + SEN0189_TB_CALIB_COEFF * median(values, SEN0189_TB_ATTEMPTS);
 }

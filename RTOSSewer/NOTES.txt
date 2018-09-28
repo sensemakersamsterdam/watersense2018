@@ -93,7 +93,7 @@ function Decoder(bytes, port) {
       hcsr04_di   : (modules &  16) > 0 ? decodeUI16(bytes, 16) : null,
       ds18b20_te  : (modules &  32) > 0 ? decodeI8  (bytes, 18) : null,
       cond_co     : (modules &  64) > 0 ? decodeUI16(bytes, 19) : null,
-      sen0189_di  : (modules & 128) > 0 ? decodeUI16(bytes, 21) : null,
+      sen0189_tb  : (modules & 128) > 0 ? decodeUI16(bytes, 21) : null,
       aquap_di    : (modules & 256) > 0 ? decodeUI16(bytes, 23) : null
     }
   }

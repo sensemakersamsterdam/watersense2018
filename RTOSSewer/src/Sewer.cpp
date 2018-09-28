@@ -39,7 +39,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  * Definitions
  ******************************************************************************/
 
-#define MAINTHREAD_DELAY_LOOP 180000
+#define MAINTHREAD_DELAY_LOOP 600000
 #define MAINTHREAD_STACK_SIZE 384
 #define MAINTHREAD_PRIORITY   tskIDLE_PRIORITY + 1
 
@@ -64,13 +64,13 @@ struct __attribute__((__packed__)) {
   uint16_t board_vo;
   int8_t   lsm303agr_te;
   int8_t   bmp280_te;
-  uint32_t bmp280_pr;    // TODO: reduce to 2 bytes (minus 100.000)
-  uint16_t vl53l0x_di;   // TODO: 1 byte for distance
+  uint32_t bmp280_pr;
+  uint16_t vl53l0x_di;
   uint16_t mb7092_di;
   uint16_t hcsr04_di;
   int8_t   ds18b20_te;
   uint16_t cond_co;
-  uint16_t sen0189_di;
+  uint16_t sen0189_tb;
   uint16_t aquap_di;
 } data;
 
@@ -169,7 +169,7 @@ static void Sewer_logData()
   }
 
   if (data.modules & DATA_BIT_SEN0189) {
-    LOG(VS("SEN0189 distance: "), VUI16(data.sen0189_di));
+    LOG(VS("SEN0189 value: "), VUI16(data.sen0189_tb));
   }
 
   if (data.modules & DATA_BIT_AQUAP) {
@@ -245,21 +245,21 @@ static void Sewer_measureData()
   }
 
   data.cond_co = Cond_measure();
-  if (data.cond_co <= 1000) {
+  if ((data.cond_co - COND_CO_CALIB_OFFSET) / COND_CO_CALIB_COEFF <= 1500.0) {
     data.modules |= DATA_BIT_COND;
   } else {
     data.modules &= ~DATA_BIT_COND;
   }
 
-  data.sen0189_di = SEN0189_measure();
-  if (data.sen0189_di <= 1000) {
+  data.sen0189_tb = SEN0189_measure();
+  if ((data.sen0189_tb - SEN0189_TB_CALIB_OFFSET) / SEN0189_TB_CALIB_COEFF <= 1500.0) {
     data.modules |= DATA_BIT_SEN0189;
   } else {
     data.modules &= ~DATA_BIT_SEN0189;
   }
 
   data.aquap_di = AQUAP_measure();
-  if (data.aquap_di <= 1000) {
+  if ((data.aquap_di - AQUAP_DI_CALIB_OFFSET) / AQUAP_DI_CALIB_COEFF <= 1500) {
     data.modules |= DATA_BIT_AQUAP;
   } else {
     data.modules &= ~DATA_BIT_AQUAP;
