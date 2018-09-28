@@ -1,13 +1,17 @@
 ===============================================================================
 Payload examples:
 
-version: 2018090700
+version: 2018090700, port 1
 payload: CC9E4978C901011119000000000000000000007F02000000000000660129014001
 size   : 33 bytes
 
-version: 2
+version: 2, port 1
 payload: 0200C901011118000000000000007902000000580156013C01
 size   : 25 bytes
+
+version: 1, port 10
+payload: 2445710A0000E2413D0AC14100000000
+size   : 16 bytes
 
 
 ===============================================================================
@@ -41,42 +45,45 @@ function Decoder(bytes, port) {
     return bytes[offset + 3] << 24 | bytes[offset + 2] << 16 | bytes[offset + 1] << 8 | bytes[offset + 0]
   }
 
+  var modules;
+
   // it will be removed later
   if (port === 1 && bytes.length === 33 && decodeUI32(bytes, 0) === 2018090700) {
+    modules = decodeUI16(bytes, 4)
     return {
       result: 'OK',
       version: decodeUI32(bytes, 0),
       board_modules: {
-        LSM303AGR: (bytes[4] & 1) > 0,
-        BMP280: (bytes[4] & 2) > 0,
-        VL53L0X: (bytes[4] & 4) > 0,
-        MB7092: (bytes[4] & 8) > 0,
-        HCSR04: (bytes[4] & 16) > 0,
-        DS18B20: (bytes[4] & 32) > 0,
-        Conductivity: (bytes[4] & 64) > 0,
-        SEN0189: (bytes[4] & 128) > 0,
-        VegetronixAquaPlumb: (bytes[5] & 1) > 0
+        LSM303AGR:           (modules &   1) > 0,
+        BMP280:              (modules &   2) > 0,
+        VL53L0X:             (modules &   4) > 0,
+        MB7092:              (modules &   8) > 0,
+        HCSR04:              (modules &  16) > 0,
+        DS18B20:             (modules &  32) > 0,
+        Conductivity:        (modules &  64) > 0,
+        SEN0189:             (modules & 128) > 0,
+        VegetronixAquaPlumb: (modules & 256) > 0
       },
-      board_voltage: decodeUI16(bytes, 6),
-      lsm303agr_temperature: decodeUI8(bytes, 8),
-      bmp280_temperature: decodeFloat(bytes, 9),
-      bmp280_pressure: decodeFloat(bytes, 13),
-      vl53l0x_distance: decodeUI16(bytes, 17),
-      mb7092_distance: decodeUI16(bytes, 19),
-      hcsr04_distance: decodeUI16(bytes, 21),
-      ds18b20_temperature: decodeFloat(bytes, 23),
-      conductivity_value: decodeUI16(bytes, 27),
-      sen0189_value: decodeUI16(bytes, 29),
-      vegetronixaquaplumb_value: decodeUI16(bytes, 31)
+      board_voltage:             decodeUI16 (bytes,  6),
+      lsm303agr_temperature:     decodeUI8  (bytes,  8),
+      bmp280_temperature:        decodeFloat(bytes,  9),
+      bmp280_pressure:           decodeFloat(bytes, 13),
+      vl53l0x_distance:          decodeUI16 (bytes, 17),
+      mb7092_distance:           decodeUI16 (bytes, 19),
+      hcsr04_distance:           decodeUI16 (bytes, 21),
+      ds18b20_temperature:       decodeFloat(bytes, 23),
+      conductivity_value:        decodeUI16 (bytes, 27),
+      sen0189_value:             decodeUI16 (bytes, 29),
+      vegetronixaquaplumb_value: decodeUI16 (bytes, 31)
     }
   }
 
-  var version = bytes.length > 2 ? decodeUI16(bytes, 0) : null
-
-  if (port === 1 && bytes.length === 25 && version === 2) {
+  if (port === 1 && bytes.length === 25 && decodeUI16(bytes, 0) === 2) {
     modules = decodeUI16(bytes, 2)
     return {
-      version     : version,
+      version     : decodeUI16(bytes, 0),
+      lora_port   : port,
+      board_ty    : 'Sensemakers Rig',
       board_vo    : decodeUI16(bytes, 4),
       lsm303agr_te: (modules &   1) > 0 ? decodeI8  (bytes,  6) : null,
       bmp280_te   : (modules &   2) > 0 ? decodeI8  (bytes,  7) : null,
@@ -91,16 +98,21 @@ function Decoder(bytes, port) {
     }
   }
 
-  else if (port === 10 && bytes.length === 16) {
+  if (port === 10) {
     return {
-      a: decodeUI32(bytes,  0),
-      b: decodeUI32(bytes,  4),
-      c: decodeUI32(bytes,  8),
-      d: decodeUI32(bytes,  12)
+      version  : 1,
+      lora_port: port,
+      board_ty : 'SODAQ Sensor',
+      board_vo : decodeUI16 (bytes, 2),
+      sodaq_co : decodeFloat(bytes, 4),
+      sodaq_te : decodeFloat(bytes, 8)
     }
   }
 
+  var hex = []
+  for (var i = 0; i < bytes.length; i++) { hex.push(bytes[i].toString(16).toUpperCase()) }
   return {
-    TestValue: String.fromCharCode.apply(null, bytes)
+    lora_port: port,
+    raw: hex.join('')
   }
 }
