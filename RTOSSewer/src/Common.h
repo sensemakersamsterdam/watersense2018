@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // main constants
 #define PROJECT_NAME       "RTOSSewer"
-#define PROJECT_VERSION    2018091900
+#define PROJECT_VERSION    2018092800
 #define PROTOCOL_VERSION   2
 #define LORA_PORT          1
 #define LORA_SF            7
@@ -76,13 +76,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // required includes
 #include <Arduino.h>
-
 #include "freertos/FreeRTOSv10.0.1/FreeRTOS.h"
 #include "freertos/FreeRTOSv10.0.1/semphr.h"
 #include "freertos/FreeRTOSv10.0.1/task.h"
-
 #include "util/Logger.h"
 
+// debug serial
 #ifdef ARDUINO_ARCH_SAMD
 #define Serial SerialUSB
 #endif
