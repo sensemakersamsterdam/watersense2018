@@ -50,7 +50,7 @@ See the COPYING.LESSER file for details.
 *See: sources, <https://github.com/milesburton/Arduino-Temperature-Control-Library>*
 
 
-### FreeRTOS 10.0.1
+### FreeRTOS 10.1.1
 
 > *Both the FreeRTOS kernel and Amazon FreeRTOS are provided under the following MIT open source license.*  
 > *Copyright (C) 2017 Amazon.com, Inc. or its affiliates.*

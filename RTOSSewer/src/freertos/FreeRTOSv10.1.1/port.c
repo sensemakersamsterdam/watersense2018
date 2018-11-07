@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.0.1
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.1.1
+ * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -25,15 +25,13 @@
  * 1 tab == 4 spaces!
  */
 
-#ifdef __ARM_ARCH_6M__
-
 /*-----------------------------------------------------------
  * Implementation of functions defined in portable.h for the ARM CM0 port.
  *----------------------------------------------------------*/
 
 /* Scheduler includes. */
-#include "../FreeRTOS.h"
-#include "../task.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 /* Constants required to manipulate the NVIC. */
 #define portNVIC_SYSTICK_CTRL			( ( volatile uint32_t * ) 0xe000e010 )
@@ -359,5 +357,3 @@ void prvSetupTimerInterrupt( void )
 	*(portNVIC_SYSTICK_CTRL) = portNVIC_SYSTICK_CLK | portNVIC_SYSTICK_INT | portNVIC_SYSTICK_ENABLE;
 }
 /*-----------------------------------------------------------*/
-
-#endif

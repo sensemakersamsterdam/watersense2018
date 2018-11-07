@@ -76,9 +76,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // required includes
 #include <Arduino.h>
-#include "freertos/FreeRTOSv10.0.1/FreeRTOS.h"
-#include "freertos/FreeRTOSv10.0.1/semphr.h"
-#include "freertos/FreeRTOSv10.0.1/task.h"
+#include "freertos/FreeRTOSv10.1.1/FreeRTOS.h"
+#include "freertos/FreeRTOSv10.1.1/semphr.h"
+#include "freertos/FreeRTOSv10.1.1/task.h"
 #include "util/Logger.h"
 
 // debug serial

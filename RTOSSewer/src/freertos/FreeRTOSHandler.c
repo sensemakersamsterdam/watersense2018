@@ -17,8 +17,8 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "FreeRTOSv10.0.1/FreeRTOS.h"
-#include "FreeRTOSv10.0.1/task.h"
+#include "FreeRTOSv10.1.1/FreeRTOS.h"
+#include "FreeRTOSv10.1.1/task.h"
 
 void loop();
 void xPortSysTickHandler();
