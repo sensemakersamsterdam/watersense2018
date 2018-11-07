@@ -34,7 +34,6 @@ bool BMP280_setup();
  * Public
  ******************************************************************************/
 
-float BMP280_measureAltitude();
 float BMP280_measurePressure();
 float BMP280_measureTemperature();
 

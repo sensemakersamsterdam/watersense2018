@@ -108,6 +108,13 @@ See the COPYING.LESSER file for details.
 *See: <https://github.com/SodaqMoja/Sodaq_wdt>*
 
 
+### SparkFun MS5803-14BA Pressure Sensor 1.1.1
+
+> *The hardware is released under Creative Commons Share-alike 3.0.*
+
+*See: sources, <https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library>*
+
+
 ### SODAQ software for Arduino SAMD 1.6.18
 
 > *This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.*  

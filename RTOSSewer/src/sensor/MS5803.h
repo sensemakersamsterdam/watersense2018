@@ -17,61 +17,24 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Adafruit_BMP280.h>
+#include "../Common.h"
 
-#include "../periph/I2C.h"
-#include "../periph/WDT.h"
-#include "../util/Collection.h"
-#include "BMP280.h"
-
-
-/*******************************************************************************
- * State
- ******************************************************************************/
-
-static Adafruit_BMP280 sensor;
+#ifndef MS5803_H
+#define MS5803_H
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-bool BMP280_setup()
-{
-  bool b = sensor.begin();
-
-  LOG_SETUP_RESULT_TEXT(b);
-
-  if (b) { vTaskDelay(pdMS_TO_TICKS(200)); }
-
-  return b;
-}
+bool MS5803_setup();
 
 
 /*******************************************************************************
  * Public
  ******************************************************************************/
 
-float BMP280_measurePressure()
-{
-  float values[BMP280_PR_ATTEMPTS];
+float MS5803_measurePressure();
+float MS5803_measureTemperature();
 
-  for (uint8_t i = 0; i < BMP280_PR_ATTEMPTS; i++) {
-    WDT_reset();
-    values[i] = sensor.readPressure();
-  }
-
-  return BMP280_PR_CALIB_OFFSET + BMP280_PR_CALIB_COEFF * median(values, BMP280_PR_ATTEMPTS);
-}
-
-float BMP280_measureTemperature()
-{
-  float values[BMP280_TE_ATTEMPTS];
-
-  for (uint8_t i = 0; i < BMP280_TE_ATTEMPTS; i++) {
-    WDT_reset();
-    values[i] = sensor.readTemperature();
-  }
-
-  return BMP280_TE_CALIB_OFFSET + BMP280_TE_CALIB_COEFF * median(values, BMP280_TE_ATTEMPTS);
-}
+#endif // MS5803_H

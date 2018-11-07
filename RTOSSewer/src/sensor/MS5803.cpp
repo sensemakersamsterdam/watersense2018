@@ -17,34 +17,37 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Adafruit_BMP280.h>
+#include <Wire.h>
+#include <SparkFun_MS5803_I2C.h>
 
 #include "../periph/I2C.h"
 #include "../periph/WDT.h"
 #include "../util/Collection.h"
-#include "BMP280.h"
+#include "MS5803.h"
 
 
 /*******************************************************************************
  * State
  ******************************************************************************/
 
-static Adafruit_BMP280 sensor;
+static MS5803 sensor(ADDRESS_HIGH);
 
 
 /*******************************************************************************
  * Lifecycle
  ******************************************************************************/
 
-bool BMP280_setup()
+bool MS5803_setup()
 {
-  bool b = sensor.begin();
+  Wire.beginTransmission(ADDRESS_HIGH);
+  if (Wire.endTransmission()) { return false; }
 
-  LOG_SETUP_RESULT_TEXT(b);
+  sensor.reset();
+  sensor.begin();
 
-  if (b) { vTaskDelay(pdMS_TO_TICKS(200)); }
+  LOG_SETUP_RESULT_TEXT(true);
 
-  return b;
+  return true;
 }
 
 
@@ -52,26 +55,26 @@ bool BMP280_setup()
  * Public
  ******************************************************************************/
 
-float BMP280_measurePressure()
+float MS5803_measurePressure()
 {
-  float values[BMP280_PR_ATTEMPTS];
+  float values[MS5803_PR_ATTEMPTS];
 
-  for (uint8_t i = 0; i < BMP280_PR_ATTEMPTS; i++) {
+  for (uint8_t i = 0; i < MS5803_PR_ATTEMPTS; i++) {
     WDT_reset();
-    values[i] = sensor.readPressure();
+    values[i] = sensor.getPressure(ADC_4096);
   }
 
-  return BMP280_PR_CALIB_OFFSET + BMP280_PR_CALIB_COEFF * median(values, BMP280_PR_ATTEMPTS);
+  return MS5803_PR_CALIB_OFFSET + MS5803_PR_CALIB_COEFF * median(values, MS5803_PR_ATTEMPTS);
 }
 
-float BMP280_measureTemperature()
+float MS5803_measureTemperature()
 {
-  float values[BMP280_TE_ATTEMPTS];
+  float values[MS5803_TE_ATTEMPTS];
 
-  for (uint8_t i = 0; i < BMP280_TE_ATTEMPTS; i++) {
+  for (uint8_t i = 0; i < MS5803_TE_ATTEMPTS; i++) {
     WDT_reset();
-    values[i] = sensor.readTemperature();
+    values[i] = sensor.getTemperature(CELSIUS, ADC_512);
   }
 
-  return BMP280_TE_CALIB_OFFSET + BMP280_TE_CALIB_COEFF * median(values, BMP280_TE_ATTEMPTS);
+  return MS5803_TE_CALIB_OFFSET + MS5803_TE_CALIB_COEFF * median(values, MS5803_TE_ATTEMPTS);
 }

@@ -57,11 +57,12 @@ void I2C_logDevices()
     if (error == 0 || error == 4) {
       LOG(error == 0 ? VS("device found at address 0x") : VS("unknow error at address 0x"),
           VUI8H02(address),
-          address == 0x19                    ? VS(": LSM303AGR accelerometer") : (void)NULL,
-          address == 0x1E                    ? VS(": LSM303AGR magnetometer")  : (void)NULL,
-          address == 0x29                    ? VS(": VL53L0X")                 : (void)NULL,
-          address == 0x50                    ? VS(": FDC1004")                 : (void)NULL,
-          address == 0x76 || address == 0x77 ? VS(": BMP280")                  : (void)NULL
+          address == 0x19 ? VS(": LSM303AGR accelerometer") : (void)NULL,
+          address == 0x1E ? VS(": LSM303AGR magnetometer")  : (void)NULL,
+          address == 0x29 ? VS(": VL53L0X")                 : (void)NULL,
+          address == 0x50 ? VS(": FDC1004")                 : (void)NULL,
+          address == 0x76 ? VS(": MS5803")                  : (void)NULL,
+          address == 0x77 ? VS(": BMP280")                  : (void)NULL
       );
     }
   }

@@ -28,6 +28,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include "sensor/HCSR04.h"
 #include "sensor/LSM303AGR.h"
 #include "sensor/MB7092.h"
+#include "sensor/MS5803.h"
 #include "sensor/SEN0189.h"
 #include "sensor/AquaP.h"
 #include "sensor/VL53L0X.h"
@@ -51,6 +52,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define DATA_BIT_COND         64
 #define DATA_BIT_SEN0189      128
 #define DATA_BIT_AQUAP        256
+#define DATA_BIT_MS5803       512
 
 
 /*******************************************************************************
@@ -71,6 +73,8 @@ struct __attribute__((__packed__)) {
   uint16_t cond_co;
   uint16_t sen0189_tb;
   uint16_t aquap_di;
+  int8_t   ms5803_te;
+  uint32_t ms5803_pr;
 } data;
 
 
@@ -140,7 +144,7 @@ static void Sewer_logData()
 
   if (data.modules & DATA_BIT_BMP280) {
     LOG(VS("BMP280 temperature: "), VI8  (data.bmp280_te), VS(" *C"));
-    LOG(VS("BMP280 pressure: "),    VUI32(data.bmp280_pr),    VS(" Pa"));
+    LOG(VS("BMP280 pressure: "),    VUI32(data.bmp280_pr), VS(" Pa"));
   }
 
   if (data.modules & DATA_BIT_VL53L0X) {
@@ -174,6 +178,11 @@ static void Sewer_logData()
   if (data.modules & DATA_BIT_AQUAP) {
     LOG(VS("AquaP distance: "), VUI16(data.aquap_di));
   }
+
+  if (data.modules & DATA_BIT_MS5803) {
+    LOG(VS("MS5803 temperature: "), VI8  (data.ms5803_te), VS(" *C"));
+    LOG(VS("MS5803 pressure: "),    VUI32(data.ms5803_pr), VS(" mbar"));
+  }
 }
 
 static void Sewer_measureData()
@@ -202,7 +211,7 @@ static void Sewer_measureData()
   if (BMP280_setup()) {
     data.modules  |= DATA_BIT_BMP280;
     data.bmp280_te = floor(BMP280_measureTemperature() + 0.5F);
-    data.bmp280_pr = floor(BMP280_measurePressure() + 0.5F);
+    data.bmp280_pr = floor(BMP280_measurePressure()    + 0.5F);
   } else {
     data.modules  &= ~DATA_BIT_BMP280;
     data.bmp280_te = 0;
@@ -215,6 +224,16 @@ static void Sewer_measureData()
   } else {
     data.modules   &= ~DATA_BIT_VL53L0X;
     data.vl53l0x_di = 0;
+  }
+
+  if (MS5803_setup()) {
+    data.modules  |= DATA_BIT_MS5803;
+    data.ms5803_te = floor(MS5803_measureTemperature() + 0.5F);
+    data.ms5803_pr = floor(MS5803_measurePressure()    + 0.5F);
+  } else {
+    data.modules  &= ~DATA_BIT_MS5803;
+    data.ms5803_te = 0;
+    data.ms5803_pr = 0;
   }
 
   I2C_disable();

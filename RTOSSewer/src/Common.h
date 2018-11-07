@@ -22,12 +22,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // main constants
 #define PROJECT_NAME               "RTOSSewer"
-#define PROTOCOL_VERSION           2
+#define PROTOCOL_VERSION           3
 #define LORA_PORT                  1
 #define LORA_SF                    12
 #define MAINTHREAD_DELAY_LOOP      600000
-#define USE_DEEPSLEEP              1
-#define USE_LOGGER                 0
+#define USE_DEEPSLEEP              0
+#define USE_LOGGER                 1
 #define USE_LORA                   1
 
 // sensors parameters
@@ -56,6 +56,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define MB7092_DI_ATTEMPTS         5
 #define MB7092_DI_CALIB_OFFSET    -17.39206F
 #define MB7092_DI_CALIB_COEFF      1.02825F
+#define MS5803_PR_ATTEMPTS         3
+#define MS5803_PR_CALIB_OFFSET     0.0F
+#define MS5803_PR_CALIB_COEFF      1.0F
+#define MS5803_TE_ATTEMPTS         3
+#define MS5803_TE_CALIB_OFFSET     0.0F
+#define MS5803_TE_CALIB_COEFF      1.0F
 #define SEN0189_TB_ATTEMPTS        5
 #define SEN0189_TB_CALIB_OFFSET    1000.0F
 #define SEN0189_TB_CALIB_COEFF    -1.0F

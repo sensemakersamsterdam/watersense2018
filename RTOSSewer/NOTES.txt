@@ -98,6 +98,28 @@ function Decoder(bytes, port) {
     }
   }
 
+  if (port === 1 && bytes.length === 30 && decodeUI16(bytes, 0) === 3) {
+    modules = decodeUI16(bytes, 2)
+    return {
+      version     : decodeUI16(bytes, 0),
+      lora_port   : port,
+      board_ty    : 'Sensemakers Rig',
+      board_vo    : decodeUI16(bytes, 4),
+      lsm303agr_te: (modules &   1) > 0 ? decodeI8  (bytes,  6) : null,
+      bmp280_te   : (modules &   2) > 0 ? decodeI8  (bytes,  7) : null,
+      bmp280_pr   : (modules &   2) > 0 ? decodeUI32(bytes,  8) : null,
+      vl53l0x_di  : (modules &   4) > 0 ? decodeUI16(bytes, 12) : null,
+      mb7092_di   : (modules &   8) > 0 ? decodeUI16(bytes, 14) : null,
+      hcsr04_di   : (modules &  16) > 0 ? decodeUI16(bytes, 16) : null,
+      ds18b20_te  : (modules &  32) > 0 ? decodeI8  (bytes, 18) : null,
+      cond_co     : (modules &  64) > 0 ? decodeUI16(bytes, 19) : null,
+      sen0189_tb  : (modules & 128) > 0 ? decodeUI16(bytes, 21) : null,
+      aquap_di    : (modules & 256) > 0 ? decodeUI16(bytes, 23) : null,
+      ms5803_te   : (modules & 512) > 0 ? decodeI8  (bytes, 25) : null,
+      ms5803_pr   : (modules & 512) > 0 ? decodeUI32(bytes, 26) : null
+    }
+  }
+
   if (port === 10) {
     return {
       version  : 1,
