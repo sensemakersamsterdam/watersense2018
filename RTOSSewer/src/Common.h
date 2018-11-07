@@ -26,8 +26,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define LORA_PORT                  1
 #define LORA_SF                    12
 #define MAINTHREAD_DELAY_LOOP      600000
-#define USE_DEEPSLEEP              0
-#define USE_LOGGER                 1
+#define USE_DEEPSLEEP              1
+#define USE_LOGGER                 0
 #define USE_LORA                   1
 
 // sensors parameters
